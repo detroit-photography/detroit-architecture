@@ -61,7 +61,7 @@ export function Footer() {
             © {new Date().getFullYear()} Detroit Photography
           </p>
           <p className="text-detroit-cream/30 text-xs">
-            Last updated: December 7, 2025
+            Last updated: {process.env.NEXT_PUBLIC_BUILD_DATE}
           </p>
         </div>
       </div>

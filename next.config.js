@@ -16,6 +16,15 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   
+  // Set build date at build time
+  env: {
+    NEXT_PUBLIC_BUILD_DATE: new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }),
+  },
+  
   images: {
     remotePatterns: [
       {
