@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Search, Upload, Save, X, Camera, Edit2, Trash2, Plus, Check, LogOut, GripVertical, Star, ChevronUp, ChevronDown, Building2, Tag, Sparkles, ExternalLink, Loader2 } from 'lucide-react'
+import { Search, Upload, Save, X, Camera, Edit2, Trash2, Plus, Check, LogOut, GripVertical, Star, ChevronUp, ChevronDown, Building2, Tag, Sparkles, ExternalLink, Loader2, User, MapPin, Video } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { Building, Photo } from '@/lib/database.types'
 
@@ -149,13 +149,16 @@ export default function AdminPage() {
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
-  const [uploadPhotoType, setUploadPhotoType] = useState<'original' | 'historical'>('original')
   
   // Building editor state
   const [showBuildingModal, setShowBuildingModal] = useState(false)
   const [editingBuilding, setEditingBuilding] = useState<Building | null>(null)
   const [buildingForm, setBuildingForm] = useState<BuildingForm>(emptyForm)
   const [activeTab, setActiveTab] = useState<'photos' | 'details' | 'text'>('photos')
+  
+  // Photo drag state
+  const [draggedPhotoIndex, setDraggedPhotoIndex] = useState<number | null>(null)
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
   
   // Tags from existing buildings
   const [existingStyles, setExistingStyles] = useState<string[]>([])
@@ -601,6 +604,53 @@ export default function AdminPage() {
     setPhotos(newPhotos)
   }
 
+  // Drag and drop handlers for photo reordering
+  const handlePhotoDragStart = (index: number) => {
+    setDraggedPhotoIndex(index)
+  }
+
+  const handlePhotoDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault()
+    if (draggedPhotoIndex !== null && draggedPhotoIndex !== index) {
+      setDragOverIndex(index)
+    }
+  }
+
+  const handlePhotoDragLeave = () => {
+    setDragOverIndex(null)
+  }
+
+  const handlePhotoDrop = async (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault()
+    if (draggedPhotoIndex === null || draggedPhotoIndex === dropIndex) {
+      setDraggedPhotoIndex(null)
+      setDragOverIndex(null)
+      return
+    }
+
+    const newPhotos = [...photos]
+    const [removed] = newPhotos.splice(draggedPhotoIndex, 1)
+    newPhotos.splice(dropIndex, 0, removed)
+
+    // Update UI immediately
+    setPhotos(newPhotos)
+    setDraggedPhotoIndex(null)
+    setDragOverIndex(null)
+
+    // Update sort_order in database
+    for (let i = 0; i < newPhotos.length; i++) {
+      await supabase
+        .from('photos')
+        .update({ sort_order: i })
+        .eq('id', newPhotos[i].id)
+    }
+  }
+
+  const handlePhotoDragEnd = () => {
+    setDraggedPhotoIndex(null)
+    setDragOverIndex(null)
+  }
+
   // Open building modal for new/edit
   const openBuildingModal = (building?: Building) => {
     if (building) {
@@ -812,6 +862,7 @@ export default function AdminPage() {
                 <div className="bg-white rounded-xl shadow-md p-6">
                   <div className="flex justify-between items-start">
                     <div className="flex items-start gap-3">
+                      {/* Featured Star Button */}
                       <button
                         onClick={async () => {
                           const newFeatured = !selectedBuilding.featured
@@ -859,7 +910,7 @@ export default function AdminPage() {
                       <button
                         onClick={enrichFromWikipedia}
                         disabled={enriching}
-                        className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+                        className="flex items-center gap-2 bg-detroit-gold text-detroit-green px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors disabled:opacity-50"
                       >
                         {enriching ? (
                           <Loader2 className="w-4 h-4 animate-spin" />
@@ -925,17 +976,32 @@ export default function AdminPage() {
 
                         {/* Photo list with reorder */}
                         {photos.length > 0 && (
-                          <div className="mt-6 space-y-3">
+                          <div className="mt-6 space-y-1">
                             <p className="text-sm text-gray-500 mb-2">Drag to reorder or use arrows. Click star to set primary.</p>
                             {photos.map((photo, index) => (
-                              <div key={photo.id} className="flex items-center gap-3 bg-gray-50 rounded-lg p-2">
-                                <div className="text-gray-400 cursor-grab">
+                              <div
+                                key={photo.id}
+                                draggable
+                                onDragStart={() => handlePhotoDragStart(index)}
+                                onDragOver={(e) => handlePhotoDragOver(e, index)}
+                                onDragLeave={handlePhotoDragLeave}
+                                onDrop={(e) => handlePhotoDrop(e, index)}
+                                onDragEnd={handlePhotoDragEnd}
+                                className={`flex items-center gap-3 rounded-lg p-2 transition-all ${
+                                  draggedPhotoIndex === index 
+                                    ? 'opacity-50 bg-gray-200' 
+                                    : dragOverIndex === index 
+                                      ? 'bg-detroit-gold/20 border-2 border-detroit-gold border-dashed' 
+                                      : 'bg-gray-50 hover:bg-gray-100'
+                                }`}
+                              >
+                                <div className="text-gray-400 cursor-grab active:cursor-grabbing">
                                   <GripVertical className="w-5 h-5" />
                                 </div>
                                 <img
                                   src={photo.url}
                                   alt={`Photo ${index + 1}`}
-                                  className="w-20 h-20 object-cover rounded-lg"
+                                  className="w-20 h-20 object-cover rounded-lg pointer-events-none"
                                 />
                                 <div className="flex-1">
                                   <div className="text-sm font-medium">Photo {index + 1}</div>
@@ -975,6 +1041,126 @@ export default function AdminPage() {
                             ))}
                           </div>
                         )}
+
+                        {/* Historical Photos Section */}
+                        <div className="mt-8 pt-6 border-t">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-5 h-5 rounded bg-orange-500 flex items-center justify-center">
+                              <Camera className="w-3 h-3 text-white" />
+                            </div>
+                            <h3 className="font-medium text-gray-900">Historical Photos</h3>
+                          </div>
+                          <p className="text-sm text-gray-500 mb-3">Upload archival or historical photos of this building (pre-digital era, old postcards, etc.)</p>
+                          <div
+                            onClick={() => document.getElementById('historical-input')?.click()}
+                            className="border-2 border-dashed border-orange-300 rounded-xl p-6 text-center cursor-pointer hover:border-orange-500 hover:bg-orange-50/50 transition-colors"
+                          >
+                            <input
+                              id="historical-input"
+                              type="file"
+                              multiple
+                              accept="image/*"
+                              onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
+                              className="hidden"
+                            />
+                            <Upload className="w-8 h-8 mx-auto text-orange-400 mb-2" />
+                            <p className="text-gray-600 text-sm">Drop historical photos here or click to upload</p>
+                          </div>
+                        </div>
+
+                        {/* Portraiture Section */}
+                        <div className="mt-8 pt-6 border-t">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-5 h-5 rounded bg-pink-500 flex items-center justify-center">
+                              <User className="w-3 h-3 text-white" />
+                            </div>
+                            <h3 className="font-medium text-gray-900">Portraiture</h3>
+                          </div>
+                          <p className="text-sm text-gray-500 mb-3">Portrait photography taken at this location. Add captions to label each image.</p>
+                          <div
+                            onClick={() => document.getElementById('portraiture-input')?.click()}
+                            className="border-2 border-dashed border-pink-300 rounded-xl p-6 text-center cursor-pointer hover:border-pink-500 hover:bg-pink-50/50 transition-colors"
+                          >
+                            <input
+                              id="portraiture-input"
+                              type="file"
+                              multiple
+                              accept="image/*"
+                              onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
+                              className="hidden"
+                            />
+                            <Upload className="w-8 h-8 mx-auto text-pink-400 mb-2" />
+                            <p className="text-gray-600 text-sm">Drop portraiture photos here or click to upload</p>
+                          </div>
+                        </div>
+
+                        {/* Google Street View Section */}
+                        <div className="mt-8 pt-6 border-t">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-5 h-5 rounded bg-green-500 flex items-center justify-center">
+                              <MapPin className="w-3 h-3 text-white" />
+                            </div>
+                            <h3 className="font-medium text-gray-900">Google Street View</h3>
+                          </div>
+                          {selectedBuilding.lat && selectedBuilding.lng ? (
+                            <div>
+                              <div className="rounded-xl overflow-hidden h-48 bg-gray-100">
+                                <iframe
+                                  width="100%"
+                                  height="100%"
+                                  style={{ border: 0 }}
+                                  loading="lazy"
+                                  src={`https://www.google.com/maps/embed/v1/streetview?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ''}&location=${selectedBuilding.lat},${selectedBuilding.lng}&heading=0&pitch=0&fov=90`}
+                                />
+                              </div>
+                              <div className="flex justify-between items-center mt-2">
+                                <span className="text-sm text-gray-500">📍 {selectedBuilding.lat}, {selectedBuilding.lng}</span>
+                                <a 
+                                  href={`https://www.google.com/maps/@${selectedBuilding.lat},${selectedBuilding.lng},3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-sm text-detroit-gold hover:underline"
+                                >
+                                  Open Full 360° View →
+                                </a>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="rounded-xl bg-gray-100 h-48 flex items-center justify-center">
+                              <p className="text-gray-500 text-sm">No coordinates available. Add an address to enable Street View.</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Video Section */}
+                        <div className="mt-8 pt-6 border-t">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-5 h-5 rounded bg-pink-500 flex items-center justify-center">
+                              <Video className="w-3 h-3 text-white" />
+                            </div>
+                            <h3 className="font-medium text-gray-900">Video</h3>
+                          </div>
+                          <div
+                            onClick={() => document.getElementById('video-input')?.click()}
+                            className="border-2 border-dashed border-pink-300 rounded-xl p-6 text-center cursor-pointer hover:border-pink-500 hover:bg-pink-50/50 transition-colors"
+                          >
+                            <input
+                              id="video-input"
+                              type="file"
+                              accept="video/*"
+                              className="hidden"
+                            />
+                            <Video className="w-8 h-8 mx-auto text-pink-400 mb-2" />
+                            <p className="text-gray-600 text-sm">Drop video file here or click to upload</p>
+                            <p className="text-gray-400 text-xs mt-1">Max 500MB · MP4, MOV, WebM</p>
+                          </div>
+                          <div className="mt-4 text-center text-gray-400 text-sm">or paste URL</div>
+                          <input
+                            type="text"
+                            placeholder="YouTube or Vimeo URL..."
+                            className="mt-2 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-detroit-gold text-sm"
+                          />
+                        </div>
                       </div>
                     )}
 
