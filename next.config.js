@@ -16,12 +16,15 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   
-  // Set build date at build time
+  // Set build date/time at build time
   env: {
-    NEXT_PUBLIC_BUILD_DATE: new Date().toLocaleDateString('en-US', {
+    NEXT_PUBLIC_BUILD_DATE: new Date().toLocaleString('en-US', {
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZoneName: 'short',
     }),
   },
   
