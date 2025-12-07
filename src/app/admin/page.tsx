@@ -1114,20 +1114,53 @@ export default function AdminPage() {
                                 />
                               </div>
                               <div className="flex justify-between items-center mt-2">
-                                <span className="text-sm text-gray-500">📍 {selectedBuilding.lat}, {selectedBuilding.lng}</span>
-                                <a 
-                                  href={`https://www.google.com/maps/@${selectedBuilding.lat},${selectedBuilding.lng},3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-sm text-detroit-gold hover:underline"
-                                >
-                                  Open Full 360° View →
-                                </a>
+                                <span className="text-sm text-gray-500">📍 {selectedBuilding.lat?.toFixed(6)}, {selectedBuilding.lng?.toFixed(6)}</span>
+                                <div className="flex gap-2">
+                                  <button
+                                    onClick={async () => {
+                                      const result = await updateStreetView(selectedBuilding.id)
+                                      // Refresh building data to get new coordinates
+                                      const { data } = await supabase.from('buildings').select('*').eq('id', selectedBuilding.id).single()
+                                      if (data) {
+                                        setSelectedBuilding(data)
+                                        setBuildings(buildings.map(b => b.id === data.id ? data : b))
+                                      }
+                                    }}
+                                    className="text-sm text-detroit-green hover:underline"
+                                  >
+                                    🔄 Refresh
+                                  </button>
+                                  <a 
+                                    href={`https://www.google.com/maps/@${selectedBuilding.lat},${selectedBuilding.lng},3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm text-detroit-gold hover:underline"
+                                  >
+                                    Open Full 360° View →
+                                  </a>
+                                </div>
                               </div>
                             </div>
                           ) : (
-                            <div className="rounded-xl bg-gray-100 h-48 flex items-center justify-center">
-                              <p className="text-gray-500 text-sm">No coordinates available. Add an address to enable Street View.</p>
+                            <div className="rounded-xl bg-gray-100 h-48 flex flex-col items-center justify-center gap-3">
+                              <p className="text-gray-500 text-sm">No coordinates available.</p>
+                              {selectedBuilding.address && (
+                                <button
+                                  onClick={async () => {
+                                    showToast('Geocoding address...', 'success')
+                                    await updateStreetView(selectedBuilding.id)
+                                    // Refresh building data to get new coordinates
+                                    const { data } = await supabase.from('buildings').select('*').eq('id', selectedBuilding.id).single()
+                                    if (data) {
+                                      setSelectedBuilding(data)
+                                      setBuildings(buildings.map(b => b.id === data.id ? data : b))
+                                    }
+                                  }}
+                                  className="bg-detroit-green text-white px-4 py-2 rounded-lg text-sm hover:bg-opacity-90"
+                                >
+                                  📍 Lookup Coordinates from Address
+                                </button>
+                              )}
                             </div>
                           )}
                         </div>
