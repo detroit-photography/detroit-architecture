@@ -2,13 +2,15 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Menu, X, Map, Camera } from 'lucide-react'
+import { Menu, X, Map, Camera, ShoppingBag } from 'lucide-react'
+import { useCart } from '@/lib/cart-context'
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
+  const { totalItems, setIsOpen: setCartOpen } = useCart()
 
   return (
-    <nav className="bg-detroit-green text-white sticky top-0 z-50">
+    <nav className="bg-detroit-green text-white sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -36,20 +38,45 @@ export function Navigation() {
             </a>
             <Link 
               href="/admin" 
-              className="bg-detroit-gold text-detroit-green px-4 py-2 text-sm uppercase tracking-wider font-medium hover:bg-detroit-cream transition-colors flex items-center gap-1"
+              className="text-sm uppercase tracking-wider hover:text-detroit-gold transition-colors flex items-center gap-1"
             >
               <Camera className="w-4 h-4" />
               Admin
             </Link>
+            <button 
+              onClick={() => setCartOpen(true)}
+              className="relative bg-detroit-gold text-detroit-green px-4 py-2 text-sm uppercase tracking-wider font-medium hover:bg-detroit-cream transition-colors flex items-center gap-2"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              Prints
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                  {totalItems}
+                </span>
+              )}
+            </button>
           </div>
 
           {/* Mobile menu button */}
-          <button 
-            className="md:hidden p-2"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <button 
+              onClick={() => setCartOpen(true)}
+              className="relative p-2"
+            >
+              <ShoppingBag className="w-6 h-6 text-detroit-gold" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                  {totalItems}
+                </span>
+              )}
+            </button>
+            <button 
+              className="p-2"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
@@ -58,7 +85,13 @@ export function Navigation() {
             <Link href="/" className="block py-2 text-sm uppercase tracking-wider hover:text-detroit-gold">Buildings</Link>
             <Link href="/map" className="block py-2 text-sm uppercase tracking-wider hover:text-detroit-gold">Map</Link>
             <a href="https://www.detroitphotography.com" className="block py-2 text-sm uppercase tracking-wider hover:text-detroit-gold">Main Site</a>
-            <Link href="/admin" className="block py-2 text-sm uppercase tracking-wider text-detroit-gold font-medium">Admin</Link>
+            <Link href="/admin" className="block py-2 text-sm uppercase tracking-wider hover:text-detroit-gold">Admin</Link>
+            <button 
+              onClick={() => { setCartOpen(true); setIsOpen(false); }}
+              className="block py-2 text-sm uppercase tracking-wider text-detroit-gold font-medium"
+            >
+              View Cart ({totalItems})
+            </button>
           </div>
         )}
       </div>

@@ -30,6 +30,7 @@ export interface Database {
           ferry_number: string | null
           ferry_text: string | null
           photographer_notes: string | null
+          wikipedia_entry: string | null
           status: 'extant' | 'demolished' | 'unknown'
           featured: boolean
         }
@@ -53,6 +54,7 @@ export interface Database {
           ferry_number?: string | null
           ferry_text?: string | null
           photographer_notes?: string | null
+          wikipedia_entry?: string | null
           status?: 'extant' | 'demolished' | 'unknown'
           featured?: boolean
         }
@@ -76,6 +78,7 @@ export interface Database {
           ferry_number?: string | null
           ferry_text?: string | null
           photographer_notes?: string | null
+          wikipedia_entry?: string | null
           status?: 'extant' | 'demolished' | 'unknown'
           featured?: boolean
         }
@@ -91,6 +94,7 @@ export interface Database {
           year_taken: number | null
           is_primary: boolean
           sort_order: number
+          photo_type: 'original' | 'historical' | 'street_view'
         }
         Insert: {
           id?: string
@@ -102,6 +106,7 @@ export interface Database {
           year_taken?: number | null
           is_primary?: boolean
           sort_order?: number
+          photo_type?: 'original' | 'historical' | 'street_view'
         }
         Update: {
           id?: string
@@ -113,6 +118,7 @@ export interface Database {
           year_taken?: number | null
           is_primary?: boolean
           sort_order?: number
+          photo_type?: 'original' | 'historical' | 'street_view'
         }
       }
     }

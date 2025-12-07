@@ -105,7 +105,9 @@ export function BuildingGrid() {
           query = query.not('aia_number', 'is', null).not('ferry_number', 'is', null)
         }
 
-        // Apply sorting
+        // Apply sorting - always put featured buildings first
+        query = query.order('featured', { ascending: false })
+        
         const sort = searchParams.get('sort') || 'name'
         const descending = sort.startsWith('-')
         const sortField = descending ? sort.slice(1) : sort

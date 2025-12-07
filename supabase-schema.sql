@@ -36,6 +36,7 @@ CREATE TABLE buildings (
     
     -- User content
     photographer_notes TEXT,
+    wikipedia_entry TEXT,
     
     -- Flags
     featured BOOLEAN DEFAULT FALSE
@@ -52,7 +53,8 @@ CREATE TABLE photos (
     photographer TEXT,
     year_taken INTEGER,
     is_primary BOOLEAN DEFAULT FALSE,
-    sort_order INTEGER DEFAULT 0
+    sort_order INTEGER DEFAULT 0,
+    photo_type TEXT DEFAULT 'original' CHECK (photo_type IN ('original', 'historical', 'street_view'))
 );
 
 -- Create indexes for common queries

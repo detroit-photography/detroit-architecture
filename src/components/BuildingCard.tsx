@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { MapPin, Calendar, User, Building2, Camera } from 'lucide-react'
+import { MapPin, Calendar, User, Building2, Camera, Star } from 'lucide-react'
 import { Building } from '@/lib/database.types'
 
 interface BuildingCardProps {
@@ -28,6 +28,16 @@ export function BuildingCard({ building }: BuildingCardProps) {
             />
           ) : (
             <Building2 className="w-16 h-16 text-white/30" />
+          )}
+          
+          {/* Featured badge */}
+          {building.featured && (
+            <div className="absolute top-2 md:top-3 left-2 md:left-3">
+              <div className="bg-detroit-gold text-detroit-green text-[10px] md:text-xs px-2 md:px-3 py-0.5 md:py-1 flex items-center gap-0.5 md:gap-1 uppercase tracking-wider font-medium">
+                <Star className="w-2.5 h-2.5 md:w-3 md:h-3 fill-current" />
+                <span className="hidden sm:inline">Featured</span>
+              </div>
+            </div>
           )}
           
           {/* Status badge */}

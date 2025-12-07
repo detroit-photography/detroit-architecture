@@ -1,17 +1,34 @@
 'use client'
 
-import { useState } from 'react'
-import Image from 'next/image'
-import { ChevronLeft, ChevronRight, X, ZoomIn } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { ChevronLeft, ChevronRight, X, ZoomIn, Camera, Clock } from 'lucide-react'
 import { Photo } from '@/lib/database.types'
 
 interface PhotoGalleryProps {
   photos: Photo[]
+  buildingName?: string
 }
 
-export function PhotoGallery({ photos }: PhotoGalleryProps) {
+function PhotoSection({ 
+  photos, 
+  title, 
+  icon: Icon,
+  buildingName,
+  allPhotos,
+  startIndex
+}: { 
+  photos: Photo[]
+  title: string
+  icon: React.ElementType
+  buildingName?: string
+  allPhotos: Photo[]
+  startIndex: number
+}) {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(0)
+
+  if (photos.length === 0) return null
 
   const currentPhoto = photos[selectedIndex]
 
@@ -23,16 +40,38 @@ export function PhotoGallery({ photos }: PhotoGalleryProps) {
     setSelectedIndex((prev) => (prev === photos.length - 1 ? 0 : prev + 1))
   }
 
+  const openLightbox = (index: number) => {
+    setLightboxIndex(startIndex + index)
+    setLightboxOpen(true)
+  }
+
+  const goToPreviousLightbox = () => {
+    setLightboxIndex((prev) => (prev === 0 ? allPhotos.length - 1 : prev - 1))
+  }
+
+  const goToNextLightbox = () => {
+    setLightboxIndex((prev) => (prev === allPhotos.length - 1 ? 0 : prev + 1))
+  }
+
+  const lightboxPhoto = allPhotos[lightboxIndex]
+
   return (
     <div>
+      {/* Section Header */}
+      <div className="flex items-center gap-2 mb-3">
+        <Icon className="w-5 h-5 text-detroit-green" />
+        <h3 className="font-display text-lg text-gray-800">{title}</h3>
+        <span className="text-sm text-gray-500">({photos.length})</span>
+      </div>
+
       {/* Main Image */}
       <div 
         className="relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 cursor-pointer group"
-        onClick={() => setLightboxOpen(true)}
+        onClick={() => openLightbox(selectedIndex)}
       >
         <img
           src={currentPhoto.url}
-          alt={currentPhoto.caption || 'Building photo'}
+          alt={currentPhoto.caption || `${buildingName || 'Building'} photo`}
           className="w-full h-full object-cover"
         />
         
@@ -42,14 +81,19 @@ export function PhotoGallery({ photos }: PhotoGalleryProps) {
         </div>
 
         {/* Caption */}
-        {currentPhoto.caption && (
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+          {currentPhoto.caption && (
             <p className="text-white text-sm">{currentPhoto.caption}</p>
+          )}
+          <div className="flex items-center gap-2 text-white/70 text-xs mt-1">
             {currentPhoto.photographer && (
-              <p className="text-white/70 text-xs mt-1">Photo by {currentPhoto.photographer}</p>
+              <span>Photo by {currentPhoto.photographer}</span>
+            )}
+            {currentPhoto.year_taken && (
+              <span>• {currentPhoto.year_taken}</span>
             )}
           </div>
-        )}
+        </div>
 
         {/* Navigation arrows */}
         {photos.length > 1 && (
@@ -72,12 +116,12 @@ export function PhotoGallery({ photos }: PhotoGalleryProps) {
 
       {/* Thumbnails */}
       {photos.length > 1 && (
-        <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
+        <div className="flex gap-2 mt-3 overflow-x-auto pb-2">
           {photos.map((photo, index) => (
             <button
               key={photo.id}
               onClick={() => setSelectedIndex(index)}
-              className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
+              className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
                 index === selectedIndex ? 'border-detroit-gold' : 'border-transparent hover:border-gray-300'
               }`}
             >
@@ -105,21 +149,21 @@ export function PhotoGallery({ photos }: PhotoGalleryProps) {
           </button>
 
           <button
-            onClick={(e) => { e.stopPropagation(); goToPrevious() }}
+            onClick={(e) => { e.stopPropagation(); goToPreviousLightbox() }}
             className="absolute left-4 text-white hover:text-detroit-gold transition-colors"
           >
             <ChevronLeft className="w-12 h-12" />
           </button>
 
           <img
-            src={currentPhoto.url}
-            alt={currentPhoto.caption || 'Building photo'}
+            src={lightboxPhoto.url}
+            alt={lightboxPhoto.caption || `${buildingName || 'Building'} photo`}
             className="max-h-[90vh] max-w-[90vw] object-contain"
             onClick={(e) => e.stopPropagation()}
           />
 
           <button
-            onClick={(e) => { e.stopPropagation(); goToNext() }}
+            onClick={(e) => { e.stopPropagation(); goToNextLightbox() }}
             className="absolute right-4 text-white hover:text-detroit-gold transition-colors"
           >
             <ChevronRight className="w-12 h-12" />
@@ -127,11 +171,83 @@ export function PhotoGallery({ photos }: PhotoGalleryProps) {
 
           {/* Photo info */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-center">
-            <p>{selectedIndex + 1} / {photos.length}</p>
-            {currentPhoto.caption && <p className="text-sm opacity-75 mt-1">{currentPhoto.caption}</p>}
+            <p>{lightboxIndex + 1} / {allPhotos.length}</p>
+            {lightboxPhoto.caption && <p className="text-sm opacity-75 mt-1">{lightboxPhoto.caption}</p>}
+            {lightboxPhoto.photographer && (
+              <p className="text-xs opacity-50 mt-1">
+                Photo by {lightboxPhoto.photographer}
+                {lightboxPhoto.year_taken && ` • ${lightboxPhoto.year_taken}`}
+              </p>
+            )}
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+export function PhotoGallery({ photos, buildingName }: PhotoGalleryProps) {
+  // Group photos by type
+  const { originalPhotos, historicalPhotos, allDisplayPhotos } = useMemo(() => {
+    const original = photos.filter(p => !p.photo_type || p.photo_type === 'original')
+    const historical = photos.filter(p => p.photo_type === 'historical')
+    // Combine for lightbox navigation (original first, then historical)
+    const all = [...original, ...historical]
+    return { originalPhotos: original, historicalPhotos: historical, allDisplayPhotos: all }
+  }, [photos])
+
+  if (allDisplayPhotos.length === 0) {
+    return null
+  }
+
+  // If there are no historical photos, show simple gallery without section headers
+  if (historicalPhotos.length === 0) {
+    return (
+      <PhotoSection
+        photos={originalPhotos}
+        title="Photos"
+        icon={Camera}
+        buildingName={buildingName}
+        allPhotos={allDisplayPhotos}
+        startIndex={0}
+      />
+    )
+  }
+
+  // If there are no original photos, show only historical
+  if (originalPhotos.length === 0) {
+    return (
+      <PhotoSection
+        photos={historicalPhotos}
+        title="Historical Photos"
+        icon={Clock}
+        buildingName={buildingName}
+        allPhotos={allDisplayPhotos}
+        startIndex={0}
+      />
+    )
+  }
+
+  // Show both sections
+  return (
+    <div className="space-y-8">
+      <PhotoSection
+        photos={originalPhotos}
+        title="My Photos"
+        icon={Camera}
+        buildingName={buildingName}
+        allPhotos={allDisplayPhotos}
+        startIndex={0}
+      />
+      
+      <PhotoSection
+        photos={historicalPhotos}
+        title="Historical Photos"
+        icon={Clock}
+        buildingName={buildingName}
+        allPhotos={allDisplayPhotos}
+        startIndex={originalPhotos.length}
+      />
     </div>
   )
 }

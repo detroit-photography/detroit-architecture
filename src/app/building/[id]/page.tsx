@@ -180,7 +180,7 @@ export default async function BuildingPage({ params }: Props) {
           <div className="lg:col-span-2 space-y-8">
             {/* Photo Gallery */}
             {photos && photos.length > 0 ? (
-              <PhotoGallery photos={photos} />
+              <PhotoGallery photos={photos} buildingName={building.name} />
             ) : streetViewPhoto ? (
               /* Show Street View as main image if no original photos */
               <div className="relative rounded-xl overflow-hidden shadow-lg">
@@ -232,7 +232,7 @@ export default async function BuildingPage({ params }: Props) {
             )}
 
             {/* Wikipedia Entry */}
-            {(building as any).wikipedia_entry && (
+            {building.wikipedia_entry && (
               <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-gray-400">
                 <div className="flex items-center gap-2 mb-4">
                   <BookOpen className="w-5 h-5 text-gray-600" />
@@ -240,7 +240,7 @@ export default async function BuildingPage({ params }: Props) {
                 </div>
                 <div 
                   className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
-                  dangerouslySetInnerHTML={{ __html: (building as any).wikipedia_entry }}
+                  dangerouslySetInnerHTML={{ __html: building.wikipedia_entry }}
                 />
               </div>
             )}
