@@ -49,15 +49,42 @@ export const metadata: Metadata = {
 export default function ArchitectureHomePage() {
   return (
     <div>
-      <HeroSection />
+      <Suspense fallback={<HeroSkeleton />}>
+        <HeroSection />
+      </Suspense>
       <StatsBar />
       
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <SearchFilters />
+        <Suspense fallback={<FiltersSkeleton />}>
+          <SearchFilters />
+        </Suspense>
         
         <Suspense fallback={<BuildingGridSkeleton />}>
           <BuildingGrid />
         </Suspense>
+      </div>
+    </div>
+  )
+}
+
+function HeroSkeleton() {
+  return (
+    <div className="bg-detroit-green py-12 md:py-24">
+      <div className="max-w-7xl mx-auto px-4 text-center">
+        <div className="h-12 w-64 mx-auto bg-detroit-gold/20 rounded mb-4" />
+        <div className="h-8 w-96 mx-auto bg-white/10 rounded" />
+      </div>
+    </div>
+  )
+}
+
+function FiltersSkeleton() {
+  return (
+    <div className="py-4 border-b border-gray-200">
+      <div className="flex gap-3">
+        <div className="h-10 w-32 bg-gray-200 rounded" />
+        <div className="h-10 w-32 bg-gray-200 rounded" />
+        <div className="h-10 w-32 bg-gray-200 rounded" />
       </div>
     </div>
   )
