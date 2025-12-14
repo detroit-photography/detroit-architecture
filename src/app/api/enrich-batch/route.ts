@@ -259,14 +259,32 @@ Return JSON:
     return { isCorrectArticle: false, reason: analysis.matchReason || 'No match found' }
   }
 
-  // Get HTML content for the matched page
-  const htmlUrl = `https://en.wikipedia.org/w/api.php?action=parse&pageid=${analysis.pageId}&prop=text&format=json`
-  const htmlData = await fetchWikipedia(htmlUrl)
-  const wikipediaHtml = htmlData.parse?.text?.['*'] || null
+  // Get PLAIN TEXT content (not HTML) - cleaner and smaller
+  const textUrl = `https://en.wikipedia.org/w/api.php?action=query&pageids=${analysis.pageId}&prop=extracts&explaintext=true&exsectionformat=plain&format=json`
+  const textData = await fetchWikipedia(textUrl)
+  const page = textData.query?.pages?.[analysis.pageId]
+  let wikipediaText = page?.extract || null
+  
+  // Clean up the text: remove "See also", "References", "External links" sections and everything after
+  if (wikipediaText) {
+    const cleanupPatterns = [
+      /\n\s*== See also ==[\s\S]*/i,
+      /\n\s*== References ==[\s\S]*/i,
+      /\n\s*== External links ==[\s\S]*/i,
+      /\n\s*== Notes ==[\s\S]*/i,
+      /\n\s*== Further reading ==[\s\S]*/i,
+      /\n\s*== Bibliography ==[\s\S]*/i,
+    ]
+    for (const pattern of cleanupPatterns) {
+      wikipediaText = wikipediaText.replace(pattern, '')
+    }
+    // Trim and limit length to avoid storing too much
+    wikipediaText = wikipediaText.trim().substring(0, 15000)
+  }
 
   return {
     isCorrectArticle: true,
-    wikipediaHtml,
+    wikipediaText,
     matchedTitle: analysis.matchedTitle,
     matchReason: analysis.matchReason,
     ...analysis
@@ -328,8 +346,8 @@ export async function POST(request: NextRequest) {
       // Build updates object
       const updates: Record<string, any> = {}
       
-      if (enrichedData.wikipediaHtml) {
-        updates.wikipedia_entry = enrichedData.wikipediaHtml
+      if (enrichedData.wikipediaText) {
+        updates.wikipedia_entry = enrichedData.wikipediaText
       }
       if (enrichedData.architect && !building.architect) {
         updates.architect = enrichedData.architect
