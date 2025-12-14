@@ -41,7 +41,7 @@ export default function EventPhotographyPage() {
             </div>
             <div className="relative h-[400px] lg:h-[600px]">
               <Image
-                src="/images/bagley-interior-3.jpg"
+                src="/images/headshots/bagley-interior-3.jpg"
                 alt="Event photography at Detroit venue"
                 fill
                 className="object-cover object-center"

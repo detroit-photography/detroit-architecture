@@ -140,7 +140,7 @@ export default function ArchitecturePhotographerPage() {
               <div className="relative">
                 <div className="aspect-[4/5] rounded-xl overflow-hidden shadow-2xl">
                   <img
-                    src="/images/bagley-mansion.jpg"
+                    src="/images/headshots/bagley-mansion.jpg"
                     alt="Architectural photography of historic Detroit building"
                     className="w-full h-full object-cover"
                   />

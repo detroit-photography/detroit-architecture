@@ -33,7 +33,7 @@ export default function DronePhotographyPage() {
             </div>
             <div className="relative h-[400px] lg:h-[600px]">
               <Image
-                src="/images/bagley-drone.jpg"
+                src="/images/headshots/bagley-drone.jpg"
                 alt="Aerial drone photography of Bagley Mansion Detroit"
                 fill
                 className="object-cover object-center"

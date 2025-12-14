@@ -41,7 +41,7 @@ export default function PortraitPhotographyPage() {
             </div>
             <div className="relative h-[400px] lg:h-[600px]">
               <Image
-                src="/images/headshot-3.jpg"
+                src="/images/headshots/headshot-3.jpg"
                 alt="Portrait photography at Detroit Photography"
                 fill
                 className="object-cover object-center"
@@ -101,7 +101,7 @@ export default function PortraitPhotographyPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="relative h-[400px]">
               <Image
-                src="/images/bagley-interior-3.jpg"
+                src="/images/headshots/bagley-interior-3.jpg"
                 alt="Bagley Mansion studio interior"
                 fill
                 className="object-cover"

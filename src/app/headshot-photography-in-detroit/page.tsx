@@ -325,7 +325,7 @@ export default function HeadshotPhotographyPage() {
             {/* Hero image - optimized */}
             <div className="relative">
               <Image
-                src="/images/hero-headshot.jpg"
+                src="/images/headshots/hero-headshot.jpg"
                 alt="Professional headshots near me in Detroit"
                 width={600}
                 height={800}

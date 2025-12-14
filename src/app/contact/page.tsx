@@ -83,7 +83,7 @@ export default function ContactPage() {
             {/* Studio Image */}
             <div className="mt-12 relative h-64 md:h-80">
               <Image
-                src="/images/bagley-mansion.jpg"
+                src="/images/headshots/bagley-mansion.jpg"
                 alt="Bagley Mansion - Detroit Photography studio"
                 fill
                 className="object-cover"

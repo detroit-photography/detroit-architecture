@@ -34,7 +34,7 @@ export default function EventBoothsPage() {
             </div>
             <div className="relative h-[400px] lg:h-[600px]">
               <Image
-                src="/images/studio-interior.jpg"
+                src="/images/headshots/studio-interior.jpg"
                 alt="Event photo booth setup"
                 fill
                 className="object-cover object-center"

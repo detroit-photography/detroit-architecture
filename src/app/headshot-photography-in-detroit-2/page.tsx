@@ -56,7 +56,7 @@ export default function LandingPageV2() {
         {/* Background Image with Overlay */}
         <div className="absolute inset-0">
           <img
-            src="/images/hero-headshot.jpg"
+            src="/images/headshots/hero-headshot.jpg"
             alt="Professional headshot photography Detroit"
             className="absolute inset-0 w-full h-full object-cover opacity-40"
           />
@@ -178,7 +178,7 @@ export default function LandingPageV2() {
             </div>
             <div className="relative">
               <img
-                src="/images/testimonial-michelle.jpg"
+                src="/images/headshots/testimonial-michelle.jpg"
                 alt="Professional executive headshot example"
                 className="w-full rounded-lg shadow-2xl"
               />
@@ -222,7 +222,7 @@ export default function LandingPageV2() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="order-2 md:order-1">
               <img
-                src="/images/testimonial-hannah.jpg"
+                src="/images/headshots/testimonial-hannah.jpg"
                 alt="Hannah Wetherholt - Classical musician headshot"
                 className="w-full rounded-lg shadow-xl"
               />
@@ -310,19 +310,19 @@ export default function LandingPageV2() {
                 quote: "Exceeded every expectation. The best investment I've made in my personal brand.",
                 name: "Michelle",
                 title: "IBM Associate Partner",
-                image: "/images/testimonial-michelle.jpg"
+                image: "/images/headshots/testimonial-michelle.jpg"
               },
               {
                 quote: "Professional, courteous, great vision. Would highly recommend.",
                 name: "Jacqueline Williams",
                 title: "Evolve Foundation",
-                image: "/images/testimonial-jacqueline.jpg"
+                image: "/images/headshots/testimonial-jacqueline.jpg"
               },
               {
                 quote: "I would 100% recommend to anyone looking for top-notch work.",
                 name: "Hannah Wetherholt",
                 title: "Classical Musician",
-                image: "/images/testimonial-hannah.jpg"
+                image: "/images/headshots/testimonial-hannah.jpg"
               },
             ].map((item, i) => (
               <div key={i} className="group">

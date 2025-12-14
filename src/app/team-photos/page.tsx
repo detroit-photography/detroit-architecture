@@ -41,7 +41,7 @@ export default function TeamPhotosPage() {
             </div>
             <div className="relative h-[400px] lg:h-[600px]">
               <Image
-                src="/images/team-photo.jpg"
+                src="/images/headshots/team-photo.jpg"
                 alt="Team photo session at Detroit Photography"
                 fill
                 className="object-cover object-center"
