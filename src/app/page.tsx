@@ -2,27 +2,47 @@ import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Star, Clock, MapPin, Camera, Sparkles, ChevronRight } from 'lucide-react'
+import { Check, Star, Clock, Camera, Sparkles, Eye, Heart } from 'lucide-react'
 
-// SEO Metadata - targeting "detroit photographer" and "detroit photo studio"
+// Lazy load components not needed for initial render
+const HeadshotsGallery = dynamic(
+  () => import('@/components/headshots/HeadshotsGallery').then(mod => ({ default: mod.HeadshotsGallery })),
+  { ssr: true, loading: () => <div className="h-96 bg-gray-100 animate-pulse" /> }
+)
+const LocationSection = dynamic(
+  () => import('@/components/headshots/LocationSection').then(mod => ({ default: mod.LocationSection })),
+  { ssr: true }
+)
+const HubSpotForm = dynamic(
+  () => import('@/components/headshots/HubSpotForm').then(mod => ({ default: mod.HubSpotForm })),
+  { ssr: false, loading: () => <div className="h-64 bg-detroit-cream animate-pulse" /> }
+)
+const ScrollableCards = dynamic(
+  () => import('@/components/headshots/ScrollableCards').then(mod => ({ default: mod.ScrollableCards })),
+  { ssr: true }
+)
+
 export const metadata: Metadata = {
-  title: 'Detroit Photographer | Professional Photo Studio | Detroit Photography',
-  description: 'Detroit\'s #1-rated professional photographer and photo studio. Specializing in headshots, portraits, and commercial photography. Located at historic Bagley Mansion. 181+ 5-star reviews. Book today!',
+  title: 'Professional Headshots in Detroit | #1 Rated Studio | Starting $149',
+  description: 'Professional headshots near you in Detroit. 5-star rated studio with 201+ reviews. Same-day turnaround, live image review. Trusted by Detroit\'s top business leaders, doctors & attorneys. Book today!',
   keywords: [
+    'professional headshots',
+    'professional headshots near me',
+    'headshots near me',
+    'headshots detroit',
+    'detroit headshots',
+    'headshot photography in detroit',
+    'business headshots detroit',
+    'corporate headshots detroit',
+    'headshot photography near me',
+    'executive portraits detroit',
+    'linkedin headshots detroit',
     'detroit photographer',
     'detroit photo studio',
-    'professional photographer detroit',
-    'photography studio detroit',
-    'headshot photographer detroit',
-    'portrait photographer detroit',
-    'commercial photographer detroit',
-    'detroit photography studio',
-    'best photographer in detroit',
-    'photo studio near me detroit',
   ],
   openGraph: {
-    title: 'Detroit Photographer | Professional Photo Studio',
-    description: 'Detroit\'s #1-rated professional photographer. Headshots, portraits, and commercial photography at historic Bagley Mansion.',
+    title: 'Professional Headshots in Detroit | #1 Rated Studio',
+    description: '5-star rated headshot studio in Detroit. Same-day turnaround & live image review. Starting at $149.',
     url: 'https://www.detroitphotography.com',
     images: ['/images/headshots/hero-headshot.jpg'],
   },
@@ -31,21 +51,16 @@ export const metadata: Metadata = {
   },
 }
 
-// Comprehensive Schema.org structured data
+// Comprehensive Schema.org structured data for rich snippets
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
       '@type': 'LocalBusiness',
-      '@id': 'https://www.detroitphotography.com/#business',
-      name: 'Detroit Photography',
-      description: 'Professional photographer and photo studio in Detroit, Michigan. Specializing in headshots, portraits, branding photography, and commercial photography.',
-      url: 'https://www.detroitphotography.com',
-      telephone: '+1-313-351-8244',
-      email: 'andrew@detroitphotography.com',
+      '@id': 'https://www.detroitphotography.com/headshot-photography-in-detroit#business',
+      name: 'Detroit Photography - Professional Headshots',
+      description: 'Professional headshot photography studio in Detroit, Michigan. Specializing in business headshots, corporate portraits, and LinkedIn photos.',
       image: 'https://www.detroitphotography.com/images/hero-headshot.jpg',
-      logo: 'https://www.detroitphotography.com/images/logo.svg',
-      priceRange: '$$',
       address: {
         '@type': 'PostalAddress',
         streetAddress: '2921 E Jefferson Ave, Suite 101',
@@ -62,144 +77,189 @@ const jsonLd = {
       aggregateRating: {
         '@type': 'AggregateRating',
         ratingValue: '5.0',
-        reviewCount: '181',
+        reviewCount: '201',
         bestRating: '5',
         worstRating: '1',
       },
-      openingHoursSpecification: [
-        {
-          '@type': 'OpeningHoursSpecification',
-          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-          opens: '09:00',
-          closes: '21:00',
-        },
-        {
-          '@type': 'OpeningHoursSpecification',
-          dayOfWeek: ['Saturday', 'Sunday'],
-          opens: '10:00',
-          closes: '18:00',
-        },
-      ],
-      sameAs: [
-        'https://www.instagram.com/detroitphoto',
-        'https://www.facebook.com/detroitphotography',
-        'https://g.page/detroitphotography',
-      ],
-      hasOfferCatalog: {
-        '@type': 'OfferCatalog',
-        name: 'Photography Services',
-        itemListElement: [
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Professional Headshots',
-              description: 'Professional headshot photography for business, LinkedIn, and corporate use',
-            },
-            price: '149',
-            priceCurrency: 'USD',
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Portrait Photography',
-              description: 'Professional portrait photography for individuals and families',
-            },
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Branding Photography',
-              description: 'Commercial branding and marketing photography for businesses',
-            },
-          },
-        ],
-      },
-    },
-    {
-      '@type': 'WebSite',
-      '@id': 'https://www.detroitphotography.com/#website',
+      priceRange: '$149-$500',
+      telephone: '+1-313-351-8244',
       url: 'https://www.detroitphotography.com',
-      name: 'Detroit Photography',
-      description: 'Professional photographer and photo studio in Detroit',
-      publisher: {
-        '@id': 'https://www.detroitphotography.com/#business',
+      openingHoursSpecification: {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        opens: '09:00',
+        closes: '21:00',
       },
     },
     {
-      '@type': 'Person',
-      '@id': 'https://www.detroitphotography.com/#photographer',
-      name: 'Andrew Petrov',
-      jobTitle: 'Professional Photographer',
-      worksFor: {
-        '@id': 'https://www.detroitphotography.com/#business',
+      '@type': 'Service',
+      '@id': 'https://www.detroitphotography.com/headshot-photography-in-detroit#service',
+      name: 'Professional Headshot Photography',
+      description: 'Professional headshot photography for business, LinkedIn, corporate, and executive portraits in Detroit.',
+      provider: {
+        '@id': 'https://www.detroitphotography.com/headshot-photography-in-detroit#business',
       },
-      image: 'https://www.detroitphotography.com/images/andrew-petrov.jpg',
+      areaServed: {
+        '@type': 'City',
+        name: 'Detroit',
+        containedInPlace: {
+          '@type': 'State',
+          name: 'Michigan',
+        },
+      },
+      offers: {
+        '@type': 'Offer',
+        price: '149',
+        priceCurrency: 'USD',
+        priceValidUntil: '2025-12-31',
+        availability: 'https://schema.org/InStock',
+      },
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': 'https://www.detroitphotography.com/headshot-photography-in-detroit#faq',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'How much do professional headshots cost in Detroit?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Professional headshots at Detroit Photography start at $149. This includes the session, professional retouching, and high-resolution digital files. We offer unlimited session time and wardrobe changes at no extra charge.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'How long does a headshot session take?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'We offer unlimited session time, so there\'s no rushing. Most sessions take 30-60 minutes, but we work until you\'re completely satisfied with your photos.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'How quickly can I get my headshot photos?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Same-day turnaround is available for clients who need their photos fast. Standard delivery is within 24-48 hours.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'What should I wear for a professional headshot?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'We recommend solid colors like navy, charcoal, or jewel tones. Avoid busy patterns. Bring multiple outfit options—we include unlimited wardrobe changes in every session.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Where is your Detroit photo studio located?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Our studio is located in the historic Bagley Mansion at 2921 E Jefferson Ave, Suite 101, Detroit, MI 48207. The mansion is a French Renaissance Revival residence built in 1889, providing a unique and elegant backdrop for professional photography.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Do you offer corporate team headshots?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes! We offer volume discounts for corporate team headshots. We can photograph your team at our studio or on-location at your office. Contact us for group pricing.',
+          },
+        },
+      ],
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: 'https://www.detroitphotography.com',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Professional Headshots in Detroit',
+          item: 'https://www.detroitphotography.com',
+        },
+      ],
     },
   ],
 }
 
-// Lazy load heavy components
-const HeadshotsGallery = dynamic(
-  () => import('@/components/headshots/HeadshotsGallery').then(mod => ({ default: mod.HeadshotsGallery })),
-  { ssr: true, loading: () => <div className="h-96 bg-gray-100 animate-pulse" /> }
-)
-const HubSpotForm = dynamic(
-  () => import('@/components/headshots/HubSpotForm').then(mod => ({ default: mod.HubSpotForm })),
-  { ssr: false, loading: () => <div className="h-64 bg-detroit-cream animate-pulse" /> }
-)
-
-// Portfolio images - the work speaks first
 const portfolioImages = [
-  { src: '/images/headshots/hero-headshot.jpg', alt: 'Professional woman headshot' },
-  { src: '/images/headshots/headshot-2.jpg', alt: 'Professional headshot' },
-  { src: '/images/headshots/headshot-3.jpg', alt: 'Executive portrait' },
-  { src: '/images/headshots/headshot-4.jpg', alt: 'Business headshot' },
-  { src: '/images/headshots/headshot-5.jpg', alt: 'Corporate headshot' },
-  { src: '/images/headshots/headshot-6.jpg', alt: 'Professional portrait' },
-  { src: '/images/headshots/headshot-7.jpg', alt: 'Executive headshot' },
-  { src: '/images/headshots/headshot-8.jpg', alt: 'Business portrait' },
+  { src: '/images/headshots/hero-headshot.jpg', alt: 'Professional headshots near me - woman executive' },
+  { src: '/images/headshots/headshot-2.jpg', alt: 'Professional headshots Detroit - business portrait' },
+  { src: '/images/headshots/headshot-3.jpg', alt: 'Executive headshots Detroit' },
+  { src: '/images/headshots/headshot-4.jpg', alt: 'Corporate headshots near me' },
+  { src: '/images/headshots/headshot-5.jpg', alt: 'Business headshots Detroit' },
+  { src: '/images/headshots/headshot-6.jpg', alt: 'LinkedIn headshots Detroit' },
+  { src: '/images/headshots/headshot-7.jpg', alt: 'Professional portraits near me' },
+  { src: '/images/headshots/headshot-8.jpg', alt: 'Headshot photography Detroit' },
 ]
 
-const studioImages = [
-  { src: '/images/headshots/bagley-mansion.jpg', alt: 'Bagley Mansion exterior' },
-  { src: '/images/headshots/bagley-drone.jpg', alt: 'Bagley Mansion aerial view' },
-  { src: '/images/headshots/bagley-interior-1.jpg', alt: 'Studio fireplace' },
-  { src: '/images/headshots/bagley-interior-2.jpg', alt: 'Studio details' },
-  { src: '/images/headshots/bagley-interior-3.jpg', alt: 'Bay window' },
-  { src: '/images/headshots/bagley-interior-4.jpg', alt: 'Staircase' },
-  { src: '/images/headshots/bagley-interior-5.jpg', alt: 'Interior details' },
-  { src: '/images/headshots/bagley-interior-6.jpg', alt: 'Historic features' },
-]
-
-// Testimonials with paired images
 const testimonials = [
   {
-    name: 'Sarah Mitchell',
-    title: 'Marketing Director',
-    quote: 'I saw Andrew\'s work online and knew immediately this was different. The quality is unmistakable. Worth every penny.',
-    image: '/images/headshots/testimonial-hannah.jpg',
-    rating: 5,
-  },
-  {
-    name: 'Marcus Chen',
-    title: 'Attorney at Law',
-    quote: 'I\'ve had headshots taken before, but never like this. Andrew captures something that other photographers miss.',
-    image: '/images/headshots/testimonial-michelle.jpg',
-    rating: 5,
-  },
-  {
-    name: 'Dr. Patricia Williams',
-    title: 'Cardiologist',
-    quote: 'My patients see my headshot before they meet me. It needed to be perfect. Andrew delivered beyond expectations.',
     image: '/images/headshots/testimonial-jacqueline.jpg',
-    rating: 5,
+    alt: 'Jacqueline Williams professional headshot',
+    quote: 'Absolutely phenomenal experience and the photos were fantastic. Professional, courteous, great vision. Would highly recommend.',
+    headline: '"Phenomenal"',
+    name: 'Jacqueline Williams',
+    title: 'Evolve Foundation',
+  },
+  {
+    image: '/images/headshots/testimonial-michelle.jpg',
+    alt: 'Michelle professional headshot',
+    quote: 'I had a great experience with Andrew. As soon as I booked the appointment, he called me to align on my needs and expectations. During the photo shoot, he made me feel at ease and he took a lot of really good shots.',
+    headline: '"Exceeded every expectation"',
+    name: 'Michelle',
+    title: 'IBM Associate Partner',
+  },
+  {
+    image: '/images/headshots/testimonial-hannah.jpg',
+    alt: 'Hannah Wetherholt classical musician headshot',
+    quote: 'Andrew is an absolutely fantastic photographer. He is able to capture a variety of photos that tell a true story through different lenses, angles, and lighting. I would 100% recommend to anyone.',
+    headline: '"Top-notch work"',
+    name: 'Hannah Wetherholt',
+    title: 'Classical musician',
   },
 ]
 
-export default function HeadshotsHomePage() {
+const clientNotices = [
+  {
+    icon: Sparkles,
+    title: '"The Lighting"',
+    count: '12',
+    description: 'Professional studio lighting that makes you look your absolute best—not flat, not harsh, just right.',
+  },
+  {
+    icon: Heart,
+    title: '"So Patient"',
+    count: '7',
+    description: 'No rushing. We take the time to help you relax and capture your authentic, confident self.',
+  },
+  {
+    icon: Eye,
+    title: '"Great Vision"',
+    count: '5',
+    description: 'Andrew knows exactly what angles, expressions, and compositions will make your headshot stand out.',
+  },
+]
+
+const features = [
+  { title: 'Live image review', desc: 'See photos on a large monitor during your session' },
+  { title: 'Magazine-quality retouching', desc: 'Expert visual artists perfect every image' },
+  { title: 'Same-day turnaround available', desc: 'Rush delivery when you need it fast' },
+  { title: 'Unlimited session time', desc: 'No clock watching—take your time' },
+  { title: 'Unlimited wardrobe changes', desc: 'Bring multiple outfits at no extra charge' },
+  { title: 'Multiple backdrop options', desc: 'Choose from studio or historic mansion settings' },
+  { title: 'Professional lighting', desc: 'Studio-quality results every time' },
+  { title: 'Posing guidance', desc: 'Expert coaching to look your best' },
+]
+
+export default function HeadshotPhotographyPage() {
   return (
     <>
       {/* Schema.org JSON-LD */}
@@ -208,116 +268,212 @@ export default function HeadshotsHomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Hero - Quality First, Let the Work Speak */}
-      <section className="bg-detroit-green text-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 min-h-[80vh]">
-            {/* Left: Message */}
-            <div className="flex flex-col justify-center px-6 md:px-12 lg:px-16 py-16 lg:py-24">
-              <div className="max-w-xl">
-                <p className="text-detroit-gold uppercase tracking-[0.3em] text-sm mb-6">
-                  Detroit's Premier Photo Studio
-                </p>
-                <h1 className="font-display text-4xl md:text-5xl lg:text-6xl leading-tight mb-8">
-                  Professional Photographer<br />
-                  <span className="text-detroit-gold italic">in Detroit</span>
-                </h1>
-                <p className="text-xl text-detroit-cream/90 leading-relaxed mb-10">
-                  Detroit Photography is Metro Detroit's #1-rated photo studio specializing in 
-                  professional headshots, portraits, and commercial photography. Located at historic Bagley Mansion.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link
-                    href="#portfolio"
-                    className="inline-block bg-white text-detroit-green px-10 py-4 text-center text-sm uppercase tracking-wider font-medium hover:bg-detroit-gold hover:text-white transition-colors"
-                  >
-                    View the Work
-                  </Link>
-                  <Link
-                    href="/book"
-                    className="inline-block border-2 border-detroit-gold text-detroit-gold px-10 py-4 text-center text-sm uppercase tracking-wider font-medium hover:bg-detroit-gold hover:text-detroit-green transition-colors"
-                  >
-                    Book a Session
-                  </Link>
+      {/* Hero Section - Optimized for Google Ads Conversion */}
+      <section className="bg-detroit-green text-white py-10 md:py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              {/* H1 - Message match for top search terms */}
+              <h1 className="font-display text-3xl md:text-4xl lg:text-5xl mb-4">
+                Professional Headshots by the <span className="text-detroit-gold">#1-Rated Studio</span> in Detroit
+              </h1>
+              <p className="text-2xl md:text-3xl text-detroit-gold font-display mb-4">Starting at $149</p>
+              
+              {/* Value props - bullet style for scanability */}
+              <ul className="text-lg text-detroit-cream/90 mb-6 space-y-2">
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-detroit-gold flex-shrink-0" />
+                  <span>Unlimited time & wardrobe changes</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-detroit-gold flex-shrink-0" />
+                  <span>Same-day appointments available</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-detroit-gold flex-shrink-0" />
+                  <span>See your photos during the session</span>
+                </li>
+              </ul>
+              
+              {/* Trust signal - stars + reviews inline */}
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-detroit-gold text-detroit-gold" />
+                  ))}
+                </div>
+                <span className="text-white font-medium">201 reviews</span>
+                <span className="text-detroit-cream/60">•</span>
+                <span className="text-detroit-cream/80">Detroit, MI</span>
+              </div>
+              
+              {/* Single Primary CTA */}
+              <Link
+                href="#pricing"
+                className="inline-block bg-white text-detroit-green px-10 py-4 text-center text-lg uppercase tracking-wider font-bold hover:bg-detroit-gold hover:text-white transition-colors shadow-lg"
+              >
+                Get Pricing
+              </Link>
+              
+              {/* Urgency line */}
+              <p className="mt-4 text-detroit-cream/70 text-sm">
+                <Clock className="w-4 h-4 inline mr-1" />
+                Same-day bookings available
+              </p>
+            </div>
+            
+            {/* Hero image - optimized */}
+            <div className="relative">
+              <Image
+                src="/images/headshots/hero-headshot.jpg"
+                alt="Professional headshots near me in Detroit"
+                width={600}
+                height={800}
+                priority
+                className="w-full rounded-lg shadow-2xl"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+              {/* Social proof badge */}
+              <div className="absolute -bottom-3 left-4 right-4 md:left-auto md:right-4 md:w-auto">
+                <div className="bg-white text-detroit-green px-4 py-3 rounded shadow-lg flex items-center gap-3">
+                  <div className="flex -space-x-2">
+                    <div className="w-8 h-8 rounded-full bg-detroit-gold/20 flex items-center justify-center text-xs font-bold text-detroit-green">5★</div>
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-bold">201 five-star reviews</span>
+                    <span className="text-gray-500 block text-xs">on Google</span>
+                  </div>
                 </div>
               </div>
             </div>
-            {/* Right: Hero Image - optimized */}
-            <div className="relative h-[50vh] lg:h-auto">
-              <Image
-                src="/images/headshots/hero-headshot.jpg"
-                alt="Professional headshot by Detroit Photography"
-                fill
-                className="object-cover"
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-detroit-green/30 to-transparent lg:bg-gradient-to-l" />
-            </div>
           </div>
         </div>
       </section>
 
-      {/* Trust Bar - Subtle, Not Shouty */}
-      <section className="bg-detroit-cream py-6 border-b border-detroit-gold/20">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 text-sm text-gray-600">
-            <div className="flex items-center gap-2">
-              <div className="flex">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-detroit-gold text-detroit-gold" />
-                ))}
-              </div>
-              <span>181+ Reviews</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-detroit-gold" />
-              <span>Historic Bagley Mansion</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-detroit-gold" />
-              <span>Same-Day Available</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Portfolio - Let the Work Speak */}
-      <section id="portfolio" className="py-16 md:py-24 bg-white">
+      {/* Social Proof Bar - Real numbers */}
+      <section className="py-6 bg-detroit-cream border-y border-detroit-gold/20">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-display text-3xl md:text-4xl text-gray-900 mb-4">
-              Professional Headshot Photography
+          <div className="flex flex-wrap justify-center items-center gap-8 text-center">
+            <div>
+              <div className="text-2xl font-display text-detroit-green">201</div>
+              <div className="text-sm text-gray-600">5-Star Reviews</div>
+            </div>
+            <div className="hidden sm:block w-px h-10 bg-detroit-gold/30" />
+            <div>
+              <div className="text-2xl font-display text-detroit-green">Same Day</div>
+              <div className="text-sm text-gray-600">Turnaround Available</div>
+            </div>
+            <div className="hidden sm:block w-px h-10 bg-detroit-gold/30" />
+            <div>
+              <div className="text-2xl font-display text-detroit-green">$149</div>
+              <div className="text-sm text-gray-600">Starting Price</div>
+            </div>
+            <div className="hidden sm:block w-px h-10 bg-detroit-gold/30" />
+            <div>
+              <div className="text-2xl font-display text-detroit-green">Live</div>
+              <div className="text-sm text-gray-600">Image Review</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Portfolio Gallery - Horizontal Scroll on Mobile */}
+      <section className="py-12 md:py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="font-display text-3xl md:text-4xl text-gray-900 mb-3">
+              See What 201 Clients Are Raving About
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Our Detroit photo studio creates professional headshots for executives, attorneys, 
-              doctors, and business professionals across Metro Detroit.
+              Every image tells a story of patience, vision, and expert lighting.
             </p>
           </div>
-          <HeadshotsGallery images={portfolioImages} columns={4} />
           
-          {/* Internal Links for SEO */}
-          <div className="mt-12 flex flex-wrap justify-center gap-4">
-            <Link href="/headshot-photography-in-detroit" className="text-detroit-green hover:text-detroit-gold transition-colors underline">
-              Headshot Photography Pricing
-            </Link>
-            <span className="text-gray-300">|</span>
-            <Link href="/headshot-types/business-headshots-detroit" className="text-detroit-green hover:text-detroit-gold transition-colors underline">
-              Business Headshots
-            </Link>
-            <span className="text-gray-300">|</span>
-            <Link href="/headshot-types/executive-headshots-detroit" className="text-detroit-green hover:text-detroit-gold transition-colors underline">
-              Executive Portraits
-            </Link>
-            <span className="text-gray-300">|</span>
-            <Link href="/headshot-types/lawyer-headshots-detroit" className="text-detroit-green hover:text-detroit-gold transition-colors underline">
-              Attorney Headshots
-            </Link>
+          {/* Mobile: Horizontal Scroll Cards - optimized images */}
+          <div className="md:hidden -mx-4 px-4">
+            <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              {portfolioImages.map((image, i) => (
+                <div key={i} className="flex-none w-64 aspect-[3/4] relative rounded-lg overflow-hidden shadow-lg snap-start">
+                  <Image 
+                    src={image.src} 
+                    alt={image.alt} 
+                    fill
+                    className="object-cover"
+                    sizes="256px"
+                    loading={i < 3 ? "eager" : "lazy"}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Desktop: Grid */}
+          <div className="hidden md:block">
+            <HeadshotsGallery images={portfolioImages} columns={4} />
           </div>
         </div>
       </section>
 
-      {/* Philosophy Section - Appeal to Higher Ideals */}
+      {/* What Clients Notice - Horizontal Scroll on Mobile */}
+      <section className="py-16 md:py-20 bg-detroit-cream">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="font-display text-3xl md:text-4xl text-center text-gray-900 mb-4">
+            What Our Clients Notice Most
+          </h2>
+          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            Based on 201 Google reviews, these are the words clients use most often:
+          </p>
+          
+          {/* Mobile: Horizontal Scroll Cards */}
+          <div className="md:hidden -mx-4 px-4">
+            <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              {clientNotices.map((item, i) => {
+                const Icon = item.icon
+                return (
+                  <div key={i} className="flex-none w-72 bg-white p-6 rounded-lg shadow-lg snap-start">
+                    <div className="w-12 h-12 bg-detroit-green/10 rounded-full flex items-center justify-center mb-4">
+                      <Icon className="w-6 h-6 text-detroit-gold" />
+                    </div>
+                    <h3 className="font-display text-lg mb-1">
+                      {item.title}
+                      <span className="text-sm text-gray-500 font-normal ml-2">(mentioned {item.count}x)</span>
+                    </h3>
+                    <p className="text-gray-600 text-sm">{item.description}</p>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+          
+          {/* Desktop: Grid */}
+          <div className="hidden md:grid md:grid-cols-3 gap-8">
+            {clientNotices.map((item, i) => {
+              const Icon = item.icon
+              return (
+                <div key={i} className="bg-white p-8 text-center">
+                  <div className="w-14 h-14 bg-detroit-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Icon className="w-7 h-7 text-detroit-gold" />
+                  </div>
+                  <h3 className="font-display text-xl mb-2">
+                    {item.title}
+                    <span className="text-sm text-gray-500 font-normal ml-2">(mentioned {item.count}x)</span>
+                  </h3>
+                  <p className="text-gray-600">{item.description}</p>
+                </div>
+              )
+            })}
+          </div>
+          
+          {/* Additional mentions */}
+          <div className="mt-8 text-center">
+            <p className="text-gray-500 text-sm">
+              Also mentioned: <span className="text-gray-700">coached (3x)</span> · <span className="text-gray-700">facial expressions (3x)</span> · <span className="text-gray-700">career (2x)</span> · <span className="text-gray-700">LinkedIn (2x)</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Philosophy Section - Why Settle for Ordinary */}
       <section className="py-16 md:py-24 bg-detroit-green text-white">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <Sparkles className="w-10 h-10 text-detroit-gold mx-auto mb-8" />
@@ -336,85 +492,117 @@ export default function HeadshotsHomePage() {
         </div>
       </section>
 
-      {/* Testimonials with Paired Images */}
-      <section className="py-16 md:py-24 bg-detroit-cream">
+      {/* Location Section */}
+      <LocationSection />
+
+      {/* Testimonials - Horizontal Scroll Cards with Buttons */}
+      <section className="py-16 md:py-24 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="font-display text-3xl md:text-4xl text-gray-900 mb-4">
-              What Our Clients Say
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, i) => (
-              <div key={i} className="bg-white shadow-lg overflow-hidden">
-                <div className="aspect-[4/5] relative">
-                  <Image
-                    src={testimonial.image}
-                    alt={`${testimonial.name} - ${testimonial.title}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="flex mb-3">
-                    {[...Array(testimonial.rating)].map((_, j) => (
-                      <Star key={j} className="w-4 h-4 fill-detroit-gold text-detroit-gold" />
-                    ))}
+          <h2 className="font-display text-3xl md:text-4xl text-center text-gray-900 mb-4">
+            We get <span className="underline decoration-detroit-gold decoration-2 underline-offset-4">rave reviews</span>.
+          </h2>
+          <p className="text-center text-gray-500 mb-12">201 five-star Google reviews</p>
+          
+          {/* Horizontal Scroll Cards with Arrow Buttons */}
+          <div className="-mx-4 px-4 md:-mx-8 md:px-8">
+            <ScrollableCards>
+              {testimonials.map((testimonial, i) => (
+                <div 
+                  key={i} 
+                  className="flex-none w-[85vw] sm:w-[70vw] md:w-[45vw] lg:w-[400px] bg-white rounded-xl shadow-lg overflow-hidden snap-center border border-gray-100 hover:shadow-xl transition-shadow"
+                >
+                  <div className="aspect-[4/3] relative">
+                    <Image 
+                      src={testimonial.image} 
+                      alt={testimonial.alt} 
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 85vw, (max-width: 768px) 70vw, (max-width: 1024px) 45vw, 400px"
+                      loading="lazy"
+                    />
                   </div>
-                  <p className="text-gray-700 mb-4 italic">"{testimonial.quote}"</p>
-                  <p className="font-medium text-gray-900">{testimonial.name}</p>
-                  <p className="text-sm text-gray-500">{testimonial.title}</p>
+                  <div className="p-6">
+                    <h3 className="font-display text-2xl text-gray-900 mb-3">{testimonial.headline}</h3>
+                    <p className="text-gray-600 leading-relaxed mb-4">"{testimonial.quote}"</p>
+                    <div className="flex mb-3">
+                      {[...Array(5)].map((_, j) => (
+                        <Star key={j} className="w-5 h-5 fill-detroit-gold text-detroit-gold" />
+                      ))}
+                    </div>
+                    <p className="text-gray-900 font-medium">{testimonial.name}</p>
+                    <p className="text-gray-500 text-sm">{testimonial.title}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </ScrollableCards>
           </div>
         </div>
       </section>
 
-      {/* The Studio - Historic Setting */}
-      <section className="py-16 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-12">
-            <div>
-              <h2 className="font-display text-3xl md:text-4xl text-gray-900 mb-6">
-                A Setting That Matches<br />
-                <span className="text-detroit-gold">the Quality</span>
-              </h2>
-              <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                Our studio is located in the <strong>historic Bagley Mansion</strong>, 
-                a French Renaissance Revival residence built in 1889. The architecture, 
-                the light, the atmosphere—it all contributes to creating something special.
-              </p>
-              <p className="text-gray-600 leading-relaxed mb-8">
-                This isn't a sterile studio with white walls. It's a place with character, 
-                history, and natural light that makes all the difference.
-              </p>
-              <div className="space-y-2 text-gray-700">
-                <p><strong>Address:</strong> 2921 E Jefferson Ave, Suite 101, Detroit, MI 48207</p>
-                <p><strong>Phone:</strong> <a href="tel:13133518244" className="text-detroit-green hover:text-detroit-gold">(313) 351-8244</a></p>
-              </div>
-            </div>
-            <div className="h-[400px] bg-gray-200 rounded-lg overflow-hidden">
-              {/* Map loads lazily with native loading attribute */}
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2950.8!2d-83.0176!3d42.3436!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDLCsDIwJzM3LjAiTiA4M8KwMDEnMDMuNCJX!5e0!3m2!1sen!2sus!4v1234567890"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Detroit Photography location"
-              />
-            </div>
+      {/* The Choice for Savvy Clients - Comparison Table */}
+      <section className="py-16 md:py-20 bg-detroit-cream">
+        <div className="max-w-4xl mx-auto px-4">
+          <h2 className="font-display text-3xl md:text-4xl text-gray-900 mb-6">
+            The choice for savvy clients
+          </h2>
+          <p className="text-gray-600 text-lg mb-4">
+            <strong>Our leading competitor charges twice our price</strong> for a 'basic' headshot session 
+            with a 20-minute time cap and no wardrobe changes.
+          </p>
+          <p className="text-gray-600 text-lg mb-4">
+            We do not offer a 'basic' package because we do not take 'basic' photos... ever (We're artists, after all). 
+            We do not care who you are or what your budget is; when you walk into our studio, you will be treated like gold.
+          </p>
+          <p className="text-gray-700 font-medium text-lg mb-10">
+            What's our secret? It's simple: We take great photos. Our clients love our photos, and they buy lots of them.
+          </p>
+          
+          {/* Comparison Table */}
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden overflow-x-auto">
+            <table className="w-full min-w-[400px]">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-4 px-4 md:px-6 font-normal text-gray-500"></th>
+                  <th className="text-center py-4 px-4 md:px-6 font-display text-sm md:text-lg text-detroit-green">Detroit Photography</th>
+                  <th className="text-center py-4 px-4 md:px-6 font-normal text-gray-500 text-sm">Competitor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-gray-100">
+                  <td className="py-4 px-4 md:px-6 font-medium text-gray-900 text-sm md:text-base">Google Reviews</td>
+                  <td className="text-center py-4 px-4 md:px-6">
+                    <span className="text-detroit-green font-bold">201</span>
+                    <div className="flex justify-center mt-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-3 h-3 md:w-4 md:h-4 fill-detroit-gold text-detroit-gold" />
+                      ))}
+                    </div>
+                  </td>
+                  <td className="text-center py-4 px-4 md:px-6 text-gray-600 text-sm">171</td>
+                </tr>
+                <tr className="border-b border-gray-100">
+                  <td className="py-4 px-4 md:px-6 font-medium text-gray-900 text-sm md:text-base">Price</td>
+                  <td className="text-center py-4 px-4 md:px-6 text-detroit-green font-bold">$149</td>
+                  <td className="text-center py-4 px-4 md:px-6 text-gray-600 text-sm">$300</td>
+                </tr>
+                <tr className="border-b border-gray-100">
+                  <td className="py-4 px-4 md:px-6 font-medium text-gray-900 text-sm md:text-base">Session Time</td>
+                  <td className="text-center py-4 px-4 md:px-6 text-detroit-green font-bold">Unlimited</td>
+                  <td className="text-center py-4 px-4 md:px-6 text-gray-600 text-sm">20 min</td>
+                </tr>
+                <tr>
+                  <td className="py-4 px-4 md:px-6 font-medium text-gray-900 text-sm md:text-base">Wardrobe Changes</td>
+                  <td className="text-center py-4 px-4 md:px-6 text-detroit-green font-bold">Unlimited</td>
+                  <td className="text-center py-4 px-4 md:px-6 text-gray-600 text-sm">None</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <HeadshotsGallery images={studioImages} columns={4} />
         </div>
       </section>
 
-      {/* Value Proposition - Quality AND Convenience */}
-      <section className="py-16 md:py-24 bg-detroit-cream">
+      {/* Excellence Made Easy Section - Horizontal Scroll on Mobile */}
+      <section className="py-16 md:py-20 bg-white">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="font-display text-3xl md:text-4xl text-gray-900 mb-4">
@@ -425,7 +613,31 @@ export default function HeadshotsHomePage() {
               of the experience to be as seamless as the results.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+          
+          {/* Mobile: Horizontal Scroll */}
+          <div className="md:hidden -mx-4 px-4">
+            <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              {[
+                { icon: Camera, title: 'Unlimited Time', desc: 'No rushing. We work until we get it right, no matter how long it takes.' },
+                { icon: Clock, title: 'Same-Day Delivery', desc: 'Need your photos fast? Same-day turnaround available for those who need it.' },
+                { icon: Star, title: 'Satisfaction Guaranteed', desc: '201 five-star reviews. We don\'t stop until you love your photos.' },
+              ].map((item, i) => {
+                const Icon = item.icon
+                return (
+                  <div key={i} className="flex-none w-64 bg-gray-50 p-6 rounded-lg snap-start text-center">
+                    <div className="w-14 h-14 bg-detroit-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Icon className="w-7 h-7 text-detroit-gold" />
+                    </div>
+                    <h3 className="font-display text-lg text-gray-900 mb-2">{item.title}</h3>
+                    <p className="text-gray-600 text-sm">{item.desc}</p>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+          
+          {/* Desktop: Grid */}
+          <div className="hidden md:grid md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-detroit-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Camera className="w-8 h-8 text-detroit-gold" />
@@ -450,46 +662,154 @@ export default function HeadshotsHomePage() {
               </div>
               <h3 className="font-display text-xl text-gray-900 mb-2">Satisfaction Guaranteed</h3>
               <p className="text-gray-600 text-sm">
-                181+ five-star reviews. We don't stop until you love your photos.
+                201 five-star reviews. We don't stop until you love your photos.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Pricing Anchor - Starting Point */}
-      <section className="py-16 md:py-24 bg-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="font-display text-3xl md:text-4xl text-gray-900 mb-4">
-            Investment
+      {/* Features Checklist - Horizontal Scroll on Mobile */}
+      <section className="py-16 md:py-20 bg-detroit-cream">
+        <div className="max-w-4xl mx-auto px-4">
+          <h2 className="font-display text-3xl md:text-4xl text-center text-gray-900 mb-12">
+            Every Session Includes
           </h2>
-          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-            Professional headshots starting at <span className="text-detroit-gold font-display text-4xl">$149</span>
-          </p>
-          <p className="text-gray-500 text-sm mb-8">
-            Includes session, professional retouching, and high-resolution digital files.
-          </p>
-          <Link
-            href="/headshot-photography-in-detroit"
-            className="inline-block bg-detroit-green text-white px-12 py-4 text-sm uppercase tracking-wider font-medium hover:bg-detroit-gold transition-colors"
-          >
-            See All Pricing Options
-          </Link>
+          
+          {/* Mobile: Horizontal Scroll */}
+          <div className="md:hidden -mx-4 px-4">
+            <div className="flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              {features.map((item, i) => (
+                <div key={i} className="flex-none w-56 bg-white p-4 rounded-lg shadow snap-start">
+                  <div className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-detroit-gold flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="font-medium text-gray-900 text-sm">{item.title}</h3>
+                      <p className="text-gray-600 text-xs mt-1">{item.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Desktop: Grid */}
+          <div className="hidden md:grid md:grid-cols-2 gap-6">
+            {features.map((item, i) => (
+              <div key={i} className="flex items-start gap-4">
+                <Check className="w-6 h-6 text-detroit-gold flex-shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-medium text-gray-900">{item.title}</h3>
+                  <p className="text-gray-600 text-sm">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Final CTA with Form */}
-      <section className="py-16 md:py-24 bg-detroit-green">
+      {/* Specialized Headshot Services - Internal Links for SEO */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="font-display text-2xl md:text-3xl text-center text-gray-900 mb-4">
+            Specialized Headshot Photography Services
+          </h2>
+          <p className="text-center text-gray-600 mb-10 max-w-2xl mx-auto">
+            We provide professional headshots tailored to your industry. Every session includes unlimited time, 
+            wardrobe changes, and expert posing guidance.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Link 
+              href="/headshot-types/business-headshots-detroit"
+              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
+            >
+              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
+                Business Headshots
+              </h3>
+              <p className="text-gray-600 text-sm">For professionals, entrepreneurs & teams</p>
+            </Link>
+            <Link 
+              href="/headshot-types/executive-headshots-detroit"
+              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
+            >
+              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
+                Executive Portraits
+              </h3>
+              <p className="text-gray-600 text-sm">C-suite & leadership photography</p>
+            </Link>
+            <Link 
+              href="/headshot-types/lawyer-headshots-detroit"
+              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
+            >
+              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
+                Attorney Headshots
+              </h3>
+              <p className="text-gray-600 text-sm">Law firm & legal professional photos</p>
+            </Link>
+            <Link 
+              href="/headshot-types/doctor-headshots-detroit"
+              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
+            >
+              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
+                Doctor Headshots
+              </h3>
+              <p className="text-gray-600 text-sm">Medical & healthcare professionals</p>
+            </Link>
+            <Link 
+              href="/headshot-types/realtor-headshots-detroit"
+              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
+            >
+              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
+                Realtor Headshots
+              </h3>
+              <p className="text-gray-600 text-sm">Real estate agent photography</p>
+            </Link>
+            <Link 
+              href="/headshot-types/linkedin-headshots-detroit"
+              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
+            >
+              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
+                LinkedIn Headshots
+              </h3>
+              <p className="text-gray-600 text-sm">Profile photos that get noticed</p>
+            </Link>
+            <Link 
+              href="/headshot-types/actor-headshots-detroit"
+              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
+            >
+              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
+                Actor Headshots
+              </h3>
+              <p className="text-gray-600 text-sm">Casting & performance photos</p>
+            </Link>
+            <Link 
+              href="/headshot-types/dating-headshots-in-detroit"
+              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
+            >
+              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
+                Dating Profile Photos
+              </h3>
+              <p className="text-gray-600 text-sm">Stand out on dating apps</p>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section with Form - Final Section (No Footer Below) */}
+      <section id="pricing" className="py-16 md:py-24 bg-detroit-green">
         <div className="max-w-3xl mx-auto px-4">
           <div className="text-center text-white mb-12">
             <h2 className="font-display text-3xl md:text-4xl mb-4">
-              Ready to Create Something Great?
+              Get Your Pricing Menu
             </h2>
             <p className="text-detroit-cream/80 text-lg">
-              Get in touch. We'll send you our full pricing menu and answer any questions.
+              Professional headshots starting at <span className="text-detroit-gold font-bold text-3xl">$149</span>
+            </p>
+            <p className="text-detroit-cream/60 text-sm mt-2">
+              Includes unlimited time, wardrobe changes & backdrops
             </p>
           </div>
-          <HubSpotForm />
+          <HubSpotForm emailOnly />
         </div>
       </section>
     </>
