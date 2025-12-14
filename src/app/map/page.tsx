@@ -49,7 +49,7 @@ export default function MapPage() {
       // Exclude large wikipedia_entry column for performance
       const { data: buildingsData } = await supabase
         .from('buildings')
-        .select('id, name, address, architect, year_built, architectural_style, building_type, status, featured, lat, lng, neighborhood')
+        .select('id, created_at, updated_at, name, alternate_names, address, city, lat, lng, architect, year_built, year_demolished, architectural_style, building_type, aia_number, aia_text, ferry_number, ferry_text, photographer_notes, status, featured')
         .not('lat', 'is', null)
         .not('lng', 'is', null)
       
