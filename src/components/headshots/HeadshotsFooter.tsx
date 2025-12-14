@@ -9,11 +9,19 @@ const HIDE_FOOTER_PATHS = [
   '/headshot-photography-in-detroit',
 ]
 
+// Prefixes where footer should be hidden (architecture has its own)
+const HIDE_FOOTER_PREFIXES = ['/architecture', '/admin']
+
 export function HeadshotsFooter() {
   const pathname = usePathname()
   
   // Hide footer on landing pages
   if (HIDE_FOOTER_PATHS.includes(pathname)) {
+    return null
+  }
+  
+  // Hide on architecture/admin pages - they have their own footer
+  if (HIDE_FOOTER_PREFIXES.some(prefix => pathname.startsWith(prefix))) {
     return null
   }
 

@@ -3,7 +3,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, memo } from 'react'
+import { usePathname } from 'next/navigation'
 import { Menu, X, ChevronDown } from 'lucide-react'
+
+// Pages where headshots navigation should be hidden (architecture section has its own)
+const HIDE_NAV_PREFIXES = ['/architecture', '/admin']
 
 const navItems = [
   { label: 'Home', href: '/' },
@@ -48,6 +52,12 @@ const navItems = [
 
 export const HeadshotsNavigation = memo(function HeadshotsNavigation() {
   const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
+  
+  // Hide on architecture/admin pages - they have their own navigation
+  if (HIDE_NAV_PREFIXES.some(prefix => pathname.startsWith(prefix))) {
+    return null
+  }
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
 
   return (
