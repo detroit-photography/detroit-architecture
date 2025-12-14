@@ -9,10 +9,10 @@ export const metadata: Metadata = {
 }
 
 const eventImages = [
-  { src: '/images/studio-interior.jpg', alt: 'Corporate event photography' },
-  { src: '/images/team-photo.jpg', alt: 'Team event' },
-  { src: '/images/bagley-interior-3.jpg', alt: 'Event venue' },
-  { src: '/images/bagley-mansion.jpg', alt: 'Historic venue' },
+  { src: '/images/headshots/studio-interior.jpg', alt: 'Corporate event photography' },
+  { src: '/images/headshots/team-photo.jpg', alt: 'Team event' },
+  { src: '/images/headshots/bagley-interior-3.jpg', alt: 'Event venue' },
+  { src: '/images/headshots/bagley-mansion.jpg', alt: 'Historic venue' },
 ]
 
 export default function EventPhotographyPage() {

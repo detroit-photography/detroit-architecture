@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     title: 'Professional Headshots in Detroit | #1 Rated Studio',
     description: '5-star rated headshot studio in Detroit. Same-day turnaround & live image review. Starting at $149.',
     url: 'https://www.detroitphotography.com/headshot-photography-in-detroit',
-    images: ['/images/hero-headshot.jpg'],
+    images: ['/images/headshots/hero-headshot.jpg'],
   },
   alternates: {
     canonical: 'https://www.detroitphotography.com/headshot-photography-in-detroit',
@@ -190,19 +190,19 @@ const jsonLd = {
 }
 
 const portfolioImages = [
-  { src: '/images/hero-headshot.jpg', alt: 'Professional headshots near me - woman executive' },
-  { src: '/images/headshot-2.jpg', alt: 'Professional headshots Detroit - business portrait' },
-  { src: '/images/headshot-3.jpg', alt: 'Executive headshots Detroit' },
-  { src: '/images/headshot-4.jpg', alt: 'Corporate headshots near me' },
-  { src: '/images/headshot-5.jpg', alt: 'Business headshots Detroit' },
-  { src: '/images/headshot-6.jpg', alt: 'LinkedIn headshots Detroit' },
-  { src: '/images/headshot-7.jpg', alt: 'Professional portraits near me' },
-  { src: '/images/headshot-8.jpg', alt: 'Headshot photography Detroit' },
+  { src: '/images/headshots/hero-headshot.jpg', alt: 'Professional headshots near me - woman executive' },
+  { src: '/images/headshots/headshot-2.jpg', alt: 'Professional headshots Detroit - business portrait' },
+  { src: '/images/headshots/headshot-3.jpg', alt: 'Executive headshots Detroit' },
+  { src: '/images/headshots/headshot-4.jpg', alt: 'Corporate headshots near me' },
+  { src: '/images/headshots/headshot-5.jpg', alt: 'Business headshots Detroit' },
+  { src: '/images/headshots/headshot-6.jpg', alt: 'LinkedIn headshots Detroit' },
+  { src: '/images/headshots/headshot-7.jpg', alt: 'Professional portraits near me' },
+  { src: '/images/headshots/headshot-8.jpg', alt: 'Headshot photography Detroit' },
 ]
 
 const testimonials = [
   {
-    image: '/images/testimonial-jacqueline.jpg',
+    image: '/images/headshots/testimonial-jacqueline.jpg',
     alt: 'Jacqueline Williams professional headshot',
     quote: 'Absolutely phenomenal experience and the photos were fantastic. Professional, courteous, great vision. Would highly recommend.',
     headline: '"Phenomenal"',
@@ -210,7 +210,7 @@ const testimonials = [
     title: 'Evolve Foundation',
   },
   {
-    image: '/images/testimonial-michelle.jpg',
+    image: '/images/headshots/testimonial-michelle.jpg',
     alt: 'Michelle professional headshot',
     quote: 'I had a great experience with Andrew. As soon as I booked the appointment, he called me to align on my needs and expectations. During the photo shoot, he made me feel at ease and he took a lot of really good shots.',
     headline: '"Exceeded every expectation"',
@@ -218,7 +218,7 @@ const testimonials = [
     title: 'IBM Associate Partner',
   },
   {
-    image: '/images/testimonial-hannah.jpg',
+    image: '/images/headshots/testimonial-hannah.jpg',
     alt: 'Hannah Wetherholt classical musician headshot',
     quote: 'Andrew is an absolutely fantastic photographer. He is able to capture a variety of photos that tell a true story through different lenses, angles, and lighting. I would 100% recommend to anyone.',
     headline: '"Top-notch work"',

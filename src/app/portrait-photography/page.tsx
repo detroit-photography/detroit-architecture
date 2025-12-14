@@ -9,10 +9,10 @@ export const metadata: Metadata = {
 }
 
 const portraitImages = [
-  { src: '/images/hero-headshot.jpg', alt: 'Professional portrait' },
-  { src: '/images/headshot-3.jpg', alt: 'Creative portrait' },
-  { src: '/images/headshot-6.jpg', alt: 'Lifestyle portrait' },
-  { src: '/images/headshot-7.jpg', alt: 'Personal branding portrait' },
+  { src: '/images/headshots/hero-headshot.jpg', alt: 'Professional portrait' },
+  { src: '/images/headshots/headshot-3.jpg', alt: 'Creative portrait' },
+  { src: '/images/headshots/headshot-6.jpg', alt: 'Lifestyle portrait' },
+  { src: '/images/headshots/headshot-7.jpg', alt: 'Personal branding portrait' },
 ]
 
 export default function PortraitPhotographyPage() {

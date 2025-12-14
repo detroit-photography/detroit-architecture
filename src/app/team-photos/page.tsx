@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 }
 
 const teamImages = [
-  { src: '/images/team-photo.jpg', alt: 'Team photo at Detroit Photography' },
-  { src: '/images/headshot-3.jpg', alt: 'Executive team headshot' },
-  { src: '/images/headshot-4.jpg', alt: 'Corporate team member' },
-  { src: '/images/headshot-5.jpg', alt: 'Professional team portrait' },
+  { src: '/images/headshots/team-photo.jpg', alt: 'Team photo at Detroit Photography' },
+  { src: '/images/headshots/headshot-3.jpg', alt: 'Executive team headshot' },
+  { src: '/images/headshots/headshot-4.jpg', alt: 'Corporate team member' },
+  { src: '/images/headshots/headshot-5.jpg', alt: 'Professional team portrait' },
 ]
 
 export default function TeamPhotosPage() {

@@ -122,10 +122,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const portfolioImages = [
-  { src: '/images/hero-headshot.jpg', alt: 'Professional headshot' },
-  { src: '/images/headshot-3.jpg', alt: 'Executive portrait' },
-  { src: '/images/headshot-4.jpg', alt: 'Business headshot' },
-  { src: '/images/headshot-6.jpg', alt: 'Corporate headshot' },
+  { src: '/images/headshots/hero-headshot.jpg', alt: 'Professional headshot' },
+  { src: '/images/headshots/headshot-3.jpg', alt: 'Executive portrait' },
+  { src: '/images/headshots/headshot-4.jpg', alt: 'Business headshot' },
+  { src: '/images/headshots/headshot-6.jpg', alt: 'Corporate headshot' },
 ]
 
 export default function GuidePage({ params }: Props) {

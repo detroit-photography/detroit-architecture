@@ -291,7 +291,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: typeData.title,
       description: typeData.metaDescription,
       url: `https://www.detroitphotography.com/headshot-types/${params.type}`,
-      images: ['/images/hero-headshot.jpg'],
+      images: ['/images/headshots/hero-headshot.jpg'],
     },
     alternates: {
       canonical: `https://www.detroitphotography.com/headshot-types/${params.type}`,
