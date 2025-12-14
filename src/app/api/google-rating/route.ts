@@ -24,6 +24,48 @@ async function findPlaceId(apiKey: string): Promise<string | null> {
   }
 }
 
+// Cached reviews
+let cachedReviews: { reviews: any[]; timestamp: number } | null = null
+
+export async function POST() {
+  const apiKey = process.env.GOOGLE_PLACES_API_KEY
+  let placeId = process.env.GOOGLE_PLACE_ID
+
+  // Return cached reviews if still valid (cache for 24 hours)
+  if (cachedReviews && Date.now() - cachedReviews.timestamp < CACHE_DURATION) {
+    return NextResponse.json({ reviews: cachedReviews.reviews, cached: true })
+  }
+
+  if (!apiKey) {
+    return NextResponse.json({ reviews: [], error: 'API not configured' })
+  }
+
+  try {
+    if (!placeId) {
+      placeId = await findPlaceId(apiKey)
+      if (!placeId) {
+        return NextResponse.json({ reviews: [], error: 'Could not find Place ID' })
+      }
+    }
+
+    const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=reviews&key=${apiKey}`
+    const response = await fetch(url, { next: { revalidate: 86400 } })
+    
+    if (!response.ok) {
+      return NextResponse.json({ reviews: [], error: 'API request failed' })
+    }
+
+    const data = await response.json()
+    const reviews = data.result?.reviews || []
+
+    cachedReviews = { reviews, timestamp: Date.now() }
+
+    return NextResponse.json({ reviews })
+  } catch (error) {
+    return NextResponse.json({ reviews: [], error: 'Failed to fetch reviews' })
+  }
+}
+
 export async function GET() {
   const apiKey = process.env.GOOGLE_PLACES_API_KEY
   let placeId = process.env.GOOGLE_PLACE_ID
