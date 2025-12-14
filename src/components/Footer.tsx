@@ -40,7 +40,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Sources */}
+          {/* Sources - temporarily hidden
           <div>
             <h4 className="uppercase tracking-[0.15em] md:tracking-[0.2em] text-xs md:text-sm mb-4 md:mb-6 text-detroit-gold">Sources</h4>
             <ul className="space-y-3 text-detroit-cream/60 text-xs md:text-sm">
@@ -68,6 +68,7 @@ export function Footer() {
               </li>
             </ul>
           </div>
+          */}
         </div>
 
         <div className="border-t border-detroit-gold/20 mt-8 md:mt-12 pt-6 md:pt-8">

@@ -11,6 +11,16 @@ import { Building } from '@/lib/database.types'
 
 type BuildingWithPhotos = Building & { photo_count?: number; primary_photo_url?: string }
 
+// Generate SEO-friendly slug from building name
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/['']/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .replace(/-+/g, '-')
+}
+
 export default function MapPage() {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
@@ -551,7 +561,7 @@ export default function MapPage() {
                 )}
               </div>
               <Link
-                href={`/architecture/building/${selectedBuilding.id}`}
+                href={`/architecture/building/${generateSlug(selectedBuilding.name)}`}
                 className="mt-3 inline-flex items-center gap-1 bg-detroit-green text-white px-4 py-2 rounded-lg text-sm hover:bg-detroit-gold hover:text-detroit-green transition-colors"
               >
                 View Details <ChevronRight className="w-4 h-4" />
@@ -656,7 +666,7 @@ export default function MapPage() {
                 {selectedBuilding.architect?.split(',')[0]}
               </div>
               <Link
-                href={`/architecture/building/${selectedBuilding.id}`}
+                href={`/architecture/building/${generateSlug(selectedBuilding.name)}`}
                 className="mt-2 inline-flex items-center gap-1 bg-detroit-green text-white px-4 py-2 rounded-lg text-sm"
               >
                 View Details <ChevronRight className="w-4 h-4" />
