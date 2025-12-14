@@ -1,10 +1,17 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, MapPin, Calendar, User, Building2, BookOpen, Camera, ExternalLink, Edit } from 'lucide-react'
+import { ArrowLeft, MapPin, Calendar, User, Building2, BookOpen, Camera, ExternalLink, Edit, Users } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { PhotoGallery } from '@/components/PhotoGallery'
 import { BuildingMap } from '@/components/BuildingMap'
 import { StreetViewCard } from '@/components/StreetViewCard'
+import { ExpandableText } from '@/components/ExpandableText'
+import { ShootsAtLocation } from '@/components/ShootsAtLocation'
+import { ArchitectureLayout } from '@/components/ArchitectureLayout'
+
+// Always fetch fresh data (no caching)
+export const revalidate = 0
+export const dynamic = 'force-dynamic'
 
 interface Props {
   params: { id: string }
@@ -111,18 +118,26 @@ export default async function BuildingPage({ params }: Props) {
     notFound()
   }
 
-  // Fetch photos for this building (exclude street view photos from main gallery)
+  // Fetch photos for this building
   const { data: allPhotos } = await supabase
     .from('photos')
     .select('*')
     .eq('building_id', building.id)
     .order('sort_order')
 
-  // Separate street view from regular photos
-  const photos = allPhotos?.filter(p => p.photographer !== 'Google Street View') || []
+  // Separate photos by type
   const streetViewPhoto = allPhotos?.find(p => p.photographer === 'Google Street View')
+  const architecturePhotos = allPhotos?.filter(p => 
+    p.photographer !== 'Google Street View' && 
+    (!p.photo_type || p.photo_type === 'original' || p.photo_type === 'historical')
+  ) || []
+  const portraiturePhotos = allPhotos?.filter(p => p.photo_type === 'portraiture') || []
+  
+  // For backwards compatibility, use architecturePhotos as the main photos
+  const photos = architecturePhotos
 
   return (
+    <ArchitectureLayout>
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-detroit-green text-white py-8">
@@ -178,9 +193,9 @@ export default async function BuildingPage({ params }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Photo Gallery */}
+            {/* Photo Gallery - Architecture Photos */}
             {photos && photos.length > 0 ? (
-              <PhotoGallery photos={photos} buildingName={building.name} />
+              <PhotoGallery photos={photos} buildingName={building.name} buildingId={building.id} />
             ) : streetViewPhoto ? (
               /* Show Street View as main image if no original photos */
               <div className="relative rounded-xl overflow-hidden shadow-lg">
@@ -205,43 +220,69 @@ export default async function BuildingPage({ params }: Props) {
               </div>
             )}
 
-            {/* AIA Guide Text */}
-            {building.aia_text && (
-              <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-blue-600">
+            {/* Portraiture Section */}
+            {portraiturePhotos.length > 0 && (
+              <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-pink-500">
                 <div className="flex items-center gap-2 mb-4">
-                  <BookOpen className="w-5 h-5 text-blue-600" />
-                  <h2 className="font-display text-xl text-blue-600">From AIA Detroit Guide (2003)</h2>
+                  <User className="w-5 h-5 text-pink-500" />
+                  <h2 className="font-display text-xl text-pink-600">Portraiture at {building.name}</h2>
+                  <span className="text-sm text-gray-500">({portraiturePhotos.length})</span>
                 </div>
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                  {building.aia_text}
-                </p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {portraiturePhotos.map((photo, index) => (
+                    <div key={photo.id} className="relative aspect-[3/4] rounded-lg overflow-hidden group">
+                      <img 
+                        src={photo.url} 
+                        alt={photo.caption || `Portrait ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                      {photo.caption && (
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+                          <p className="text-white text-sm">{photo.caption}</p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
-            {/* Ferry Book Text */}
-            {building.ferry_text && (
+            {/* Photography Shoots at this Location */}
+            <ShootsAtLocation locationSlug={params.id} locationName={building.name} />
+
+            {/* AIA Guide Text - TEMPORARILY HIDDEN pending written permission */}
+            {/* TODO: Restore once permission is obtained from publisher */}
+            {false && building.aia_text && (
+              <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-blue-600">
+                {/* Content hidden */}
+              </div>
+            )}
+
+            {/* Ferry Book Text - TEMPORARILY HIDDEN pending written permission */}
+            {/* TODO: Restore once permission is obtained from publisher */}
+            {false && building.ferry_text && (
               <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-purple-600">
-                <div className="flex items-center gap-2 mb-4">
-                  <BookOpen className="w-5 h-5 text-purple-600" />
-                  <h2 className="font-display text-xl text-purple-600">From The Buildings of Detroit (1968)</h2>
-                </div>
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                  {building.ferry_text}
-                </p>
+                {/* Content hidden */}
               </div>
             )}
 
             {/* Wikipedia Entry */}
             {building.wikipedia_entry && (
               <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-gray-400">
-                <div className="flex items-center gap-2 mb-4">
-                  <BookOpen className="w-5 h-5 text-gray-600" />
-                  <h2 className="font-display text-xl text-gray-600">From Wikipedia</h2>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="w-5 h-5 text-gray-600" />
+                    <h2 className="font-display text-xl text-gray-600">From Wikipedia</h2>
+                  </div>
                 </div>
-                <div 
-                  className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
-                  dangerouslySetInnerHTML={{ __html: building.wikipedia_entry }}
+                <ExpandableText 
+                  html={building.wikipedia_entry}
+                  maxLines={20}
+                  className="text-gray-700 leading-relaxed"
                 />
+                <p className="text-xs text-gray-400 mt-4">
+                  Content available under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" className="hover:underline">CC BY-SA 4.0</a>
+                </p>
               </div>
             )}
 
@@ -362,7 +403,11 @@ export default async function BuildingPage({ params }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Sources Footer - TEMPORARILY HIDDEN pending written permission */}
+      {/* TODO: Restore once permission is obtained from publishers */}
     </div>
+    </ArchitectureLayout>
   )
 }
 

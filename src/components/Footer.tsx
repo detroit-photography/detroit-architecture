@@ -45,24 +45,44 @@ export function Footer() {
             <h4 className="uppercase tracking-[0.15em] md:tracking-[0.2em] text-xs md:text-sm mb-4 md:mb-6 text-detroit-gold">Sources</h4>
             <ul className="space-y-3 text-detroit-cream/60 text-xs md:text-sm">
               <li>
-                <strong className="text-white">AIA Detroit</strong><br />
-                <em>Guide (2003)</em>
+                <a 
+                  href="https://www.amazon.com/AIA-Detroit-Institute-Architects-Architecture/dp/0814331203"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-detroit-gold transition-colors"
+                >
+                  <strong className="text-white">AIA Detroit Guide</strong><br />
+                  <em>Eric J. Hill & John Gallagher (2003)</em>
+                </a>
               </li>
               <li>
-                <strong className="text-white">W. H. Ferry</strong><br />
-                <em>Buildings of Detroit</em>
+                <a 
+                  href="https://wsupress.wayne.edu/9780814316658/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-detroit-gold transition-colors"
+                >
+                  <strong className="text-white">The Buildings of Detroit</strong><br />
+                  <em>W. Hawkins Ferry (1968)</em>
+                </a>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-detroit-gold/20 mt-8 md:mt-12 pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4 text-center md:text-left">
-          <p className="text-detroit-cream/50 text-xs md:text-sm">
-            © {new Date().getFullYear()} Detroit Photography
-          </p>
-          <p className="text-detroit-cream/30 text-xs">
-            Last updated: {process.env.NEXT_PUBLIC_BUILD_DATE}
-          </p>
+        <div className="border-t border-detroit-gold/20 mt-8 md:mt-12 pt-6 md:pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4 text-center md:text-left mb-4">
+            <p className="text-detroit-cream/50 text-xs md:text-sm">
+              © {new Date().getFullYear()} Detroit Photography
+            </p>
+            <p className="text-detroit-cream/30 text-xs">
+              Last updated: {process.env.NEXT_PUBLIC_BUILD_DATE}
+            </p>
+          </div>
+          <div className="text-detroit-cream/40 text-xs text-center md:text-left space-y-1">
+            <p>All photographs © Andrew Petrov / Detroit Photography. All rights reserved.</p>
+            <p>Text from source books © their respective copyright holders. Wikipedia content available under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" className="hover:text-detroit-gold">CC BY-SA 4.0</a>.</p>
+          </div>
         </div>
       </div>
     </footer>

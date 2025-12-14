@@ -1,30 +1,35 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { Navigation } from '@/components/Navigation'
-import { Footer } from '@/components/Footer'
+import { Providers } from '@/components/Providers'
+import dynamic from 'next/dynamic'
+import Script from 'next/script'
+
+// Static navigation - keep as regular import for LCP
+import { HeadshotsNavigation } from '@/components/headshots/HeadshotsNavigation'
+
+// Lazy load footer - not critical for initial render
+const HeadshotsFooter = dynamic(
+  () => import('@/components/headshots/HeadshotsFooter').then(mod => ({ default: mod.HeadshotsFooter })),
+  { ssr: true }
+)
 
 export const metadata: Metadata = {
   title: {
-    default: 'Detroit Architecture Repository | Historic Buildings Guide by Detroit Photography',
-    template: '%s | Detroit Architecture Repository'
+    default: 'Detroit Photography | Professional Headshot Photographer',
+    template: '%s | Detroit Photography'
   },
-  description: 'Explore 550+ historic Detroit buildings with original photography. Comprehensive guide featuring Art Deco, Beaux-Arts, and Gothic Revival architecture from Albert Kahn, Minoru Yamasaki, and more.',
+  description: 'Professional headshots by Detroit\'s #1-rated photo studio. Located at historic Bagley Mansion. Unlimited time, wardrobe changes & backdrops. Starting at $149.',
   keywords: [
-    'Detroit architecture',
-    'historic buildings Detroit',
-    'Detroit Photography',
-    'Albert Kahn buildings',
-    'Art Deco Detroit',
-    'Guardian Building',
-    'Fisher Building',
-    'Michigan Central Station',
-    'Detroit skyscrapers',
-    'AIA Detroit Guide',
-    'Buildings of Detroit',
-    'Detroit architectural history',
-    'Michigan architecture',
-    'Detroit landmarks',
-    'historic preservation Detroit'
+    'Detroit headshots',
+    'professional headshots Detroit',
+    'corporate headshots Detroit',
+    'headshot photographer near me',
+    'business headshots Detroit',
+    'LinkedIn headshots',
+    'executive portraits Detroit',
+    'team photos Detroit',
+    'Bagley Mansion photography',
+    'Detroit Photography'
   ],
   authors: [{ name: 'Andrew Petrov', url: 'https://www.detroitphotography.com' }],
   creator: 'Detroit Photography',
@@ -34,31 +39,22 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://detroit-architecture.vercel.app'),
+  metadataBase: new URL('https://www.detroitphotography.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'Detroit Architecture Repository | 550+ Historic Buildings',
-    description: 'Explore Detroit\'s architectural heritage with original photography. From Art Deco masterpieces to modernist landmarks.',
-    url: 'https://detroit-architecture.vercel.app',
-    siteName: 'Detroit Architecture Repository',
+    title: 'Professional Headshots | Detroit Photography',
+    description: 'Professional headshots by Detroit\'s #1-rated photo studio. Located at historic Bagley Mansion.',
+    url: 'https://www.detroitphotography.com',
+    siteName: 'Detroit Photography',
     locale: 'en_US',
     type: 'website',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Detroit Architecture Repository - Historic Buildings of Detroit',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Detroit Architecture Repository | Historic Buildings Guide',
-    description: 'Explore 550+ historic Detroit buildings with original photography by Detroit Photography.',
-    creator: '@detroitphoto',
+    title: 'Professional Headshots | Detroit Photography',
+    description: 'Professional headshots by Detroit\'s #1-rated photo studio.',
   },
   robots: {
     index: true,
@@ -71,36 +67,43 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    google: 'your-google-verification-code',
-  },
 }
 
-// JSON-LD structured data for SEO
+// JSON-LD structured data for local business
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: 'Detroit Architecture Repository',
-  description: 'Comprehensive guide to 550+ historic Detroit buildings with original photography',
-  url: 'https://detroit-architecture.vercel.app',
-  author: {
-    '@type': 'Organization',
-    name: 'Detroit Photography',
-    url: 'https://www.detroitphotography.com',
+  '@type': 'LocalBusiness',
+  '@id': 'https://www.detroitphotography.com',
+  name: 'Detroit Photography',
+  description: 'Professional headshot photographer in Detroit, MI. Located at historic Bagley Mansion.',
+  url: 'https://www.detroitphotography.com',
+  telephone: '+1-313-351-8244',
+  email: 'andrew@detroitphotography.com',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '2921 E Jefferson Ave, Suite 101',
+    addressLocality: 'Detroit',
+    addressRegion: 'MI',
+    postalCode: '48207',
+    addressCountry: 'US',
   },
-  publisher: {
-    '@type': 'Organization',
-    name: 'Detroit Photography',
-    logo: {
-      '@type': 'ImageObject',
-      url: 'https://www.detroitphotography.com/logo.png',
-    },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 42.3436,
+    longitude: -83.0176,
   },
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: 'https://detroit-architecture.vercel.app/?q={search_term_string}',
-    'query-input': 'required name=search_term_string',
+  image: 'https://www.detroitphotography.com/images/headshots/hero-headshot.jpg',
+  priceRange: '$$',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '5.0',
+    reviewCount: '201',
   },
+  openingHours: 'Mo-Su 09:00-21:00',
+  sameAs: [
+    'https://www.instagram.com/detroitphoto',
+    'https://www.facebook.com/detroitphotography',
+  ],
 }
 
 export default function RootLayout({
@@ -120,11 +123,32 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col">
-        <Navigation />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+        <Providers>
+          {/* HubSpot Tracking Code - lazy load for performance */}
+          <Script
+            id="hs-script-loader"
+            src="//js.hs-scripts.com/46684962.js"
+            strategy="lazyOnload"
+          />
+          {/* Google Analytics - lazy load for performance */}
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+            strategy="lazyOnload"
+          />
+          <Script id="google-analytics" strategy="lazyOnload">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-XXXXXXXXXX');
+            `}
+          </Script>
+          <HeadshotsNavigation />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <HeadshotsFooter />
+        </Providers>
       </body>
     </html>
   )

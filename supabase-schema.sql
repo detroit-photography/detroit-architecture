@@ -54,7 +54,7 @@ CREATE TABLE photos (
     year_taken INTEGER,
     is_primary BOOLEAN DEFAULT FALSE,
     sort_order INTEGER DEFAULT 0,
-    photo_type TEXT DEFAULT 'original' CHECK (photo_type IN ('original', 'historical', 'street_view'))
+    photo_type TEXT DEFAULT 'original' CHECK (photo_type IN ('original', 'historical', 'street_view', 'portraiture'))
 );
 
 -- Create indexes for common queries

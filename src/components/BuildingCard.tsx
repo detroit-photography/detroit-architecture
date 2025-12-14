@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { MapPin, Calendar, User, Building2, Camera, Star } from 'lucide-react'
 import { Building } from '@/lib/database.types'
 
@@ -16,18 +17,23 @@ export function BuildingCard({ building }: BuildingCardProps) {
   }
 
   return (
-    <Link href={`/building/${slug}`}>
+    <Link href={`/building/${slug}`} aria-label={`View ${building.name}${building.year_built ? `, built ${building.year_built}` : ''}`}>
       <article className="building-card bg-white overflow-hidden shadow-sm hover:shadow-lg active:shadow-md cursor-pointer border border-gray-100 transition-all">
-        {/* Image or placeholder */}
-        <div className={`h-40 md:h-48 ${building.primary_photo_url ? '' : `bg-gradient-to-br ${getPlaceholderColor()}`} relative flex items-center justify-center overflow-hidden`}>
+        {/* Image or placeholder - use aspect-ratio to prevent CLS */}
+        <div className={`aspect-[4/3] ${building.primary_photo_url ? '' : `bg-gradient-to-br ${getPlaceholderColor()}`} relative flex items-center justify-center overflow-hidden`}>
           {building.primary_photo_url ? (
-            <img 
+            <Image 
               src={building.primary_photo_url} 
-              alt={building.name}
-              className="w-full h-full object-cover"
+              alt={`Photo of ${building.name}`}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-cover"
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAgEDAwUBAAAAAAAAAAAAAQIDAAQRBQYhEhMiMUFR/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAZEQACAwEAAAAAAAAAAAAAAAABAgADESH/2gAMAwEAAhEDEEA/AM206wjkaJrp3Ecs7TjsqF6FQkAZI8jnPAHwTU1qUpUJJOT/2Q=="
             />
           ) : (
-            <Building2 className="w-16 h-16 text-white/30" />
+            <Building2 className="w-16 h-16 text-white/30" aria-hidden="true" />
           )}
           
           {/* Featured badge */}
@@ -56,19 +62,14 @@ export function BuildingCard({ building }: BuildingCardProps) {
             )}
           </div>
           
-          {/* Source badges - hidden on mobile to save space */}
-          <div className="absolute bottom-2 md:bottom-3 left-2 md:left-3 flex gap-1">
-            {building.aia_number && (
-              <span className="bg-black/70 text-white text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 md:py-1 backdrop-blur-sm hidden sm:inline-block">
-                AIA {building.aia_number}
+          {/* Style badge */}
+          {building.architectural_style && (
+            <div className="absolute bottom-2 md:bottom-3 left-2 md:left-3">
+              <span className="bg-black/70 text-white text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 md:py-1 backdrop-blur-sm">
+                {building.architectural_style}
               </span>
-            )}
-            {building.ferry_number && (
-              <span className="bg-black/70 text-white text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 md:py-1 backdrop-blur-sm hidden sm:inline-block">
-                Ferry {building.ferry_number}
-              </span>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Content */}
@@ -106,14 +107,6 @@ export function BuildingCard({ building }: BuildingCardProps) {
             {building.year_built && <div>{building.year_built}</div>}
             {building.architect && <div className="line-clamp-1">{building.architect.split(',')[0]}</div>}
           </div>
-
-          {building.architectural_style && (
-            <div className="mt-2 md:mt-3">
-              <span className="inline-block bg-gray-100 text-gray-700 text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 md:py-1 rounded-full">
-                {building.architectural_style}
-              </span>
-            </div>
-          )}
         </div>
       </article>
     </Link>

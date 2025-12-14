@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Background -->
+  <rect width="200" height="200" fill="#0d2e1f"/>
+  
+  <!-- Sunburst rays - alternating from center -->
+  <g fill="#c4a962">
+    <!-- Top rays -->
+    <polygon points="100,100 85,-10 100,-10"/>
+    <polygon points="100,100 115,-10 130,-10"/>
+    <polygon points="100,100 155,-10 175,-10"/>
+    
+    <!-- Top-right rays -->
+    <polygon points="100,100 195,5 210,25"/>
+    <polygon points="100,100 210,55 210,75"/>
+    
+    <!-- Right rays -->
+    <polygon points="100,100 210,90 210,110"/>
+    <polygon points="100,100 210,125 210,145"/>
+    <polygon points="100,100 210,175 195,195"/>
+    
+    <!-- Bottom-right rays -->
+    <polygon points="100,100 175,210 155,210"/>
+    <polygon points="100,100 130,210 115,210"/>
+    
+    <!-- Bottom rays -->
+    <polygon points="100,100 100,210 85,210"/>
+    <polygon points="100,100 70,210 55,210"/>
+    <polygon points="100,100 25,210 5,195"/>
+    
+    <!-- Bottom-left rays -->
+    <polygon points="100,100 -10,175 -10,155"/>
+    <polygon points="100,100 -10,130 -10,115"/>
+    
+    <!-- Left rays -->
+    <polygon points="100,100 -10,100 -10,85"/>
+    <polygon points="100,100 -10,70 -10,55"/>
+    <polygon points="100,100 -10,25 5,5"/>
+    
+    <!-- Top-left rays -->
+    <polygon points="100,100 25,-10 45,-10"/>
+    <polygon points="100,100 60,-10 70,-10"/>
+  </g>
+  
+  <!-- Camera body - main shape -->
+  <path d="M60,50 L140,50 L145,55 L145,160 L140,165 L60,165 L55,160 L55,55 Z" fill="#0d2e1f"/>
+  
+  <!-- Viewfinder hood -->
+  <path d="M65,35 L135,35 L140,40 L140,52 L60,52 L60,40 Z" fill="#0d2e1f"/>
+  <path d="M72,28 L128,28 L132,32 L132,38 L68,38 L68,32 Z" fill="#0d2e1f"/>
+  
+  <!-- Top lens (viewfinder) - outer ring -->
+  <circle cx="100" cy="80" r="24" fill="#0d2e1f" stroke="#c4a962" stroke-width="2"/>
+  <!-- Top lens - inner rings -->
+  <circle cx="100" cy="80" r="18" fill="none" stroke="#c4a962" stroke-width="1.5"/>
+  <circle cx="100" cy="80" r="12" fill="none" stroke="#c4a962" stroke-width="1.5"/>
+  <circle cx="100" cy="80" r="6" fill="#0d2e1f" stroke="#c4a962" stroke-width="1"/>
+  
+  <!-- Bottom lens (taking lens) - outer ring -->
+  <circle cx="100" cy="130" r="28" fill="#0d2e1f" stroke="#c4a962" stroke-width="2"/>
+  <!-- Bottom lens - inner rings -->
+  <circle cx="100" cy="130" r="22" fill="none" stroke="#c4a962" stroke-width="1.5"/>
+  <circle cx="100" cy="130" r="16" fill="none" stroke="#c4a962" stroke-width="1.5"/>
+  <circle cx="100" cy="130" r="10" fill="none" stroke="#c4a962" stroke-width="1"/>
+  <circle cx="100" cy="130" r="5" fill="#0d2e1f"/>
+  
+  <!-- Side winding knob -->
+  <rect x="145" y="65" width="12" height="35" rx="3" fill="#0d2e1f" stroke="#c4a962" stroke-width="1.5"/>
+  <line x1="148" y1="72" x2="154" y2="72" stroke="#c4a962" stroke-width="1"/>
+  <line x1="148" y1="78" x2="154" y2="78" stroke="#c4a962" stroke-width="1"/>
+  <line x1="148" y1="84" x2="154" y2="84" stroke="#c4a962" stroke-width="1"/>
+  <line x1="148" y1="90" x2="154" y2="90" stroke="#c4a962" stroke-width="1"/>
+  
+  <!-- Focus knob on other side -->
+  <rect x="43" y="70" width="12" height="25" rx="3" fill="#0d2e1f" stroke="#c4a962" stroke-width="1.5"/>
+</svg>
+

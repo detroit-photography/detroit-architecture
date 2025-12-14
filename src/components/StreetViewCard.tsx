@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { Eye, ExternalLink, MapPin } from 'lucide-react'
 
 interface StreetViewCardProps {
@@ -10,9 +11,10 @@ interface StreetViewCardProps {
 }
 
 export function StreetViewCard({ lat, lng, name, streetViewUrl }: StreetViewCardProps) {
-  const googleMapsUrl = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lng}`
+  // Link to open 360° view in Google Maps (free, no API key needed)
+  const googleMapsUrl = `https://www.google.com/maps/@${lat},${lng},3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192`
 
-  // If we have a pre-fetched street view, show it
+  // If we have a pre-fetched street view image, show it
   if (streetViewUrl) {
     return (
       <div className="bg-white rounded-xl overflow-hidden shadow-md">
@@ -34,12 +36,14 @@ export function StreetViewCard({ lat, lng, name, streetViewUrl }: StreetViewCard
           href={googleMapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="block relative group"
+          className="block relative group h-56"
         >
-          <img
+          <Image
             src={streetViewUrl}
             alt={`Street view of ${name}`}
-            className="w-full h-56 object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className="object-cover"
             loading="lazy"
           />
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
@@ -52,7 +56,7 @@ export function StreetViewCard({ lat, lng, name, streetViewUrl }: StreetViewCard
     )
   }
 
-  // No street view available - show link to Google Maps
+  // No street view image - show placeholder with link to Google Maps
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-md">
       <div className="p-4 border-b flex items-center justify-between">

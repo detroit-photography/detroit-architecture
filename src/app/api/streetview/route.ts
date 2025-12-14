@@ -36,23 +36,43 @@ export async function POST(request: NextRequest) {
 
     // Always geocode from address if available (to keep coordinates up to date)
     if (building.address) {
-      const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(building.address)}&key=${GOOGLE_API_KEY}`
+      // Only append Detroit, MI if not already in the address
+      const addressLower = building.address.toLowerCase()
+      const hasLocation = addressLower.includes('detroit') || addressLower.includes(', mi') || addressLower.includes(' mi ')
+      const fullAddress = hasLocation ? building.address : `${building.address}, Detroit, MI`
+      
+      const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=${GOOGLE_API_KEY}`
       const geocodeRes = await fetch(geocodeUrl)
       const geocodeData = await geocodeRes.json()
+      
+      console.log('Geocode response for', fullAddress, ':', geocodeData.status)
       
       if (geocodeData.status === 'OK' && geocodeData.results?.[0]?.geometry?.location) {
         const { lat, lng } = geocodeData.results[0].geometry.location
         // Update building with new coordinates
-        await supabase
+        const { error: updateError } = await supabase
           .from('buildings')
           .update({ lat, lng })
           .eq('id', buildingId)
+        
+        if (updateError) {
+          console.error('Failed to update coordinates:', updateError)
+          return NextResponse.json({ 
+            error: 'Failed to save coordinates to database',
+            details: updateError.message 
+          }, { status: 500 })
+        }
         
         building.lat = lat
         building.lng = lng
       } else if (!building.lat || !building.lng) {
         // Only fail if we don't have existing coordinates
-        return NextResponse.json({ error: 'Could not geocode address' }, { status: 400 })
+        return NextResponse.json({ 
+          error: 'Could not geocode address',
+          address: building.address,
+          geocodeStatus: geocodeData.status,
+          geocodeError: geocodeData.error_message
+        }, { status: 400 })
       }
     } else if (!building.lat || !building.lng) {
       return NextResponse.json({ error: 'Building has no coordinates or address' }, { status: 400 })

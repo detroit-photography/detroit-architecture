@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { ArchitectureLayout } from '@/components/ArchitectureLayout'
 
 export const metadata: Metadata = {
   title: 'Admin Panel',
@@ -14,7 +15,7 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-  return children
+  return <ArchitectureLayout>{children}</ArchitectureLayout>
 }
 
 

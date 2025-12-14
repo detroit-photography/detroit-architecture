@@ -1,8 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 
-async function fetchJson(url: string) {
-  const res = await fetch(url)
+async function fetchWikipedia(url: string) {
+  const res = await fetch(url, {
+    headers: {
+      'User-Agent': 'DetroitArchitectureRepository/1.0 (https://detroit-architecture.vercel.app; contact@detroitphotography.com)',
+      'Accept': 'application/json',
+    },
+  })
+  
+  if (!res.ok) {
+    throw new Error(`Wikipedia API error: ${res.status} ${res.statusText}`)
+  }
+  
   const text = await res.text()
   
   // Check if response is HTML (error page)
@@ -41,10 +51,12 @@ export async function POST(request: NextRequest) {
     
     for (const query of searchQueries) {
       try {
-        const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*&srlimit=5`
-        const searchData = await fetchJson(searchUrl)
+        const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&srlimit=5`
+        console.log('Searching Wikipedia:', query)
+        const searchData = await fetchWikipedia(searchUrl)
         
         if (searchData.query?.search?.length) {
+          console.log('Found results:', searchData.query.search.length)
           searchResults = searchData.query.search
           break
         }
@@ -66,12 +78,12 @@ export async function POST(request: NextRequest) {
     for (const result of topResults) {
       try {
         // Get plain text version for GPT analysis
-        const textUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(result.title)}&prop=extracts&explaintext=true&format=json&origin=*`
-        const textData = await fetchJson(textUrl)
+        const textUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(result.title)}&prop=extracts&explaintext=true&format=json`
+        const textData = await fetchWikipedia(textUrl)
         
         // Get HTML version for display
-        const htmlUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(result.title)}&prop=extracts&format=json&origin=*`
-        const htmlData = await fetchJson(htmlUrl)
+        const htmlUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(result.title)}&prop=extracts&format=json`
+        const htmlData = await fetchWikipedia(htmlUrl)
         
         const textPages = textData.query?.pages
         const htmlPages = htmlData.query?.pages

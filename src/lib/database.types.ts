@@ -9,6 +9,53 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      shoots: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          slug: string
+          title: string
+          description: string | null
+          date: string | null
+          building_id: string | null  // Links to buildings table
+          location_name: string | null
+          tags: string[]
+          cover_image: string | null
+          images: { src: string; alt: string; caption?: string }[]
+          published: boolean
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          slug: string
+          title: string
+          description?: string | null
+          date?: string | null
+          building_id?: string | null
+          location_name?: string | null
+          tags?: string[]
+          cover_image?: string | null
+          images?: { src: string; alt: string; caption?: string }[]
+          published?: boolean
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          slug?: string
+          title?: string
+          description?: string | null
+          date?: string | null
+          building_id?: string | null
+          location_name?: string | null
+          tags?: string[]
+          cover_image?: string | null
+          images?: { src: string; alt: string; caption?: string }[]
+          published?: boolean
+        }
+      }
       buildings: {
         Row: {
           id: string
@@ -94,7 +141,7 @@ export interface Database {
           year_taken: number | null
           is_primary: boolean
           sort_order: number
-          photo_type: 'original' | 'historical' | 'street_view'
+          photo_type: 'original' | 'historical' | 'street_view' | 'portraiture'
         }
         Insert: {
           id?: string
@@ -106,7 +153,7 @@ export interface Database {
           year_taken?: number | null
           is_primary?: boolean
           sort_order?: number
-          photo_type?: 'original' | 'historical' | 'street_view'
+          photo_type?: 'original' | 'historical' | 'street_view' | 'portraiture'
         }
         Update: {
           id?: string
@@ -118,7 +165,7 @@ export interface Database {
           year_taken?: number | null
           is_primary?: boolean
           sort_order?: number
-          photo_type?: 'original' | 'historical' | 'street_view'
+          photo_type?: 'original' | 'historical' | 'street_view' | 'portraiture'
         }
       }
     }
@@ -136,7 +183,9 @@ export interface Database {
 
 export type Building = Database['public']['Tables']['buildings']['Row']
 export type Photo = Database['public']['Tables']['photos']['Row']
+export type Shoot = Database['public']['Tables']['shoots']['Row']
 export type BuildingInsert = Database['public']['Tables']['buildings']['Insert']
 export type PhotoInsert = Database['public']['Tables']['photos']['Insert']
+export type ShootInsert = Database['public']['Tables']['shoots']['Insert']
 
 
