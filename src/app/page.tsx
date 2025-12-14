@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     title: 'Detroit Photographer | Professional Photo Studio',
     description: 'Detroit\'s #1-rated professional photographer. Headshots, portraits, and commercial photography at historic Bagley Mansion.',
     url: 'https://www.detroitphotography.com',
-    images: ['/images/hero-headshot.jpg'],
+    images: ['/images/headshots/hero-headshot.jpg'],
   },
   alternates: {
     canonical: 'https://www.detroitphotography.com',
@@ -153,25 +153,25 @@ const HubSpotForm = dynamic(
 
 // Portfolio images - the work speaks first
 const portfolioImages = [
-  { src: '/images/hero-headshot.jpg', alt: 'Professional woman headshot' },
-  { src: '/images/headshot-2.jpg', alt: 'Professional headshot' },
-  { src: '/images/headshot-3.jpg', alt: 'Executive portrait' },
-  { src: '/images/headshot-4.jpg', alt: 'Business headshot' },
-  { src: '/images/headshot-5.jpg', alt: 'Corporate headshot' },
-  { src: '/images/headshot-6.jpg', alt: 'Professional portrait' },
-  { src: '/images/headshot-7.jpg', alt: 'Executive headshot' },
-  { src: '/images/headshot-8.jpg', alt: 'Business portrait' },
+  { src: '/images/headshots/hero-headshot.jpg', alt: 'Professional woman headshot' },
+  { src: '/images/headshots/headshot-2.jpg', alt: 'Professional headshot' },
+  { src: '/images/headshots/headshot-3.jpg', alt: 'Executive portrait' },
+  { src: '/images/headshots/headshot-4.jpg', alt: 'Business headshot' },
+  { src: '/images/headshots/headshot-5.jpg', alt: 'Corporate headshot' },
+  { src: '/images/headshots/headshot-6.jpg', alt: 'Professional portrait' },
+  { src: '/images/headshots/headshot-7.jpg', alt: 'Executive headshot' },
+  { src: '/images/headshots/headshot-8.jpg', alt: 'Business portrait' },
 ]
 
 const studioImages = [
-  { src: '/images/bagley-mansion.jpg', alt: 'Bagley Mansion exterior' },
-  { src: '/images/bagley-drone.jpg', alt: 'Bagley Mansion aerial view' },
-  { src: '/images/bagley-interior-1.jpg', alt: 'Studio fireplace' },
-  { src: '/images/bagley-interior-2.jpg', alt: 'Studio details' },
-  { src: '/images/bagley-interior-3.jpg', alt: 'Bay window' },
-  { src: '/images/bagley-interior-4.jpg', alt: 'Staircase' },
-  { src: '/images/bagley-interior-5.jpg', alt: 'Interior details' },
-  { src: '/images/bagley-interior-6.jpg', alt: 'Historic features' },
+  { src: '/images/headshots/bagley-mansion.jpg', alt: 'Bagley Mansion exterior' },
+  { src: '/images/headshots/bagley-drone.jpg', alt: 'Bagley Mansion aerial view' },
+  { src: '/images/headshots/bagley-interior-1.jpg', alt: 'Studio fireplace' },
+  { src: '/images/headshots/bagley-interior-2.jpg', alt: 'Studio details' },
+  { src: '/images/headshots/bagley-interior-3.jpg', alt: 'Bay window' },
+  { src: '/images/headshots/bagley-interior-4.jpg', alt: 'Staircase' },
+  { src: '/images/headshots/bagley-interior-5.jpg', alt: 'Interior details' },
+  { src: '/images/headshots/bagley-interior-6.jpg', alt: 'Historic features' },
 ]
 
 // Testimonials with paired images
@@ -180,21 +180,21 @@ const testimonials = [
     name: 'Sarah Mitchell',
     title: 'Marketing Director',
     quote: 'I saw Andrew\'s work online and knew immediately this was different. The quality is unmistakable. Worth every penny.',
-    image: '/images/testimonial-1.jpg',
+    image: '/images/headshots/testimonial-hannah.jpg',
     rating: 5,
   },
   {
     name: 'Marcus Chen',
     title: 'Attorney at Law',
     quote: 'I\'ve had headshots taken before, but never like this. Andrew captures something that other photographers miss.',
-    image: '/images/testimonial-2.jpg',
+    image: '/images/headshots/testimonial-michelle.jpg',
     rating: 5,
   },
   {
     name: 'Dr. Patricia Williams',
     title: 'Cardiologist',
     quote: 'My patients see my headshot before they meet me. It needed to be perfect. Andrew delivered beyond expectations.',
-    image: '/images/testimonial-3.jpg',
+    image: '/images/headshots/testimonial-jacqueline.jpg',
     rating: 5,
   },
 ]
@@ -245,7 +245,7 @@ export default function HeadshotsHomePage() {
             {/* Right: Hero Image - optimized */}
             <div className="relative h-[50vh] lg:h-auto">
               <Image
-                src="/images/hero-headshot.jpg"
+                src="/images/headshots/hero-headshot.jpg"
                 alt="Professional headshot by Detroit Photography"
                 fill
                 className="object-cover"
