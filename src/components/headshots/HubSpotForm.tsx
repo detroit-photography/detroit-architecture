@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface HubSpotFormProps {
   portalId?: string
   formId?: string
   className?: string
   emailOnly?: boolean
+  redirectUrl?: string
 }
 
 export function HubSpotForm({
@@ -14,7 +16,9 @@ export function HubSpotForm({
   formId = 'c6bba37b-c155-4db4-b036-ca55ed47f5fc',
   className = '',
   emailOnly = false,
+  redirectUrl,
 }: HubSpotFormProps) {
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -52,7 +56,11 @@ export function HubSpotForm({
       )
 
       if (response.ok) {
-        setIsSubmitted(true)
+        if (redirectUrl) {
+          router.push(redirectUrl)
+        } else {
+          setIsSubmitted(true)
+        }
       } else {
         const data = await response.json()
         setError(data.message || 'Something went wrong. Please try again.')
