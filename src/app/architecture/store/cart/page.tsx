@@ -44,7 +44,7 @@ export default function CartPage() {
         <h1 className="font-display text-2xl text-gray-800 mb-2">Your cart is empty</h1>
         <p className="text-gray-500 mb-6">Add some beautiful Detroit prints to get started.</p>
         <Link
-          href="/store"
+          href="/architecture/store"
           className="bg-detroit-green text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-colors"
         >
           Browse Prints
@@ -59,7 +59,7 @@ export default function CartPage() {
       <div className="bg-detroit-green text-white py-8">
         <div className="max-w-4xl mx-auto px-4">
           <Link
-            href="/store"
+            href="/architecture/store"
             className="inline-flex items-center gap-2 text-detroit-gold hover:underline mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -183,7 +183,7 @@ export default function CartPage() {
                       <p className="font-medium text-gray-900">
                         Add {nextTier.qty - totalItems} more print{nextTier.qty - totalItems > 1 ? 's' : ''} for {nextTier.percent}% off!
                       </p>
-                      <Link href="/store" className="text-detroit-green hover:underline text-xs">
+                      <Link href="/architecture/store" className="text-detroit-green hover:underline text-xs">
                         Browse more prints →
                       </Link>
                     </div>
@@ -192,7 +192,7 @@ export default function CartPage() {
               )}
 
               <Link
-                href="/store/checkout"
+                href="/architecture/store/checkout"
                 className="block w-full bg-detroit-gold text-detroit-green text-center py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors"
               >
                 Proceed to Checkout

@@ -181,7 +181,7 @@ export default function CheckoutPage() {
             </div>
           </div>
           <Link
-            href="/store"
+            href="/architecture/store"
             className="inline-block bg-detroit-green text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-colors"
           >
             Continue Shopping
@@ -198,7 +198,7 @@ export default function CheckoutPage() {
         <h1 className="font-display text-2xl text-gray-800 mb-2">Your cart is empty</h1>
         <p className="text-gray-500 mb-6">Add some prints to proceed to checkout.</p>
         <Link
-          href="/store"
+          href="/architecture/store"
           className="bg-detroit-green text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-colors"
         >
           Browse Prints
@@ -213,7 +213,7 @@ export default function CheckoutPage() {
       <div className="bg-detroit-green text-white py-8">
         <div className="max-w-4xl mx-auto px-4">
           <Link
-            href="/store/cart"
+            href="/architecture/store/cart"
             className="inline-flex items-center gap-2 text-detroit-gold hover:underline mb-4"
           >
             <ArrowLeft className="w-4 h-4" />

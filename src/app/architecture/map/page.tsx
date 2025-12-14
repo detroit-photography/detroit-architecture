@@ -551,7 +551,7 @@ export default function MapPage() {
                 )}
               </div>
               <Link
-                href={`/building/${selectedBuilding.id}`}
+                href={`/architecture/building/${selectedBuilding.id}`}
                 className="mt-3 inline-flex items-center gap-1 bg-detroit-green text-white px-4 py-2 rounded-lg text-sm hover:bg-detroit-gold hover:text-detroit-green transition-colors"
               >
                 View Details <ChevronRight className="w-4 h-4" />
@@ -656,7 +656,7 @@ export default function MapPage() {
                 {selectedBuilding.architect?.split(',')[0]}
               </div>
               <Link
-                href={`/building/${selectedBuilding.id}`}
+                href={`/architecture/building/${selectedBuilding.id}`}
                 className="mt-2 inline-flex items-center gap-1 bg-detroit-green text-white px-4 py-2 rounded-lg text-sm"
               >
                 View Details <ChevronRight className="w-4 h-4" />

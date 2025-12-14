@@ -250,7 +250,7 @@ export function SearchFilters() {
             <button className="p-2 hover:bg-gray-100" aria-label="List view" aria-pressed="false">
               <List className="w-4 h-4" aria-hidden="true" />
             </button>
-            <Link href="/map" className="p-2 hover:bg-gray-100" aria-label="Map view">
+            <Link href="/architecture/map" className="p-2 hover:bg-gray-100" aria-label="Map view">
               <Map className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>

@@ -363,7 +363,7 @@ export default function StorePage() {
 
           {/* Cart button */}
           <Link
-            href="/store/cart"
+            href="/architecture/store/cart"
             className="flex items-center gap-2 bg-detroit-gold text-detroit-green px-5 py-2 rounded-lg font-medium hover:bg-opacity-90 transition-colors"
           >
             <ShoppingCart className="w-5 h-5" />
