@@ -51,7 +51,7 @@ export function SearchFilters() {
     } else {
       params.delete(key)
     }
-    router.push(`/?${params.toString()}`)
+    router.push(`/architecture?${params.toString()}`)
   }
 
   const currentStyle = searchParams.get('style') || 'All Styles'
@@ -105,7 +105,7 @@ export function SearchFilters() {
           <button className="p-2 bg-detroit-green text-white" aria-label="Grid view" aria-pressed="true">
             <Grid className="w-4 h-4" aria-hidden="true" />
           </button>
-          <Link href="/map" className="p-2 hover:bg-gray-100" aria-label="Map view">
+          <Link href="/architecture/map" className="p-2 hover:bg-gray-100" aria-label="Map view">
             <Map className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>

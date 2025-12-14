@@ -34,9 +34,9 @@ export function Footer() {
           <div>
             <h4 className="uppercase tracking-[0.15em] md:tracking-[0.2em] text-xs md:text-sm mb-4 md:mb-6 text-detroit-gold">Explore</h4>
             <ul className="space-y-2 md:space-y-3 text-detroit-cream/60 text-sm">
-              <li><Link href="/?photos=all" className="hover:text-detroit-gold transition-colors">All Buildings</Link></li>
-              <li><Link href="/map" className="hover:text-detroit-gold transition-colors">Map</Link></li>
-              <li><Link href="/?photos=true" className="hover:text-detroit-gold transition-colors">With Photos</Link></li>
+              <li><Link href="/architecture?photos=all" className="hover:text-detroit-gold transition-colors">All Buildings</Link></li>
+              <li><Link href="/architecture/map" className="hover:text-detroit-gold transition-colors">Map</Link></li>
+              <li><Link href="/architecture" className="hover:text-detroit-gold transition-colors">With Photos</Link></li>
             </ul>
           </div>
 
