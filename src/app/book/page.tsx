@@ -6,6 +6,14 @@ import { GoogleReviewsSection } from '@/components/headshots/GoogleReviewsSectio
 export const metadata: Metadata = {
   title: 'Book Your Headshot Session | Detroit Photography',
   description: 'Book your professional headshot session at Detroit Photography. In-studio and on-location options available. Starting at $149. Same-day delivery available.',
+  openGraph: {
+    title: 'Book Your Headshot Session | Detroit Photography',
+    description: 'Professional headshots starting at $149. Unlimited time, wardrobe changes & backdrops. Same-day delivery available.',
+    url: 'https://www.detroitphotography.com/book',
+  },
+  alternates: {
+    canonical: 'https://www.detroitphotography.com/book',
+  },
 }
 
 const faqs = [
@@ -55,9 +63,29 @@ const faqs = [
   }
 ]
 
+// FAQPage structured data for SEO
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(faq => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer,
+    },
+  })),
+}
+
 export default function BookPage() {
   return (
     <>
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      
       {/* Hero Section */}
       <section className="py-12 md:py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4">

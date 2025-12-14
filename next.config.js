@@ -36,7 +36,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'ypxbreuwxuslbkpasujg.supabase.co',
+        hostname: 'qjxuiljsgrmymeayoqzi.supabase.co',
       },
       {
         protocol: 'https',
@@ -46,13 +46,21 @@ const nextConfig = {
         protocol: 'https',
         hostname: '*.squarespace-cdn.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com', // Google profile photos
+      },
     ],
     // Optimize images for faster loading
-    deviceSizes: [640, 750, 828, 1080, 1200],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256],
-    formats: ['image/webp', 'image/avif'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    formats: ['image/avif', 'image/webp'],
     // Minimize image processing time
     minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year cache
+    // Limit concurrent image optimizations for faster response
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   
   // Enable experimental features for better performance
@@ -67,7 +75,7 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   
-  // HTTP response headers for caching
+  // HTTP response headers for caching and performance
   async headers() {
     return [
       {
@@ -85,6 +93,28 @@ const nextConfig = {
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
           },
         ],
       },
