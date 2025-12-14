@@ -18,11 +18,12 @@ export default function BookPage() {
           {/* Acuity Scheduling Embed */}
           <div className="bg-white shadow-lg p-4 md:p-8">
             <iframe
-              src="https://app.acuityscheduling.com/schedule.php?owner=17380279"
+              src="https://app.acuityscheduling.com/schedule.php?owner=27530601&ref=embedded_csp"
               title="Schedule Appointment"
               width="100%"
               height="800"
               frameBorder="0"
+              allow="payment"
               className="min-h-[800px]"
             />
             <Script

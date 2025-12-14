@@ -82,7 +82,7 @@ export function HubSpotForm({
           Check your email for our full pricing menu and booking link.
         </p>
         <a
-          href="/headshots/book"
+          href="/book"
           className="inline-block bg-detroit-green text-white px-8 py-4 text-sm uppercase tracking-wider font-medium hover:bg-detroit-gold transition-colors"
         >
           Book Now

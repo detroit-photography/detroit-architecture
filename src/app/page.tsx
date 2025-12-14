@@ -809,7 +809,7 @@ export default function HeadshotPhotographyPage() {
               Includes unlimited time, wardrobe changes & backdrops
             </p>
           </div>
-          <HubSpotForm emailOnly />
+          <HubSpotForm emailOnly redirectUrl="/book" />
         </div>
       </section>
     </>
