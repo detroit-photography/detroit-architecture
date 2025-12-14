@@ -84,10 +84,10 @@ export function BuildingGrid() {
           id => photoMap[id].originalCount > 0
         )
 
-        // Build the query
+        // Build the query - exclude large wikipedia_entry column for performance
         let query = supabase
           .from('buildings')
-          .select('*', { count: 'exact' })
+          .select('id, name, address, architect, year_built, architectural_style, building_type, status, featured, lat, lng, neighborhood', { count: 'exact' })
 
         // If filtering by photos, only get those buildings with ORIGINAL photos
         if (showOnlyWithPhotos && buildingIdsWithOriginalPhotos.length > 0) {

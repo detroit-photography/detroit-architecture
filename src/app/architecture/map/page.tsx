@@ -46,9 +46,10 @@ export default function MapPage() {
   // Fetch all buildings with coordinates, photo counts, and primary photos
   useEffect(() => {
     async function fetchBuildings() {
+      // Exclude large wikipedia_entry column for performance
       const { data: buildingsData } = await supabase
         .from('buildings')
-        .select('*')
+        .select('id, name, address, architect, year_built, architectural_style, building_type, status, featured, lat, lng, neighborhood')
         .not('lat', 'is', null)
         .not('lng', 'is', null)
       
