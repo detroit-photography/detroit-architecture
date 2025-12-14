@@ -13,16 +13,50 @@ import { ShootsAtLocation } from '@/components/ShootsAtLocation'
 export const revalidate = 0
 export const dynamic = 'force-dynamic'
 
+// Helper to generate slug from building name
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/['']/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .replace(/-+/g, '-')
+}
+
+// Helper to check if a string is a UUID
+function isUUID(str: string): boolean {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  return uuidRegex.test(str)
+}
+
+// Fetch building by ID or slug
+async function getBuildingByIdOrSlug(idOrSlug: string) {
+  // If it's a UUID, lookup by ID
+  if (isUUID(idOrSlug)) {
+    const { data } = await supabase
+      .from('buildings')
+      .select('*')
+      .eq('id', idOrSlug)
+      .single()
+    return data
+  }
+  
+  // Otherwise, search all buildings and find one with matching slug
+  const { data: buildings } = await supabase
+    .from('buildings')
+    .select('*')
+  
+  if (!buildings) return null
+  
+  return buildings.find(b => generateSlug(b.name) === idOrSlug)
+}
+
 interface Props {
   params: { id: string }
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { data: building } = await supabase
-    .from('buildings')
-    .select('*')
-    .eq('id', params.id)
-    .single()
+  const building = await getBuildingByIdOrSlug(params.id)
 
   if (!building) {
     return { title: 'Building Not Found | Detroit Architecture Repository' }
@@ -108,11 +142,7 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function BuildingPage({ params }: Props) {
-  const { data: building } = await supabase
-    .from('buildings')
-    .select('*')
-    .eq('id', params.id)
-    .single()
+  const building = await getBuildingByIdOrSlug(params.id)
 
   if (!building) {
     notFound()

@@ -7,8 +7,18 @@ interface BuildingCardProps {
   building: Building & { primary_photo_url?: string; photo_count?: number }
 }
 
+// Generate SEO-friendly slug from building name
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/['']/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .replace(/-+/g, '-')
+}
+
 export function BuildingCard({ building }: BuildingCardProps) {
-  const slug = building.id
+  const slug = generateSlug(building.name)
   const hasPhotos = building.photo_count && building.photo_count > 0
 
   // Placeholder - elegant dark green gradient
@@ -17,7 +27,7 @@ export function BuildingCard({ building }: BuildingCardProps) {
   }
 
   return (
-    <Link href={`/building/${slug}`} aria-label={`View ${building.name}${building.year_built ? `, built ${building.year_built}` : ''}`}>
+    <Link href={`/architecture/building/${slug}`} aria-label={`View ${building.name}${building.year_built ? `, built ${building.year_built}` : ''}`}>
       <article className="building-card bg-white overflow-hidden shadow-sm hover:shadow-lg active:shadow-md cursor-pointer border border-gray-100 transition-all">
         {/* Image or placeholder - use aspect-ratio to prevent CLS */}
         <div className={`aspect-[4/3] ${building.primary_photo_url ? '' : `bg-gradient-to-br ${getPlaceholderColor()}`} relative flex items-center justify-center overflow-hidden`}>

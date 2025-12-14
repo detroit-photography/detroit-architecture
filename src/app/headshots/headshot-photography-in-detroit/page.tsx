@@ -385,7 +385,7 @@ export default function HeadshotPhotographyPage() {
               See What 201 Clients Are Raving About
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Every image tells a story of patience, vision, and expert lighting.
+              Professional headshots that make a lasting impression.
             </p>
           </div>
           

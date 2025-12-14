@@ -17,6 +17,10 @@ const HubSpotForm = dynamic(
   () => import('@/components/headshots/HubSpotForm').then(mod => ({ default: mod.HubSpotForm })),
   { ssr: false, loading: () => <div className="h-64 bg-detroit-cream animate-pulse" /> }
 )
+const CredibilitySection = dynamic(
+  () => import('@/components/headshots/CredibilitySection').then(mod => ({ default: mod.CredibilitySection })),
+  { ssr: true }
+)
 const ScrollableCards = dynamic(
   () => import('@/components/headshots/ScrollableCards').then(mod => ({ default: mod.ScrollableCards })),
   { ssr: true }
@@ -385,7 +389,7 @@ export default function HeadshotPhotographyPage() {
               See What 201 Clients Are Raving About
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Every image tells a story of patience, vision, and expert lighting.
+              Professional headshots that make a lasting impression.
             </p>
           </div>
           
@@ -494,6 +498,9 @@ export default function HeadshotPhotographyPage() {
 
       {/* Location Section */}
       <LocationSection />
+
+      {/* Credibility - Publications & Institutions */}
+      <CredibilitySection />
 
       {/* Testimonials - Horizontal Scroll Cards with Buttons */}
       <section className="py-16 md:py-24 bg-white overflow-hidden">
