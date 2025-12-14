@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, MapPin, Calendar, User, Building2, BookOpen, Camera, ExternalLink, Edit, Users } from 'lucide-react'
+import { ArrowLeft, MapPin, Calendar, User, Building2, BookOpen, Camera, ExternalLink, Edit, Users, Landmark, Award } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { PhotoGallery } from '@/components/PhotoGallery'
 import { BuildingMap } from '@/components/BuildingMap'
@@ -8,6 +8,19 @@ import { StreetViewCard } from '@/components/StreetViewCard'
 import { ExpandableText } from '@/components/ExpandableText'
 import { ShootsAtLocation } from '@/components/ShootsAtLocation'
 // Layout is handled by /architecture/layout.tsx
+
+// NRHP Entry type
+interface NRHPEntry {
+  id: string
+  ref_number: string
+  date_listed: string
+  level_of_significance: string
+  areas_of_significance: string[]
+  period_of_significance: string
+  description: string
+  statement_of_significance: string
+  architect_builder: string
+}
 
 // Always fetch fresh data (no caching)
 export const revalidate = 0
@@ -166,6 +179,13 @@ export default async function BuildingPage({ params }: Props) {
   // For backwards compatibility, use architecturePhotos as the main photos
   const photos = architecturePhotos
 
+  // Fetch NRHP entry for this building
+  const { data: nrhpEntry } = await supabase
+    .from('nrhp_entries')
+    .select('*')
+    .eq('building_id', building.id)
+    .single() as { data: NRHPEntry | null }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -190,7 +210,13 @@ export default async function BuildingPage({ params }: Props) {
               )}
             </div>
             
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center flex-wrap">
+              {nrhpEntry && (
+                <span className="bg-amber-600 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-1">
+                  <Landmark className="w-4 h-4" />
+                  National Register
+                </span>
+              )}
               {building.aia_number && (
                 <span className="bg-blue-600 text-white px-3 py-1 rounded-lg text-sm">
                   AIA #{building.aia_number}
@@ -295,6 +321,68 @@ export default async function BuildingPage({ params }: Props) {
               </div>
             )}
 
+            {/* National Register of Historic Places Entry */}
+            {nrhpEntry && (
+              <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-amber-600">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Landmark className="w-5 h-5 text-amber-600" />
+                    <h2 className="font-display text-xl text-amber-700">National Register of Historic Places</h2>
+                  </div>
+                  <span className="text-sm text-gray-500">
+                    Listed {nrhpEntry.date_listed ? new Date(nrhpEntry.date_listed).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
+                  </span>
+                </div>
+                
+                {/* Significance badges */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {nrhpEntry.level_of_significance && (
+                    <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm capitalize">
+                      {nrhpEntry.level_of_significance} Significance
+                    </span>
+                  )}
+                  {nrhpEntry.areas_of_significance?.map((area, i) => (
+                    <span key={i} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                      {area}
+                    </span>
+                  ))}
+                  {nrhpEntry.period_of_significance && (
+                    <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                      {nrhpEntry.period_of_significance}
+                    </span>
+                  )}
+                </div>
+
+                {/* Description */}
+                {nrhpEntry.description && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-gray-900 mb-2">Description</h3>
+                    <p className="text-gray-700 leading-relaxed">{nrhpEntry.description}</p>
+                  </div>
+                )}
+
+                {/* Statement of Significance */}
+                {nrhpEntry.statement_of_significance && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-gray-900 mb-2">Statement of Significance</h3>
+                    <p className="text-gray-700 leading-relaxed">{nrhpEntry.statement_of_significance}</p>
+                  </div>
+                )}
+
+                {/* Architect/Builder from NRHP */}
+                {nrhpEntry.architect_builder && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-gray-900 mb-2">Architect/Builder</h3>
+                    <p className="text-gray-700">{nrhpEntry.architect_builder}</p>
+                  </div>
+                )}
+
+                <p className="text-xs text-gray-400 mt-4">
+                  NRHP Ref# {nrhpEntry.ref_number} • Data from National Park Service
+                </p>
+              </div>
+            )}
+
             {/* Wikipedia Entry */}
             {building.wikipedia_entry && (
               <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-gray-400">
@@ -396,6 +484,18 @@ export default async function BuildingPage({ params }: Props) {
                   <div>
                     <dt className="text-sm text-gray-500">Building Type</dt>
                     <dd className="font-medium text-gray-900">{building.building_type}</dd>
+                  </div>
+                )}
+
+                {nrhpEntry && (
+                  <div className="pt-4 border-t">
+                    <dt className="text-sm text-gray-500 flex items-center gap-1">
+                      <Landmark className="w-4 h-4" /> National Register
+                    </dt>
+                    <dd className="font-medium text-amber-700">
+                      Listed {nrhpEntry.date_listed ? new Date(nrhpEntry.date_listed).getFullYear() : ''}
+                    </dd>
+                    <dd className="text-sm text-gray-500">Ref# {nrhpEntry.ref_number}</dd>
                   </div>
                 )}
               </dl>

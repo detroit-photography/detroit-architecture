@@ -17,7 +17,7 @@ export function HeroSection() {
     } else {
       params.delete('q')
     }
-    router.push(`/?${params.toString()}`)
+    router.push(`/architecture?${params.toString()}`)
   }
 
   return (
@@ -68,7 +68,7 @@ export function HeroSection() {
               key={filter}
               onClick={() => {
                 setQuery(filter)
-                router.push(`/?q=${encodeURIComponent(filter)}`)
+                router.push(`/architecture?q=${encodeURIComponent(filter)}`)
               }}
               className="px-3 md:px-5 py-1.5 md:py-2 text-white text-xs md:text-sm hover:text-detroit-gold transition-colors border border-detroit-gold/30 hover:border-detroit-gold uppercase tracking-wider whitespace-nowrap flex-shrink-0"
             >

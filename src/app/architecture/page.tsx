@@ -3,6 +3,48 @@ import { BuildingGrid } from '@/components/BuildingGrid'
 import { SearchFilters } from '@/components/SearchFilters'
 import { HeroSection } from '@/components/HeroSection'
 import { StatsBar } from '@/components/StatsBar'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Detroit Architecture Repository | Historic Buildings Database',
+  description: 'The most comprehensive database of Detroit\'s historic architecture. 550+ buildings with National Register of Historic Places data, original photography, and detailed documentation.',
+  keywords: [
+    'Detroit architecture',
+    'Detroit architecture repository', 
+    'historic buildings Detroit',
+    'National Register of Historic Places Detroit',
+    'NRHP Michigan',
+    'Detroit historic preservation',
+  ],
+  openGraph: {
+    title: 'Detroit Architecture Repository | Historic Buildings Database',
+    description: 'The most comprehensive database of Detroit\'s historic architecture. 550+ buildings with NRHP data and original photography.',
+    url: 'https://www.detroitphotography.com/architecture',
+    siteName: 'Detroit Architecture Repository',
+    type: 'website',
+    locale: 'en_US',
+    images: [
+      {
+        url: 'https://qjxuiljsgrmymeayoqzi.supabase.co/storage/v1/object/public/photos/buildings/guardian-building.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Detroit Architecture Repository - Guardian Building',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Detroit Architecture Repository | Historic Buildings Database',
+    description: '550+ historic Detroit buildings with National Register data and original photography.',
+    images: ['https://qjxuiljsgrmymeayoqzi.supabase.co/storage/v1/object/public/photos/buildings/guardian-building.jpg'],
+  },
+  alternates: {
+    canonical: 'https://www.detroitphotography.com/architecture',
+  },
+  other: {
+    'og:url': 'https://www.detroitphotography.com/architecture',
+  },
+}
 
 export default function ArchitectureHomePage() {
   return (

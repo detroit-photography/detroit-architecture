@@ -162,7 +162,7 @@ export default function StorePage() {
       price: PRICES[size],
     })
     setSizeModalPhoto(null)
-    router.push('/store/cart')
+    router.push('/architecture/store/cart')
   }
 
   // Combine all photos for filtering
