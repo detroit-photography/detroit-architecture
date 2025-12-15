@@ -6,10 +6,9 @@ import { useState, useCallback, memo } from 'react'
 import { ChevronUp, ChevronDown } from 'lucide-react'
 
 const studioImages = [
-  { src: '/images/headshots/bagley-mansion.jpg', alt: 'Bagley Mansion exterior', title: 'Historic Exterior' },
-  { src: '/images/headshots/bagley-drone.jpg', alt: 'Bagley Mansion aerial view with Detroit skyline', title: 'Detroit Skyline View' },
-  { src: '/images/headshots/bagley-interior-1.jpg', alt: 'Studio with professional lighting setup', title: 'Professional Studio' },
-  { src: '/images/headshots/bagley-interior-2.jpg', alt: 'Studio lighting and fireplace backdrop', title: 'Fireplace Setting' },
+  { src: '/images/headshots/bagley-mansion.jpg', alt: 'Bagley Mansion exterior', title: 'Bagley Mansion' },
+  { src: '/images/headshots/bagley-drone.jpg', alt: 'Bagley Mansion aerial view with Detroit skyline', title: 'Located minutes from downtown Detroit' },
+  { src: '/images/headshots/bagley-interior-1.jpg', alt: 'Studio with professional lighting setup', title: 'Our studio' },
   { src: '/images/headshots/bagley-interior-3.jpg', alt: 'Historic fireplace mantel', title: 'Historic Details' },
   { src: '/images/headshots/bagley-interior-4.jpg', alt: 'Grand staircase and chandelier', title: 'Grand Staircase' },
 ]

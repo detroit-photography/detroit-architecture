@@ -642,27 +642,6 @@ export default function HeadshotPhotographyPage() {
           </div>
           
           <HubSpotForm emailOnly redirectUrl="/book" />
-          
-          {/* What Happens Next - Reduce uncertainty */}
-          <div className="mt-10 pt-8 border-t border-white/20">
-            <p className="text-center text-detroit-cream/80 text-sm mb-4 font-medium">
-              What happens next:
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 text-detroit-cream/70 text-sm">
-              <div className="flex items-center gap-2 justify-center">
-                <span className="w-6 h-6 rounded-full bg-detroit-gold/20 flex items-center justify-center text-detroit-gold text-xs font-bold">1</span>
-                <span>See all pricing options</span>
-              </div>
-              <div className="flex items-center gap-2 justify-center">
-                <span className="w-6 h-6 rounded-full bg-detroit-gold/20 flex items-center justify-center text-detroit-gold text-xs font-bold">2</span>
-                <span>Pick a time that works</span>
-              </div>
-              <div className="flex items-center gap-2 justify-center">
-                <span className="w-6 h-6 rounded-full bg-detroit-gold/20 flex items-center justify-center text-detroit-gold text-xs font-bold">3</span>
-                <span>Get amazing photos</span>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
     </>
