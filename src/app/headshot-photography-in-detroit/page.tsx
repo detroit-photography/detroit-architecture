@@ -5,6 +5,10 @@ import Link from 'next/link'
 import { Check, Star, Clock, Camera, Sparkles, Eye, Heart } from 'lucide-react'
 
 // Lazy load components not needed for initial render
+const HeadshotsGallery = dynamic(
+  () => import('@/components/headshots/HeadshotsGallery').then(mod => ({ default: mod.HeadshotsGallery })),
+  { ssr: true, loading: () => <div className="h-96 bg-gray-100 animate-pulse" /> }
+)
 const LocationSection = dynamic(
   () => import('@/components/headshots/LocationSection').then(mod => ({ default: mod.LocationSection })),
   { ssr: true }
@@ -202,6 +206,17 @@ const jsonLd = {
   ],
 }
 
+const portfolioImages = [
+  { src: '/images/headshots/hero-headshot.jpg', alt: 'Professional headshots near me - woman executive' },
+  { src: '/images/headshots/headshot-2.jpg', alt: 'Professional headshots Detroit - business portrait' },
+  { src: '/images/headshots/headshot-3.jpg', alt: 'Executive headshots Detroit' },
+  { src: '/images/headshots/headshot-4.jpg', alt: 'Corporate headshots near me' },
+  { src: '/images/headshots/headshot-5.jpg', alt: 'Business headshots Detroit' },
+  { src: '/images/headshots/headshot-6.jpg', alt: 'LinkedIn headshots Detroit' },
+  { src: '/images/headshots/headshot-7.jpg', alt: 'Professional portraits near me' },
+  { src: '/images/headshots/headshot-8.jpg', alt: 'Headshot photography Detroit' },
+]
+
 const testimonials = [
   {
     image: '/images/headshots/testimonial-jacqueline.jpg',
@@ -379,6 +394,42 @@ export default function HeadshotPhotographyPage() {
         </div>
       </section>
 
+      {/* Portfolio Gallery - Horizontal Scroll on Mobile */}
+      <section className="py-12 md:py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="font-display text-3xl md:text-4xl text-gray-900 mb-3">
+              See What 201 Clients Are Raving About
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Professional headshots that make a lasting impression.
+            </p>
+          </div>
+          
+          {/* Mobile: Horizontal Scroll Cards - optimized images */}
+          <div className="md:hidden -mx-4 px-4">
+            <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              {portfolioImages.map((image, i) => (
+                <div key={i} className="flex-none w-64 aspect-[3/4] relative rounded-lg overflow-hidden shadow-lg snap-start">
+                  <Image 
+                    src={image.src} 
+                    alt={image.alt} 
+                    fill
+                    className="object-cover"
+                    sizes="256px"
+                    loading={i < 3 ? "eager" : "lazy"}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Desktop: Grid */}
+          <div className="hidden md:block">
+            <HeadshotsGallery images={portfolioImages} columns={4} />
+          </div>
+        </div>
+      </section>
 
       {/* What Clients Notice - Horizontal Scroll on Mobile */}
       <section className="py-16 md:py-20 bg-detroit-cream">
