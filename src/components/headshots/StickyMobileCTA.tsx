@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Star, ArrowRight } from 'lucide-react'
 import { usePricingModal } from './PricingModal'
+import { GoogleIcon } from './GoogleIcon'
 
 export function StickyMobileCTA() {
   const [isVisible, setIsVisible] = useState(false)
@@ -42,7 +43,7 @@ export function StickyMobileCTA() {
                 <Star key={i} className="w-3.5 h-3.5 fill-detroit-gold text-detroit-gold" />
               ))}
             </div>
-            <span className="text-white/90 text-xs font-medium">203 five-star reviews</span>
+            <span className="text-white/90 text-xs font-medium flex items-center gap-1">203 reviews on <GoogleIcon className="w-3 h-3" /></span>
             <span className="text-white/50 text-xs">•</span>
             <span className="text-detroit-gold text-xs font-bold">From $149</span>
           </div>

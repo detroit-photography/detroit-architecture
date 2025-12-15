@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
 import { X, Star } from 'lucide-react'
 import { HubSpotForm } from './HubSpotForm'
+import { GoogleIcon } from './GoogleIcon'
 
 // Context for modal state
 interface PricingModalContextType {
@@ -86,10 +87,12 @@ function PricingModalContent({ onClose }: { onClose: () => void }) {
             {[...Array(5)].map((_, i) => (
               <Star key={i} className="w-4 h-4 fill-detroit-gold text-detroit-gold" />
             ))}
-            <span className="text-sm text-detroit-cream/80 ml-2">203 reviews</span>
+            <span className="text-sm text-detroit-cream/80 ml-2 flex items-center gap-1">
+              203 reviews on <GoogleIcon className="w-4 h-4" />
+            </span>
           </div>
           <h2 className="font-display text-2xl md:text-3xl text-center mb-2">
-            Get Your Pricing Menu
+            View Our Pricing
           </h2>
           <p className="text-center text-detroit-cream/90">
             Professional headshots starting at{' '}

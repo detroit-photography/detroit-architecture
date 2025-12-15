@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { Check, Star, Clock, Sparkles, ArrowRight } from 'lucide-react'
+import { GoogleIcon } from '@/components/headshots/GoogleIcon'
 
 // Lazy load components not needed for initial render
 const HeadshotsGallery = dynamic(
@@ -330,7 +331,7 @@ export default function HeadshotPhotographyPage() {
                     <Star key={i} className="w-5 h-5 fill-detroit-gold text-detroit-gold" />
                   ))}
                 </div>
-                <span className="text-white font-medium">203 reviews</span>
+                <span className="text-white font-medium flex items-center gap-1">203 reviews on <GoogleIcon className="w-4 h-4" /></span>
                 <span className="text-detroit-cream/60">•</span>
                 <span className="text-detroit-cream/80">Detroit, MI</span>
               </div>
@@ -368,9 +369,12 @@ export default function HeadshotPhotographyPage() {
                   <div className="flex -space-x-2">
                     <div className="w-8 h-8 rounded-full bg-detroit-gold/20 flex items-center justify-center text-xs font-bold text-detroit-green">5★</div>
                   </div>
-                  <div className="text-sm">
-                    <span className="font-bold">203 five-star reviews</span>
-                    <span className="text-gray-600 block text-xs">on Google</span>
+                  <div className="text-sm flex items-center gap-2">
+                    <div>
+                      <span className="font-bold">203 five-star reviews</span>
+                      <span className="text-gray-600 block text-xs">on Google</span>
+                    </div>
+                    <GoogleIcon className="w-5 h-5" />
                   </div>
                 </div>
               </div>
@@ -490,7 +494,7 @@ export default function HeadshotPhotographyPage() {
           {/* Mid-page email capture - peak trust moment */}
           <div className="mt-12 pt-10 border-t border-detroit-gold/20">
             <p className="text-center text-gray-700 font-medium mb-4">
-              Ready to look this good? Get your pricing menu:
+              Ready to look this good? View our pricing:
             </p>
             <InlineEmailForm variant="light" />
           </div>
@@ -629,7 +633,7 @@ export default function HeadshotPhotographyPage() {
         <div className="max-w-3xl mx-auto px-4">
           <div className="text-center text-white mb-10">
             <h2 className="font-display text-3xl md:text-4xl mb-4">
-              Get Your Pricing Menu
+              View Our Pricing
             </h2>
             <p className="text-detroit-cream/90 text-lg mb-2">
               Professional headshots starting at <span className="text-detroit-gold font-bold text-3xl">$149</span>

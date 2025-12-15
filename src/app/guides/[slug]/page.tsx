@@ -188,7 +188,7 @@ export default function GuidePage({ params }: Props) {
       <div className="max-w-3xl mx-auto px-4 mt-16">
         <div className="bg-detroit-green p-8">
           <div className="text-center text-white mb-8">
-            <h2 className="font-display text-2xl mb-2">Get Our Pricing Menu</h2>
+            <h2 className="font-display text-2xl mb-2">View Our Pricing</h2>
             <p className="text-detroit-cream/80">Enter your email for instant access.</p>
           </div>
           <HubSpotForm />

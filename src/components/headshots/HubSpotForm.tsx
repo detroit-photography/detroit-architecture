@@ -94,7 +94,7 @@ export function HubSpotForm({
   return (
     <div className={`bg-detroit-cream p-8 ${className}`}>
       <h3 className="font-display text-2xl text-center text-gray-900 mb-2">
-        View Our Pricing Menu
+        View Our Pricing
       </h3>
       <p className="text-center text-gray-600 mb-6 text-sm">
         Enter your email to see our full menu of services with up-front pricing.

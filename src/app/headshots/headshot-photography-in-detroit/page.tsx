@@ -747,7 +747,7 @@ export default function HeadshotPhotographyPage() {
         <div className="max-w-3xl mx-auto px-4">
           <div className="text-center text-white mb-12">
             <h2 className="font-display text-3xl md:text-4xl mb-4">
-              Get Your Pricing Menu
+              View Our Pricing
             </h2>
             <p className="text-detroit-cream/80 text-lg">
               Professional headshots starting at <span className="text-detroit-gold font-bold text-3xl">$149</span>

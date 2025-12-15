@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { GoogleIcon } from './GoogleIcon'
 
 export function DynamicReviewCount() {
   const [reviewCount, setReviewCount] = useState(203)
@@ -17,8 +18,8 @@ export function DynamicReviewCount() {
   }, [])
 
   return (
-    <p className="text-center text-gray-700 mb-12">
-      {reviewCount} five-star Google reviews
+    <p className="text-center text-gray-700 mb-12 flex items-center justify-center gap-2">
+      {reviewCount} five-star reviews on <GoogleIcon className="w-5 h-5" />
     </p>
   )
 }
