@@ -29,7 +29,7 @@ export const LocationSection = memo(function LocationSection() {
       <div className="max-w-7xl mx-auto px-4">
         {/* Mobile: Horizontal Scrollable Cards */}
         <div className="lg:hidden">
-          <p className="text-detroit-gold uppercase tracking-wider text-sm mb-4 text-center">
+          <p className="text-amber-700 uppercase tracking-wider text-sm mb-4 text-center font-medium">
             Located in Historic Bagley Mansion
           </p>
           <h2 className="font-display text-3xl text-gray-900 mb-6 text-center">
@@ -48,7 +48,7 @@ export const LocationSection = memo(function LocationSection() {
                       fill
                       className="object-cover"
                       sizes="288px"
-                      loading={i < 2 ? "eager" : "lazy"}
+                      loading="lazy"
                     />
                   </div>
                   <p className="text-center text-gray-600 text-sm mt-2">{image.title}</p>
@@ -86,7 +86,7 @@ export const LocationSection = memo(function LocationSection() {
                 fill
                 className="object-cover transition-opacity duration-300"
                 sizes="50vw"
-                priority
+                loading="lazy"
               />
               
               {/* Navigation Arrows */}
@@ -138,7 +138,7 @@ export const LocationSection = memo(function LocationSection() {
 
           {/* Text - Right Side */}
           <div>
-            <p className="text-detroit-gold uppercase tracking-wider text-sm mb-4">
+            <p className="text-amber-700 uppercase tracking-wider text-sm mb-4 font-medium">
               Located in Historic Bagley Mansion
             </p>
             <h2 className="font-display text-3xl md:text-4xl text-gray-900 mb-6">

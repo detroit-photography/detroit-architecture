@@ -155,7 +155,7 @@ export function HubSpotForm({
         </button>
       </form>
       
-      <p className="text-center text-gray-500 text-xs mt-4">
+      <p className="text-center text-gray-600 text-xs mt-4">
         We have same-day bookings and a live calendar with up-front pricing.
       </p>
     </div>

@@ -23,7 +23,7 @@ const ScrollableCards = dynamic(
 )
 const DynamicReviewCount = dynamic(
   () => import('@/components/headshots/DynamicReviewCount').then(mod => ({ default: mod.DynamicReviewCount })),
-  { ssr: false, loading: () => <p className="text-center text-gray-500 mb-12">203 five-star Google reviews</p> }
+  { ssr: false, loading: () => <p className="text-center text-gray-700 mb-12">203 five-star Google reviews</p> }
 )
 const StickyMobileCTA = dynamic(
   () => import('@/components/headshots/StickyMobileCTA').then(mod => ({ default: mod.StickyMobileCTA })),
@@ -363,7 +363,7 @@ export default function HeadshotPhotographyPage() {
                   </div>
                   <div className="text-sm">
                     <span className="font-bold">203 five-star reviews</span>
-                    <span className="text-gray-500 block text-xs">on Google</span>
+                    <span className="text-gray-600 block text-xs">on Google</span>
                   </div>
                 </div>
               </div>
@@ -476,7 +476,7 @@ export default function HeadshotPhotographyPage() {
                       ))}
                     </div>
                     <p className="text-gray-900 font-medium">{testimonial.name}</p>
-                    <p className="text-gray-500 text-sm">{testimonial.title}</p>
+                    <p className="text-gray-600 text-sm">{testimonial.title}</p>
                   </div>
                 </div>
               ))}
@@ -608,7 +608,7 @@ export default function HeadshotPhotographyPage() {
                 <Check className="w-5 h-5 text-detroit-gold flex-shrink-0 mt-0.5" />
                 <div>
                   <h3 className="font-medium text-gray-900 text-sm">{item.title}</h3>
-                  <p className="text-gray-500 text-xs mt-1">{item.desc}</p>
+                  <p className="text-gray-600 text-xs mt-1">{item.desc}</p>
                 </div>
               </div>
             ))}

@@ -145,12 +145,26 @@ export default function RootLayout({
     <html lang="en" className={`${cormorant.variable} ${montserrat.variable}`}>
       <head>
         <meta name="theme-color" content="#0d2e1f" />
+        
+        {/* Preconnect to third-party origins for faster loading */}
+        <link rel="preconnect" href="https://js.hs-scripts.com" />
+        <link rel="preconnect" href="https://js.hs-analytics.net" />
+        <link rel="preconnect" href="https://js.hscollectedforms.net" />
+        <link rel="preconnect" href="https://js.hs-banner.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        
+        {/* DNS prefetch for additional third-party resources */}
+        <link rel="dns-prefetch" href="https://js.hsadspixel.net" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        
         {/* Preload hero image for faster LCP */}
         <link
           rel="preload"
           as="image"
           href="/images/headshots/hero-headshot.jpg"
           type="image/jpeg"
+          fetchPriority="high"
         />
         <script
           type="application/ld+json"

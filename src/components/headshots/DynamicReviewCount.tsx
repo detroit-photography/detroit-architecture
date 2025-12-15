@@ -17,7 +17,7 @@ export function DynamicReviewCount() {
   }, [])
 
   return (
-    <p className="text-center text-gray-500 mb-12">
+    <p className="text-center text-gray-700 mb-12">
       {reviewCount} five-star Google reviews
     </p>
   )
