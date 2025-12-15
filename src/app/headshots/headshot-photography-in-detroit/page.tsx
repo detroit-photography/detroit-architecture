@@ -393,15 +393,6 @@ export default function HeadshotPhotographyPage() {
       {/* Portfolio Gallery - Horizontal Scroll on Mobile */}
       <section className="py-12 md:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="font-display text-3xl md:text-4xl text-gray-900 mb-3">
-              See What 201 Clients Are Raving About
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Professional headshots that make a lasting impression.
-            </p>
-          </div>
-          
           {/* Mobile: Horizontal Scroll Cards - optimized images */}
           <div className="md:hidden -mx-4 px-4">
             <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
