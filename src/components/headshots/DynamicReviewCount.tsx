@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 export function DynamicReviewCount() {
-  const [reviewCount, setReviewCount] = useState(201)
+  const [reviewCount, setReviewCount] = useState(203)
 
   useEffect(() => {
     fetch('/api/google-rating')

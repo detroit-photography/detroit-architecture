@@ -23,7 +23,7 @@ const ScrollableCards = dynamic(
 )
 const DynamicReviewCount = dynamic(
   () => import('@/components/headshots/DynamicReviewCount').then(mod => ({ default: mod.DynamicReviewCount })),
-  { ssr: false, loading: () => <p className="text-center text-gray-500 mb-12">201 five-star Google reviews</p> }
+  { ssr: false, loading: () => <p className="text-center text-gray-500 mb-12">203 five-star Google reviews</p> }
 )
 const StickyMobileCTA = dynamic(
   () => import('@/components/headshots/StickyMobileCTA').then(mod => ({ default: mod.StickyMobileCTA })),
@@ -36,7 +36,7 @@ const InlineEmailForm = dynamic(
 
 export const metadata: Metadata = {
   title: 'Professional Headshots in Detroit | #1 Rated Studio | Starting $149',
-  description: 'Professional headshots near you in Detroit. 5-star rated studio with 201+ reviews. Same-day turnaround, live image review. Trusted by Detroit\'s top business leaders, doctors & attorneys. Book today!',
+  description: 'Professional headshots near you in Detroit. 5-star rated studio with 203+ reviews. Same-day turnaround, live image review. Trusted by Detroit\'s top business leaders, doctors & attorneys. Book today!',
   keywords: [
     'professional headshots',
     'professional headshots near me',
@@ -102,7 +102,7 @@ const jsonLd = {
       aggregateRating: {
         '@type': 'AggregateRating',
         ratingValue: '5.0',
-        reviewCount: '201',
+        reviewCount: '203',
         bestRating: '5',
         worstRating: '1',
       },
@@ -323,7 +323,7 @@ export default function HeadshotPhotographyPage() {
                     <Star key={i} className="w-5 h-5 fill-detroit-gold text-detroit-gold" />
                   ))}
                 </div>
-                <span className="text-white font-medium">201 reviews</span>
+                <span className="text-white font-medium">203 reviews</span>
                 <span className="text-detroit-cream/60">•</span>
                 <span className="text-detroit-cream/80">Detroit, MI</span>
               </div>
@@ -362,7 +362,7 @@ export default function HeadshotPhotographyPage() {
                     <div className="w-8 h-8 rounded-full bg-detroit-gold/20 flex items-center justify-center text-xs font-bold text-detroit-green">5★</div>
                   </div>
                   <div className="text-sm">
-                    <span className="font-bold">201 five-star reviews</span>
+                    <span className="font-bold">203 five-star reviews</span>
                     <span className="text-gray-500 block text-xs">on Google</span>
                   </div>
                 </div>
@@ -377,7 +377,7 @@ export default function HeadshotPhotographyPage() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-wrap justify-center items-center gap-8 text-center">
             <div>
-              <div className="text-2xl font-display text-detroit-green">201</div>
+              <div className="text-2xl font-display text-detroit-green">203</div>
               <div className="text-sm text-gray-600">5-Star Reviews</div>
             </div>
             <div className="hidden sm:block w-px h-10 bg-detroit-gold/30" />
@@ -551,7 +551,7 @@ export default function HeadshotPhotographyPage() {
                 <tr className="border-b border-gray-100">
                   <td className="py-4 px-4 md:px-6 font-medium text-gray-900 text-sm md:text-base">Google Reviews</td>
                   <td className="text-center py-4 px-4 md:px-6">
-                    <span className="text-detroit-green font-bold">201</span>
+                    <span className="text-detroit-green font-bold">203</span>
                     <div className="flex justify-center mt-1">
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} className="w-3 h-3 md:w-4 md:h-4 fill-detroit-gold text-detroit-gold" />

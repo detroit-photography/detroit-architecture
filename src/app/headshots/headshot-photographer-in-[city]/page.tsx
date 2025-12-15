@@ -188,7 +188,7 @@ function generateJsonLd(city: typeof cities[string], slug: string) {
         aggregateRating: {
           '@type': 'AggregateRating',
           ratingValue: '5.0',
-          reviewCount: '201',
+          reviewCount: '203',
           bestRating: '5',
           worstRating: '1',
         },

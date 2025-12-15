@@ -18,7 +18,7 @@ interface RatingData {
 // Default values while loading or if API fails
 const DEFAULT_RATING: RatingData = {
   rating: 5.0,
-  reviewCount: 201,
+  reviewCount: 203,
 }
 
 export function GoogleRating({ 

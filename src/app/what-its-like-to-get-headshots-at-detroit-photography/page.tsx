@@ -16,7 +16,7 @@ export default function WhatItsLikePage() {
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 bg-detroit-gold/20 border border-detroit-gold px-4 py-2 mb-6">
             <Star className="w-4 h-4 fill-detroit-gold text-detroit-gold" />
-            <span className="text-detroit-gold text-sm font-medium">201+ Five-Star Reviews</span>
+            <span className="text-detroit-gold text-sm font-medium">203+ Five-Star Reviews</span>
           </div>
           
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl mb-6">

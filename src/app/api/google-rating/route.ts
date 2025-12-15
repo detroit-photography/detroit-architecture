@@ -84,7 +84,7 @@ export async function GET() {
     console.warn('Google Places API key not configured')
     return NextResponse.json({
       rating: 5.0,
-      reviewCount: 201,
+      reviewCount: 203,
       cached: false,
       error: 'API not configured',
     })
@@ -143,7 +143,7 @@ export async function GET() {
     // Return default values as fallback
     return NextResponse.json({
       rating: 5.0,
-      reviewCount: 201,
+      reviewCount: 203,
       cached: false,
       error: 'Failed to fetch rating',
     })

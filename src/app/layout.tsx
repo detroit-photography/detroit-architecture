@@ -127,7 +127,7 @@ const jsonLd = {
   aggregateRating: {
     '@type': 'AggregateRating',
     ratingValue: '5.0',
-    reviewCount: '201',
+    reviewCount: '203',
   },
   openingHours: 'Mo-Su 09:00-21:00',
   sameAs: [

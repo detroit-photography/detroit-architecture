@@ -41,7 +41,7 @@ export function StickyMobileCTA() {
                 <Star key={i} className="w-3.5 h-3.5 fill-detroit-gold text-detroit-gold" />
               ))}
             </div>
-            <span className="text-white/90 text-xs font-medium">201 five-star reviews</span>
+            <span className="text-white/90 text-xs font-medium">203 five-star reviews</span>
             <span className="text-white/50 text-xs">•</span>
             <span className="text-detroit-gold text-xs font-bold">From $149</span>
           </div>

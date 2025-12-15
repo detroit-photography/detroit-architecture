@@ -6,7 +6,7 @@ import { Star, ArrowRight, Check, Clock, Sparkles, Quote } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Detroit\'s #1 Headshot Photographer | See Yourself Differently',
-  description: 'The headshot that changes everything. 201 five-star reviews. Same-day delivery. Historic Bagley Mansion studio. Join Detroit\'s top executives, attorneys & physicians. Starting at $149.',
+  description: 'The headshot that changes everything. 203 five-star reviews. Same-day delivery. Historic Bagley Mansion studio. Join Detroit\'s top executives, attorneys & physicians. Starting at $149.',
   keywords: [
     'professional headshots detroit',
     'headshots near me',
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: 'Detroit\'s #1 Headshot Photographer',
-    description: 'The headshot that changes everything. 201 five-star reviews.',
+    description: 'The headshot that changes everything. 203 five-star reviews.',
     images: [
       {
         url: 'https://www.detroitphotography.com/images/headshots/hero-headshot.jpg',
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Detroit\'s #1 Headshot Photographer',
-    description: 'The headshot that changes everything. 201 five-star reviews.',
+    description: 'The headshot that changes everything. 203 five-star reviews.',
     images: ['https://www.detroitphotography.com/images/headshots/hero-headshot.jpg'],
   },
 }
@@ -51,7 +51,7 @@ const jsonLd = {
   aggregateRating: {
     '@type': 'AggregateRating',
     ratingValue: '5',
-    reviewCount: '201',
+    reviewCount: '203',
     bestRating: '5',
   },
   priceRange: '$149-$500',
@@ -106,7 +106,7 @@ export default function LandingPageV2() {
                 ))}
               </div>
               <div className="text-white">
-                <div className="font-medium">201 five-star reviews</div>
+                <div className="font-medium">203 five-star reviews</div>
                 <div className="text-white/60 text-sm">Detroit's highest-rated studio</div>
               </div>
             </div>
@@ -211,7 +211,7 @@ export default function LandingPageV2() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-              <div className="text-4xl md:text-5xl font-display text-detroit-gold mb-2">201</div>
+              <div className="text-4xl md:text-5xl font-display text-detroit-gold mb-2">203</div>
               <div className="text-white/70 text-sm">5-Star Reviews</div>
             </div>
             <div>
@@ -303,7 +303,7 @@ export default function LandingPageV2() {
             Our promise: You'll love your photos.
           </h2>
           <p className="text-white/80 text-lg">
-            201 five-star reviews didn't happen by accident. We don't stop until you're thrilled. 
+            203 five-star reviews didn't happen by accident. We don't stop until you're thrilled. 
             If you're not completely satisfied, we'll reshoot for free.
           </p>
         </div>
@@ -391,7 +391,7 @@ export default function LandingPageV2() {
           <div className="text-center mt-8 space-y-2 text-detroit-cream/60 text-sm">
             <p>✓ No spam, ever. Just your pricing options.</p>
             <p>✓ Same-day appointments often available.</p>
-            <p>✓ 201 five-star reviews can't be wrong.</p>
+            <p>✓ 203 five-star reviews can't be wrong.</p>
           </div>
         </div>
       </section>

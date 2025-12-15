@@ -19,7 +19,7 @@ interface ReviewData {
 const GOOGLE_MAPS_URL = 'https://www.google.com/maps/place/Headshots+by+Detroit+Photography/@42.3755776,-83.132416,14z/data=!4m6!3m5!1s0x2998aadd7474799f:0xa334661cf827d5cf!8m2!3d42.3400136!4d-83.0194721!16s%2Fg%2F11rvd2qn5d?entry=ttu'
 
 export function GoogleReviewsSection() {
-  const [data, setData] = useState<ReviewData>({ rating: 5.0, reviewCount: 201 })
+  const [data, setData] = useState<ReviewData>({ rating: 5.0, reviewCount: 203 })
   const [reviews, setReviews] = useState<Review[]>([])
 
   useEffect(() => {
