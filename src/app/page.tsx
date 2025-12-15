@@ -289,63 +289,63 @@ export default function HeadshotPhotographyPage() {
           <div className="grid md:grid-cols-2 gap-8 items-center">
             {/* Hero image - mobile first (above text on mobile) */}
             <div className="relative md:hidden">
-              <div className="aspect-[4/3] relative overflow-hidden rounded-lg shadow-2xl">
+              <div className="aspect-[16/9] relative overflow-hidden rounded-lg shadow-2xl">
                 <Image
                   src="/images/headshots/hero-headshot.jpg"
                   alt="Professional headshots near me in Detroit"
                   fill
                   priority
-                  className="object-cover" style={{ objectPosition: 'center 35%' }}
+                  className="object-cover" style={{ objectPosition: 'center 55%' }}
                   sizes="100vw"
                 />
               </div>
             </div>
             
-            <div className="mt-3 md:mt-0">
+            <div className="mt-6 md:mt-0">
               {/* H1 - Message match for top search terms */}
-              <h1 className="font-display text-3xl md:text-4xl lg:text-5xl mb-2">
+              <h1 className="font-display text-3xl md:text-4xl lg:text-5xl mb-4">
                 Professional Headshots<br />by the <span className="text-detroit-gold">#1-Rated Studio</span> in Detroit
               </h1>
-              <p className="text-xl md:text-3xl text-detroit-gold font-display mb-3">Starting at $149</p>
+              <p className="text-2xl md:text-3xl text-detroit-gold font-display mb-4">Starting at $149</p>
               
               {/* Value props - bullet style for scanability */}
-              <ul className="text-base md:text-lg text-detroit-cream/90 mb-3 space-y-1">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 md:w-5 md:h-5 text-detroit-gold flex-shrink-0" />
+              <ul className="text-lg text-detroit-cream/90 mb-6 space-y-2">
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-detroit-gold flex-shrink-0" />
                   <span>Unlimited time & wardrobe changes</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 md:w-5 md:h-5 text-detroit-gold flex-shrink-0" />
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-detroit-gold flex-shrink-0" />
                   <span>Same-day appointments available</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 md:w-5 md:h-5 text-detroit-gold flex-shrink-0" />
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-detroit-gold flex-shrink-0" />
                   <span>See your photos during the session</span>
                 </li>
               </ul>
               
               {/* Trust signal - stars + reviews inline */}
-              <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-6">
+              <div className="flex items-center gap-3 mb-6">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 md:w-5 md:h-5 fill-detroit-gold text-detroit-gold" />
+                    <Star key={i} className="w-5 h-5 fill-detroit-gold text-detroit-gold" />
                   ))}
                 </div>
-                <span className="text-white text-sm md:text-base font-medium flex items-center gap-1">203 reviews on <GoogleIcon className="w-4 h-4" /></span>
-                <span className="text-detroit-cream/60 hidden sm:inline">•</span>
-                <span className="text-detroit-cream/80 hidden sm:inline">Detroit, MI</span>
+                <span className="text-white font-medium flex items-center gap-1">203 reviews on <GoogleIcon className="w-4 h-4" /></span>
+                <span className="text-detroit-cream/60">•</span>
+                <span className="text-detroit-cream/80">Detroit, MI</span>
               </div>
               
               {/* Single Primary CTA */}
               <PricingButton 
                 variant="white"
-                className="px-8 py-3 md:px-10 md:py-4 text-base md:text-lg rounded-none"
+                className="px-10 py-4 text-lg rounded-none"
               >
                 Get Pricing
               </PricingButton>
               
               {/* Urgency line */}
-              <p className="mt-2 md:mt-4 text-detroit-cream/70 text-sm">
+              <p className="mt-4 text-detroit-cream/70 text-sm">
                 <Clock className="w-4 h-4 inline mr-1" />
                 Same-day bookings available
               </p>
