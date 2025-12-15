@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import Link from 'next/link'
-import { Check, Star, Clock, Camera, Sparkles, ArrowRight } from 'lucide-react'
+import { Check, Star, Clock, Sparkles, ArrowRight } from 'lucide-react'
 
 // Lazy load components not needed for initial render
 const HeadshotsGallery = dynamic(
@@ -32,6 +31,14 @@ const StickyMobileCTA = dynamic(
 const InlineEmailForm = dynamic(
   () => import('@/components/headshots/InlineEmailForm').then(mod => ({ default: mod.InlineEmailForm })),
   { ssr: false, loading: () => <div className="h-12 bg-gray-100 animate-pulse rounded max-w-lg mx-auto" /> }
+)
+const HomePageClient = dynamic(
+  () => import('@/components/headshots/HomePageClient').then(mod => ({ default: mod.HomePageClient })),
+  { ssr: true }
+)
+const PricingButton = dynamic(
+  () => import('@/components/headshots/PricingModal').then(mod => ({ default: mod.PricingButton })),
+  { ssr: false, loading: () => <div className="h-12 w-40 bg-gray-200 animate-pulse rounded" /> }
 )
 
 export const metadata: Metadata = {
@@ -265,7 +272,7 @@ const features = [
 
 export default function HeadshotPhotographyPage() {
   return (
-    <>
+    <HomePageClient>
       {/* Sticky Mobile CTA - Always visible on scroll */}
       <StickyMobileCTA />
       
@@ -329,12 +336,12 @@ export default function HeadshotPhotographyPage() {
               </div>
               
               {/* Single Primary CTA */}
-              <Link
-                href="#pricing"
-                className="inline-block bg-white text-detroit-green px-10 py-4 text-center text-lg uppercase tracking-wider font-bold hover:bg-detroit-gold hover:text-white transition-colors shadow-lg"
+              <PricingButton 
+                variant="white"
+                className="px-10 py-4 text-lg rounded-none"
               >
                 Get Pricing
-              </Link>
+              </PricingButton>
               
               {/* Urgency line */}
               <p className="mt-4 text-detroit-cream/70 text-sm">
@@ -431,12 +438,9 @@ export default function HeadshotPhotographyPage() {
           
           {/* CTA after portfolio */}
           <div className="text-center mt-10">
-            <Link
-              href="#pricing"
-              className="inline-flex items-center gap-2 bg-detroit-green text-white px-8 py-3 text-base uppercase tracking-wider font-bold hover:bg-detroit-green/90 transition-colors rounded"
-            >
+            <PricingButton className="px-8 py-3 text-base rounded">
               See Pricing <ArrowRight className="w-4 h-4" />
-            </Link>
+            </PricingButton>
           </div>
         </div>
       </section>
@@ -506,12 +510,12 @@ export default function HeadshotPhotographyPage() {
           <p className="text-lg text-detroit-cream/70 mb-8">
             We don't rush. We work until you think: <em>"That's exactly who I want to be."</em>
           </p>
-          <Link
-            href="#pricing"
-            className="inline-flex items-center gap-2 bg-white text-detroit-green px-8 py-3 text-base uppercase tracking-wider font-bold hover:bg-detroit-gold hover:text-white transition-colors rounded"
+          <PricingButton 
+            variant="white"
+            className="px-8 py-3 text-base rounded"
           >
             See Pricing <ArrowRight className="w-4 h-4" />
-          </Link>
+          </PricingButton>
         </div>
       </section>
 
@@ -581,12 +585,9 @@ export default function HeadshotPhotographyPage() {
           
           {/* CTA after comparison */}
           <div className="text-center mt-10">
-            <Link
-              href="#pricing"
-              className="inline-flex items-center gap-2 bg-detroit-green text-white px-8 py-3 text-base uppercase tracking-wider font-bold hover:bg-detroit-green/90 transition-colors rounded"
-            >
+            <PricingButton className="px-8 py-3 text-base rounded">
               Get Your Pricing <ArrowRight className="w-4 h-4" />
-            </Link>
+            </PricingButton>
           </div>
         </div>
       </section>
@@ -616,12 +617,9 @@ export default function HeadshotPhotographyPage() {
           
           {/* CTA */}
           <div className="text-center mt-10">
-            <Link
-              href="#pricing"
-              className="inline-flex items-center gap-2 bg-detroit-green text-white px-8 py-3 text-base uppercase tracking-wider font-bold hover:bg-detroit-green/90 transition-colors rounded"
-            >
+            <PricingButton className="px-8 py-3 text-base rounded">
               See Pricing <ArrowRight className="w-4 h-4" />
-            </Link>
+            </PricingButton>
           </div>
         </div>
       </section>
@@ -644,6 +642,6 @@ export default function HeadshotPhotographyPage() {
           <HubSpotForm emailOnly redirectUrl="/book" />
         </div>
       </section>
-    </>
+    </HomePageClient>
   )
 }

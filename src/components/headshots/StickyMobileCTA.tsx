@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
 import { Star, ArrowRight } from 'lucide-react'
+import { usePricingModal } from './PricingModal'
 
 export function StickyMobileCTA() {
   const [isVisible, setIsVisible] = useState(false)
   const [isAtBottom, setIsAtBottom] = useState(false)
+  const { openModal } = usePricingModal()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,13 +48,13 @@ export function StickyMobileCTA() {
           </div>
           
           {/* CTA Button - Full width, prominent */}
-          <Link
-            href="#pricing"
+          <button
+            onClick={openModal}
             className="flex items-center justify-center gap-2 w-full bg-white text-detroit-green py-3 px-6 font-bold uppercase tracking-wide text-sm rounded hover:bg-detroit-gold hover:text-white transition-all active:scale-[0.98]"
           >
             See Pricing & Book
             <ArrowRight className="w-4 h-4" />
-          </Link>
+          </button>
         </div>
       </div>
     </div>

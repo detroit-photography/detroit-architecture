@@ -1,9 +1,9 @@
 'use client'
 
 import Image from 'next/image'
-import Link from 'next/link'
 import { useState, useCallback, memo } from 'react'
 import { ChevronUp, ChevronDown } from 'lucide-react'
+import { usePricingModal } from './PricingModal'
 
 const studioImages = [
   { src: '/images/headshots/bagley-mansion.jpg', alt: 'Bagley Mansion exterior', title: 'Bagley Mansion' },
@@ -15,6 +15,7 @@ const studioImages = [
 
 export const LocationSection = memo(function LocationSection() {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const { openModal } = usePricingModal()
 
   const nextImage = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % studioImages.length)
@@ -65,12 +66,12 @@ export const LocationSection = memo(function LocationSection() {
             </p>
           </div>
           <div className="text-center">
-            <Link
-              href="#pricing"
+            <button
+              onClick={openModal}
               className="inline-block bg-detroit-green text-white px-8 py-4 text-sm uppercase tracking-wider font-medium hover:bg-detroit-gold transition-colors"
             >
               Get Pricing
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -160,12 +161,12 @@ export const LocationSection = memo(function LocationSection() {
                 window, are available for photography after 5 p.m. and all day Sunday.
               </p>
             </div>
-            <Link
-              href="#pricing"
+            <button
+              onClick={openModal}
               className="inline-block bg-detroit-green text-white px-8 py-4 text-sm uppercase tracking-wider font-medium hover:bg-detroit-gold transition-colors"
             >
               Get Pricing
-            </Link>
+            </button>
           </div>
         </div>
       </div>
