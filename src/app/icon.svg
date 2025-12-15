@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Dark green background fills entire space -->
+  <rect width="32" height="32" rx="4" fill="#0d2e1f"/>
+  
+  <!-- DP Letters - Bold, filling the space -->
+  <text x="16" y="23" 
+        font-family="Georgia, serif" 
+        font-size="18" 
+        font-weight="bold" 
+        fill="#c4a962" 
+        text-anchor="middle">DP</text>
+</svg>
+

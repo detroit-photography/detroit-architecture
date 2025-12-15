@@ -87,6 +87,10 @@ export const metadata: Metadata = {
     description: 'Professional headshots by Detroit\'s #1-rated photo studio.',
     images: ['https://www.detroitphotography.com/images/headshots/hero-headshot.jpg'],
   },
+  icons: {
+    icon: '/icon.svg',
+    apple: '/apple-icon.svg',
+  },
   robots: {
     index: true,
     follow: true,
@@ -145,8 +149,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${cormorant.variable} ${montserrat.variable}`}>
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#0d2e1f" />
         {/* Preload hero image for faster LCP */}
         <link

@@ -272,10 +272,36 @@ export default function HeadshotPhotographyPage() {
       <section className="bg-detroit-green text-white py-10 md:py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div>
+            {/* Hero image - mobile first (above text on mobile) */}
+            <div className="relative md:hidden">
+              <div className="aspect-[16/9] relative overflow-hidden rounded-lg shadow-2xl">
+                <Image
+                  src="/images/headshots/hero-headshot.jpg"
+                  alt="Professional headshots near me in Detroit"
+                  fill
+                  priority
+                  className="object-cover" style={{ objectPosition: 'center 25%' }}
+                  sizes="100vw"
+                />
+              </div>
+              {/* Social proof badge - mobile */}
+              <div className="absolute -bottom-3 left-4 right-4">
+                <div className="bg-white text-detroit-green px-4 py-3 rounded shadow-lg flex items-center gap-3">
+                  <div className="flex -space-x-2">
+                    <div className="w-8 h-8 rounded-full bg-detroit-gold/20 flex items-center justify-center text-xs font-bold text-detroit-green">5★</div>
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-bold">201 five-star reviews</span>
+                    <span className="text-gray-500 block text-xs">on Google</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 md:mt-0">
               {/* H1 - Message match for top search terms */}
               <h1 className="font-display text-3xl md:text-4xl lg:text-5xl mb-4">
-                Professional Headshots by the <span className="text-detroit-gold">#1-Rated Studio</span> in Detroit
+                Professional Headshots<br />by the <span className="text-detroit-gold">#1-Rated Studio</span> in Detroit
               </h1>
               <p className="text-2xl md:text-3xl text-detroit-gold font-display mb-4">Starting at $149</p>
               
@@ -322,19 +348,20 @@ export default function HeadshotPhotographyPage() {
               </p>
             </div>
             
-            {/* Hero image - optimized */}
-            <div className="relative">
-              <Image
-                src="/images/headshots/hero-headshot.jpg"
-                alt="Professional headshots near me in Detroit"
-                width={600}
-                height={800}
-                priority
-                className="w-full rounded-lg shadow-2xl"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              {/* Social proof badge */}
-              <div className="absolute -bottom-3 left-4 right-4 md:left-auto md:right-4 md:w-auto">
+            {/* Hero image - desktop only (1:1 aspect ratio) */}
+            <div className="relative hidden md:block">
+              <div className="aspect-square relative overflow-hidden rounded-lg shadow-2xl">
+                <Image
+                  src="/images/headshots/hero-headshot.jpg"
+                  alt="Professional headshots near me in Detroit"
+                  fill
+                  priority
+                  className="object-cover" style={{ objectPosition: 'center 25%' }}
+                  sizes="50vw"
+                />
+              </div>
+              {/* Social proof badge - desktop */}
+              <div className="absolute -bottom-3 right-4 w-auto">
                 <div className="bg-white text-detroit-green px-4 py-3 rounded shadow-lg flex items-center gap-3">
                   <div className="flex -space-x-2">
                     <div className="w-8 h-8 rounded-full bg-detroit-gold/20 flex items-center justify-center text-xs font-bold text-detroit-green">5★</div>
