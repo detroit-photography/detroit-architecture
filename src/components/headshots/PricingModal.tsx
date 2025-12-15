@@ -92,7 +92,7 @@ function PricingModalContent({ onClose }: { onClose: () => void }) {
             </span>
           </div>
           <h2 className="font-display text-2xl md:text-3xl text-center mb-2">
-            View Our Pricing
+            View Our Pricing Menu
           </h2>
           <p className="text-center text-detroit-cream/90">
             Professional headshots starting at{' '}
@@ -105,7 +105,10 @@ function PricingModalContent({ onClose }: { onClose: () => void }) {
 
         {/* Form */}
         <div className="p-6">
-          <HubSpotForm emailOnly redirectUrl="/book" className="shadow-none" />
+          <p className="text-center text-gray-600 mb-4 text-sm">
+            Enter your email to see our full menu of services with up-front pricing.
+          </p>
+          <HubSpotForm emailOnly redirectUrl="/book" className="shadow-none" hideTitle />
         </div>
       </div>
     </div>

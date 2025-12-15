@@ -9,6 +9,7 @@ interface HubSpotFormProps {
   className?: string
   emailOnly?: boolean
   redirectUrl?: string
+  hideTitle?: boolean
 }
 
 export function HubSpotForm({
@@ -17,6 +18,7 @@ export function HubSpotForm({
   className = '',
   emailOnly = false,
   redirectUrl,
+  hideTitle = false,
 }: HubSpotFormProps) {
   const router = useRouter()
   const [email, setEmail] = useState('')
@@ -93,12 +95,16 @@ export function HubSpotForm({
 
   return (
     <div className={`bg-detroit-cream p-8 ${className}`}>
-      <h3 className="font-display text-2xl text-center text-gray-900 mb-2">
-        View Our Pricing
-      </h3>
-      <p className="text-center text-gray-600 mb-6 text-sm">
-        Enter your email to see our full menu of services with up-front pricing.
-      </p>
+      {!hideTitle && (
+        <>
+          <h3 className="font-display text-2xl text-center text-gray-900 mb-2">
+            View Our Pricing Menu
+          </h3>
+          <p className="text-center text-gray-600 mb-6 text-sm">
+            Enter your email to see our full menu of services with up-front pricing.
+          </p>
+        </>
+      )}
       
       <form onSubmit={handleSubmit} className="space-y-4">
         {!emailOnly && (
