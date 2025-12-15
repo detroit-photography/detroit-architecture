@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Check, Star, Clock, Camera, Sparkles } from 'lucide-react'
+import { Check, Star, Clock, Camera, Sparkles, ArrowRight } from 'lucide-react'
 
 // Lazy load components not needed for initial render
 const HeadshotsGallery = dynamic(
@@ -24,6 +24,14 @@ const ScrollableCards = dynamic(
 const DynamicReviewCount = dynamic(
   () => import('@/components/headshots/DynamicReviewCount').then(mod => ({ default: mod.DynamicReviewCount })),
   { ssr: false, loading: () => <p className="text-center text-gray-500 mb-12">201 five-star Google reviews</p> }
+)
+const StickyMobileCTA = dynamic(
+  () => import('@/components/headshots/StickyMobileCTA').then(mod => ({ default: mod.StickyMobileCTA })),
+  { ssr: false }
+)
+const InlineEmailForm = dynamic(
+  () => import('@/components/headshots/InlineEmailForm').then(mod => ({ default: mod.InlineEmailForm })),
+  { ssr: false, loading: () => <div className="h-12 bg-gray-100 animate-pulse rounded max-w-lg mx-auto" /> }
 )
 
 export const metadata: Metadata = {
@@ -258,6 +266,9 @@ const features = [
 export default function HeadshotPhotographyPage() {
   return (
     <>
+      {/* Sticky Mobile CTA - Always visible on scroll */}
+      <StickyMobileCTA />
+      
       {/* Schema.org JSON-LD */}
       <script
         type="application/ld+json"
@@ -417,6 +428,16 @@ export default function HeadshotPhotographyPage() {
           <div className="hidden md:block">
             <HeadshotsGallery images={portfolioImages} columns={4} />
           </div>
+          
+          {/* CTA after portfolio */}
+          <div className="text-center mt-10">
+            <Link
+              href="#pricing"
+              className="inline-flex items-center gap-2 bg-detroit-green text-white px-8 py-3 text-base uppercase tracking-wider font-bold hover:bg-detroit-green/90 transition-colors rounded"
+            >
+              See Pricing <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -461,25 +482,36 @@ export default function HeadshotPhotographyPage() {
               ))}
             </ScrollableCards>
           </div>
+          
+          {/* Mid-page email capture - peak trust moment */}
+          <div className="mt-12 pt-10 border-t border-detroit-gold/20">
+            <p className="text-center text-gray-700 font-medium mb-4">
+              Ready to look this good? Get your pricing menu:
+            </p>
+            <InlineEmailForm variant="light" />
+          </div>
         </div>
       </section>
 
-      {/* Philosophy Section - Why Settle for Ordinary */}
-      <section className="py-16 md:py-24 bg-detroit-green text-white">
+      {/* Philosophy Section - Punchy and Action-Oriented */}
+      <section className="py-16 md:py-20 bg-detroit-green text-white">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <Sparkles className="w-10 h-10 text-detroit-gold mx-auto mb-8" />
-          <h2 className="font-display text-3xl md:text-4xl mb-8">
-            Why settle for ordinary?
+          <Sparkles className="w-8 h-8 text-detroit-gold mx-auto mb-6" />
+          <h2 className="font-display text-3xl md:text-4xl mb-6">
+            Your headshot is your first impression.
           </h2>
-          <p className="text-xl text-detroit-cream/90 leading-relaxed mb-8">
-            Your headshot is often the first impression you make. It appears on LinkedIn, 
-            your company website, conference programs, and everywhere you're represented professionally. 
-            It should be <em className="text-detroit-gold">exceptional</em>.
+          <p className="text-xl text-detroit-cream/90 leading-relaxed mb-6 max-w-2xl mx-auto">
+            LinkedIn. Your website. Conference programs. Make it <em className="text-detroit-gold">exceptional</em>.
           </p>
-          <p className="text-lg text-detroit-cream/80 leading-relaxed">
-            We don't rush. We don't cut corners. We work until we capture something 
-            that makes you stop and think: <em>"That's exactly who I want to be."</em>
+          <p className="text-lg text-detroit-cream/70 mb-8">
+            We don't rush. We work until you think: <em>"That's exactly who I want to be."</em>
           </p>
+          <Link
+            href="#pricing"
+            className="inline-flex items-center gap-2 bg-white text-detroit-green px-8 py-3 text-base uppercase tracking-wider font-bold hover:bg-detroit-gold hover:text-white transition-colors rounded"
+          >
+            See Pricing <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
 
@@ -546,198 +578,49 @@ export default function HeadshotPhotographyPage() {
               </tbody>
             </table>
           </div>
+          
+          {/* CTA after comparison */}
+          <div className="text-center mt-10">
+            <Link
+              href="#pricing"
+              className="inline-flex items-center gap-2 bg-detroit-green text-white px-8 py-3 text-base uppercase tracking-wider font-bold hover:bg-detroit-green/90 transition-colors rounded"
+            >
+              Get Your Pricing <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Excellence Made Easy Section - Horizontal Scroll on Mobile */}
+      {/* What's Included - Streamlined Features Section */}
       <section className="py-16 md:py-20 bg-white">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-display text-3xl md:text-4xl text-gray-900 mb-4">
-              Excellence, Made Easy
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Great work doesn't have to be complicated. We've designed every part 
-              of the experience to be as seamless as the results.
-            </p>
-          </div>
-          
-          {/* Mobile: Horizontal Scroll */}
-          <div className="md:hidden -mx-4 px-4">
-            <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-              {[
-                { icon: Camera, title: 'Unlimited Time', desc: 'No rushing. We work until we get it right, no matter how long it takes.' },
-                { icon: Clock, title: 'Same-Day Delivery', desc: 'Need your photos fast? Same-day turnaround available for those who need it.' },
-                { icon: Star, title: 'Satisfaction Guaranteed', desc: '201 five-star reviews. We don\'t stop until you love your photos.' },
-              ].map((item, i) => {
-                const Icon = item.icon
-                return (
-                  <div key={i} className="flex-none w-64 bg-gray-50 p-6 rounded-lg snap-start text-center">
-                    <div className="w-14 h-14 bg-detroit-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Icon className="w-7 h-7 text-detroit-gold" />
-                    </div>
-                    <h3 className="font-display text-lg text-gray-900 mb-2">{item.title}</h3>
-                    <p className="text-gray-600 text-sm">{item.desc}</p>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-          
-          {/* Desktop: Grid */}
-          <div className="hidden md:grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-detroit-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Camera className="w-8 h-8 text-detroit-gold" />
-              </div>
-              <h3 className="font-display text-xl text-gray-900 mb-2">Unlimited Time</h3>
-              <p className="text-gray-600 text-sm">
-                No rushing. We work until we get it right, no matter how long it takes.
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-detroit-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Clock className="w-8 h-8 text-detroit-gold" />
-              </div>
-              <h3 className="font-display text-xl text-gray-900 mb-2">Same-Day Delivery</h3>
-              <p className="text-gray-600 text-sm">
-                Need your photos fast? Same-day turnaround available for those who need it.
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-detroit-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Star className="w-8 h-8 text-detroit-gold" />
-              </div>
-              <h3 className="font-display text-xl text-gray-900 mb-2">Satisfaction Guaranteed</h3>
-              <p className="text-gray-600 text-sm">
-                201 five-star reviews. We don't stop until you love your photos.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Checklist - Horizontal Scroll on Mobile */}
-      <section className="py-16 md:py-20 bg-detroit-cream">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="font-display text-3xl md:text-4xl text-center text-gray-900 mb-12">
+          <h2 className="font-display text-3xl md:text-4xl text-center text-gray-900 mb-4">
             Every Session Includes
           </h2>
+          <p className="text-center text-gray-600 mb-10 max-w-2xl mx-auto">
+            No hidden fees. No rushing. Just exceptional photography.
+          </p>
           
-          {/* Mobile: Horizontal Scroll */}
-          <div className="md:hidden -mx-4 px-4">
-            <div className="flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-              {features.map((item, i) => (
-                <div key={i} className="flex-none w-56 bg-white p-4 rounded-lg shadow snap-start">
-                  <div className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-detroit-gold flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h3 className="font-medium text-gray-900 text-sm">{item.title}</h3>
-                      <p className="text-gray-600 text-xs mt-1">{item.desc}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          {/* Desktop: Grid */}
-          <div className="hidden md:grid md:grid-cols-2 gap-6">
+          {/* Desktop: Compact Grid */}
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {features.map((item, i) => (
-              <div key={i} className="flex items-start gap-4">
-                <Check className="w-6 h-6 text-detroit-gold flex-shrink-0 mt-0.5" />
+              <div key={i} className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                <Check className="w-5 h-5 text-detroit-gold flex-shrink-0 mt-0.5" />
                 <div>
-                  <h3 className="font-medium text-gray-900">{item.title}</h3>
-                  <p className="text-gray-600 text-sm">{item.desc}</p>
+                  <h3 className="font-medium text-gray-900 text-sm">{item.title}</h3>
+                  <p className="text-gray-500 text-xs mt-1">{item.desc}</p>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Specialized Headshot Services - Internal Links for SEO */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="font-display text-2xl md:text-3xl text-center text-gray-900 mb-4">
-            Specialized Headshot Photography Services
-          </h2>
-          <p className="text-center text-gray-600 mb-10 max-w-2xl mx-auto">
-            We provide professional headshots tailored to your industry. Every session includes unlimited time, 
-            wardrobe changes, and expert posing guidance.
-          </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Link 
-              href="/headshot-types/business-headshots-detroit"
-              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
+          
+          {/* CTA */}
+          <div className="text-center mt-10">
+            <Link
+              href="#pricing"
+              className="inline-flex items-center gap-2 bg-detroit-green text-white px-8 py-3 text-base uppercase tracking-wider font-bold hover:bg-detroit-green/90 transition-colors rounded"
             >
-              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
-                Business Headshots
-              </h3>
-              <p className="text-gray-600 text-sm">For professionals, entrepreneurs & teams</p>
-            </Link>
-            <Link 
-              href="/headshot-types/executive-headshots-detroit"
-              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
-            >
-              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
-                Executive Portraits
-              </h3>
-              <p className="text-gray-600 text-sm">C-suite & leadership photography</p>
-            </Link>
-            <Link 
-              href="/headshot-types/lawyer-headshots-detroit"
-              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
-            >
-              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
-                Attorney Headshots
-              </h3>
-              <p className="text-gray-600 text-sm">Law firm & legal professional photos</p>
-            </Link>
-            <Link 
-              href="/headshot-types/doctor-headshots-detroit"
-              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
-            >
-              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
-                Doctor Headshots
-              </h3>
-              <p className="text-gray-600 text-sm">Medical & healthcare professionals</p>
-            </Link>
-            <Link 
-              href="/headshot-types/realtor-headshots-detroit"
-              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
-            >
-              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
-                Realtor Headshots
-              </h3>
-              <p className="text-gray-600 text-sm">Real estate agent photography</p>
-            </Link>
-            <Link 
-              href="/headshot-types/linkedin-headshots-detroit"
-              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
-            >
-              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
-                LinkedIn Headshots
-              </h3>
-              <p className="text-gray-600 text-sm">Profile photos that get noticed</p>
-            </Link>
-            <Link 
-              href="/headshot-types/actor-headshots-detroit"
-              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
-            >
-              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
-                Actor Headshots
-              </h3>
-              <p className="text-gray-600 text-sm">Casting & performance photos</p>
-            </Link>
-            <Link 
-              href="/headshot-types/dating-headshots-in-detroit"
-              className="bg-white p-5 shadow-sm hover:shadow-md transition-all group border-l-4 border-detroit-gold"
-            >
-              <h3 className="font-display text-lg text-gray-900 group-hover:text-detroit-green mb-1">
-                Dating Profile Photos
-              </h3>
-              <p className="text-gray-600 text-sm">Stand out on dating apps</p>
+              See Pricing <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -746,18 +629,40 @@ export default function HeadshotPhotographyPage() {
       {/* Pricing Section with Form - Final Section (No Footer Below) */}
       <section id="pricing" className="py-16 md:py-24 bg-detroit-green">
         <div className="max-w-3xl mx-auto px-4">
-          <div className="text-center text-white mb-12">
+          <div className="text-center text-white mb-10">
             <h2 className="font-display text-3xl md:text-4xl mb-4">
               Get Your Pricing Menu
             </h2>
-            <p className="text-detroit-cream/80 text-lg">
+            <p className="text-detroit-cream/90 text-lg mb-2">
               Professional headshots starting at <span className="text-detroit-gold font-bold text-3xl">$149</span>
             </p>
-            <p className="text-detroit-cream/60 text-sm mt-2">
-              Includes unlimited time, wardrobe changes & backdrops
+            <p className="text-detroit-cream/70 text-sm">
+              Unlimited time • Unlimited wardrobe changes • Multiple backdrops
             </p>
           </div>
+          
           <HubSpotForm emailOnly redirectUrl="/book" />
+          
+          {/* What Happens Next - Reduce uncertainty */}
+          <div className="mt-10 pt-8 border-t border-white/20">
+            <p className="text-center text-detroit-cream/80 text-sm mb-4 font-medium">
+              What happens next:
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 text-detroit-cream/70 text-sm">
+              <div className="flex items-center gap-2 justify-center">
+                <span className="w-6 h-6 rounded-full bg-detroit-gold/20 flex items-center justify-center text-detroit-gold text-xs font-bold">1</span>
+                <span>See all pricing options</span>
+              </div>
+              <div className="flex items-center gap-2 justify-center">
+                <span className="w-6 h-6 rounded-full bg-detroit-gold/20 flex items-center justify-center text-detroit-gold text-xs font-bold">2</span>
+                <span>Pick a time that works</span>
+              </div>
+              <div className="flex items-center gap-2 justify-center">
+                <span className="w-6 h-6 rounded-full bg-detroit-gold/20 flex items-center justify-center text-detroit-gold text-xs font-bold">3</span>
+                <span>Get amazing photos</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </>
