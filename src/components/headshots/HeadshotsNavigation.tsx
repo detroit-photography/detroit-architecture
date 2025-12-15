@@ -66,7 +66,7 @@ export const HeadshotsNavigation = memo(function HeadshotsNavigation() {
           {/* Logo - optimized */}
           <Link href="/" className="flex items-center gap-3" aria-label="Detroit Photography - Home">
             <Image 
-              src="/images/headshots/logo.svg" 
+              src="/images/headshots/logo-new.png" 
               alt="Detroit Photography" 
               width={56}
               height={56}

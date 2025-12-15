@@ -29,11 +29,6 @@ const HeadshotsFooter = dynamic(
   { ssr: true }
 )
 
-// Sticky mobile CTA for conversions
-const StickyBookCTA = dynamic(
-  () => import('@/components/headshots/StickyBookCTA').then(mod => ({ default: mod.StickyBookCTA })),
-  { ssr: false }
-)
 
 export const metadata: Metadata = {
   title: {
@@ -188,7 +183,6 @@ export default function RootLayout({
             {children}
           </main>
           <HeadshotsFooter />
-          <StickyBookCTA />
         </Providers>
       </body>
     </html>

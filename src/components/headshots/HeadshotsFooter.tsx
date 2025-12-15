@@ -4,8 +4,9 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Phone, Mail, MapPin, Instagram, Facebook } from 'lucide-react'
 
-// Pages where footer should be hidden (landing pages for ads)
+// Pages where footer should be hidden (landing pages for ads, homepage)
 const HIDE_FOOTER_PATHS = [
+  '/',
   '/headshot-photography-in-detroit',
 ]
 
@@ -33,7 +34,7 @@ export function HeadshotsFooter() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-4 mb-4">
               <img 
-                src="/images/headshots/logo.svg" 
+                src="/images/headshots/logo-new.png" 
                 alt="Detroit Photography" 
                 className="h-14 w-14"
               />
