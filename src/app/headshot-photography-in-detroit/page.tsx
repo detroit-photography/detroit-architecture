@@ -17,10 +17,6 @@ const HubSpotForm = dynamic(
   () => import('@/components/headshots/HubSpotForm').then(mod => ({ default: mod.HubSpotForm })),
   { ssr: false, loading: () => <div className="h-64 bg-detroit-cream animate-pulse" /> }
 )
-const CredibilitySection = dynamic(
-  () => import('@/components/headshots/CredibilitySection').then(mod => ({ default: mod.CredibilitySection })),
-  { ssr: true }
-)
 const ScrollableCards = dynamic(
   () => import('@/components/headshots/ScrollableCards').then(mod => ({ default: mod.ScrollableCards })),
   { ssr: true }
@@ -280,7 +276,7 @@ export default function HeadshotPhotographyPage() {
                   alt="Professional headshots near me in Detroit"
                   fill
                   priority
-                  className="object-cover" style={{ objectPosition: 'center 25%' }}
+                  className="object-cover" style={{ objectPosition: 'center 40%' }}
                   sizes="100vw"
                 />
               </div>
@@ -356,7 +352,7 @@ export default function HeadshotPhotographyPage() {
                   alt="Professional headshots near me in Detroit"
                   fill
                   priority
-                  className="object-cover" style={{ objectPosition: 'center 25%' }}
+                  className="object-cover" style={{ objectPosition: 'center 40%' }}
                   sizes="50vw"
                 />
               </div>
@@ -502,8 +498,6 @@ export default function HeadshotPhotographyPage() {
       {/* Location Section */}
       <LocationSection />
 
-      {/* Credibility - Publications & Institutions */}
-      <CredibilitySection />
 
       {/* The Choice for Savvy Clients - Comparison Table */}
       <section className="py-16 md:py-20 bg-detroit-cream">

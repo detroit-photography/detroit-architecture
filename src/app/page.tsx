@@ -21,10 +21,6 @@ const ScrollableCards = dynamic(
   () => import('@/components/headshots/ScrollableCards').then(mod => ({ default: mod.ScrollableCards })),
   { ssr: true }
 )
-const CredibilitySection = dynamic(
-  () => import('@/components/headshots/CredibilitySection').then(mod => ({ default: mod.CredibilitySection })),
-  { ssr: true }
-)
 const DynamicReviewCount = dynamic(
   () => import('@/components/headshots/DynamicReviewCount').then(mod => ({ default: mod.DynamicReviewCount })),
   { ssr: false, loading: () => <p className="text-center text-gray-500 mb-12">201 five-star Google reviews</p> }
@@ -280,7 +276,7 @@ export default function HeadshotPhotographyPage() {
                   alt="Professional headshots near me in Detroit"
                   fill
                   priority
-                  className="object-cover" style={{ objectPosition: 'center 25%' }}
+                  className="object-cover" style={{ objectPosition: 'center 40%' }}
                   sizes="100vw"
                 />
               </div>
@@ -356,7 +352,7 @@ export default function HeadshotPhotographyPage() {
                   alt="Professional headshots near me in Detroit"
                   fill
                   priority
-                  className="object-cover" style={{ objectPosition: 'center 25%' }}
+                  className="object-cover" style={{ objectPosition: 'center 40%' }}
                   sizes="50vw"
                 />
               </div>
@@ -502,8 +498,6 @@ export default function HeadshotPhotographyPage() {
       {/* Location Section */}
       <LocationSection />
 
-      {/* Credibility - Publications & Institutions */}
-      <CredibilitySection />
 
       {/* The Choice for Savvy Clients - Comparison Table */}
       <section className="py-16 md:py-20 bg-detroit-cream">

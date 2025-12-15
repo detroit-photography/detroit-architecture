@@ -276,7 +276,7 @@ export default function HeadshotPhotographyPage() {
                   alt="Professional headshots near me in Detroit"
                   fill
                   priority
-                  className="object-cover" style={{ objectPosition: 'center 25%' }}
+                  className="object-cover" style={{ objectPosition: 'center 40%' }}
                   sizes="100vw"
                 />
               </div>
@@ -352,7 +352,7 @@ export default function HeadshotPhotographyPage() {
                   alt="Professional headshots near me in Detroit"
                   fill
                   priority
-                  className="object-cover" style={{ objectPosition: 'center 25%' }}
+                  className="object-cover" style={{ objectPosition: 'center 40%' }}
                   sizes="50vw"
                 />
               </div>

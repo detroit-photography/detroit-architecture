@@ -10,7 +10,6 @@ import { Menu, X, ChevronDown } from 'lucide-react'
 const HIDE_NAV_PREFIXES = ['/architecture', '/admin']
 
 const navItems = [
-  { label: 'Home', href: '/' },
   {
     label: 'Headshots',
     children: [
