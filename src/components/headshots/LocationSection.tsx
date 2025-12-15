@@ -6,12 +6,12 @@ import { useState, useCallback, memo } from 'react'
 import { ChevronUp, ChevronDown } from 'lucide-react'
 
 const studioImages = [
-  { src: '/images/headshots/bagley-mansion.jpg', alt: 'Bagley Mansion exterior' },
-  { src: '/images/headshots/bagley-drone.jpg', alt: 'Bagley Mansion aerial view with Detroit skyline' },
-  { src: '/images/headshots/bagley-interior-1.jpg', alt: 'Studio with professional lighting setup' },
-  { src: '/images/headshots/bagley-interior-2.jpg', alt: 'Studio lighting and fireplace backdrop' },
-  { src: '/images/headshots/bagley-interior-3.jpg', alt: 'Historic fireplace mantel' },
-  { src: '/images/headshots/bagley-interior-4.jpg', alt: 'Grand staircase and chandelier' },
+  { src: '/images/headshots/bagley-mansion.jpg', alt: 'Bagley Mansion exterior', title: 'Historic Exterior' },
+  { src: '/images/headshots/bagley-drone.jpg', alt: 'Bagley Mansion aerial view with Detroit skyline', title: 'Detroit Skyline View' },
+  { src: '/images/headshots/bagley-interior-1.jpg', alt: 'Studio with professional lighting setup', title: 'Professional Studio' },
+  { src: '/images/headshots/bagley-interior-2.jpg', alt: 'Studio lighting and fireplace backdrop', title: 'Fireplace Setting' },
+  { src: '/images/headshots/bagley-interior-3.jpg', alt: 'Historic fireplace mantel', title: 'Historic Details' },
+  { src: '/images/headshots/bagley-interior-4.jpg', alt: 'Grand staircase and chandelier', title: 'Grand Staircase' },
 ]
 
 export const LocationSection = memo(function LocationSection() {
@@ -28,7 +28,55 @@ export const LocationSection = memo(function LocationSection() {
   return (
     <section className="py-16 md:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        {/* Mobile: Horizontal Scrollable Cards */}
+        <div className="lg:hidden">
+          <p className="text-detroit-gold uppercase tracking-wider text-sm mb-4 text-center">
+            Located in Historic Bagley Mansion
+          </p>
+          <h2 className="font-display text-3xl text-gray-900 mb-6 text-center">
+            Not just a studio, but a destination
+          </h2>
+          
+          {/* Scrollable Cards */}
+          <div className="-mx-4 px-4 mb-8">
+            <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              {studioImages.map((image, i) => (
+                <div key={i} className="flex-none w-72 snap-start">
+                  <div className="relative aspect-[4/5] rounded-lg overflow-hidden shadow-lg">
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      className="object-cover"
+                      sizes="288px"
+                      loading={i < 2 ? "eager" : "lazy"}
+                    />
+                  </div>
+                  <p className="text-center text-gray-600 text-sm mt-2">{image.title}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="prose prose-lg text-gray-600 mb-8 text-center">
+            <p>
+              Detroit Photography occupies the master suite at the historic John N. Bagley House, 
+              one of Detroit&apos;s oldest and most prestigious historic homes. Constructed in 1889 
+              and listed on the National Register of Historic Places.
+            </p>
+          </div>
+          <div className="text-center">
+            <Link
+              href="#pricing"
+              className="inline-block bg-detroit-green text-white px-8 py-4 text-sm uppercase tracking-wider font-medium hover:bg-detroit-gold transition-colors"
+            >
+              Get Pricing
+            </Link>
+          </div>
+        </div>
+
+        {/* Desktop: Original Layout */}
+        <div className="hidden lg:grid grid-cols-2 gap-12 items-center">
           {/* Vertical Image Slider - Left Side */}
           <div className="relative">
             {/* Main Image */}
@@ -38,7 +86,7 @@ export const LocationSection = memo(function LocationSection() {
                 alt={studioImages[currentIndex].alt}
                 fill
                 className="object-cover transition-opacity duration-300"
-                sizes="(max-width: 1024px) 100vw, 50vw"
+                sizes="50vw"
                 priority
               />
               
@@ -100,7 +148,7 @@ export const LocationSection = memo(function LocationSection() {
             <div className="prose prose-lg text-gray-600 mb-8">
               <p>
                 Detroit Photography occupies the master suite at the historic John N. Bagley House, 
-                one of Detroit's oldest and most prestigious historic homes. Constructed in 1889 
+                one of Detroit&apos;s oldest and most prestigious historic homes. Constructed in 1889 
                 and listed on the National Register of Historic Places, Bagley Mansion is among 
                 the finest examples of the Romanesque Revival and French Renaissance architectural 
                 styles in Detroit.

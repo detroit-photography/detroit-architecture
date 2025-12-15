@@ -207,7 +207,7 @@ const jsonLd = {
 }
 
 const portfolioImages = [
-  { src: '/images/headshots/hero-headshot.jpg', alt: 'Professional headshots near me - woman executive' },
+  { src: '/images/headshots/michelle-front.jpg', alt: 'Professional headshots near me - executive portrait' },
   { src: '/images/headshots/headshot-2.jpg', alt: 'Professional headshots Detroit - business portrait' },
   { src: '/images/headshots/headshot-3.jpg', alt: 'Executive headshots Detroit' },
   { src: '/images/headshots/headshot-4.jpg', alt: 'Corporate headshots near me' },
@@ -279,18 +279,6 @@ export default function HeadshotPhotographyPage() {
                   className="object-cover" style={{ objectPosition: 'center 55%' }}
                   sizes="100vw"
                 />
-              </div>
-              {/* Social proof badge - mobile */}
-              <div className="absolute -bottom-3 left-4 right-4">
-                <div className="bg-white text-detroit-green px-4 py-3 rounded shadow-lg flex items-center gap-3">
-                  <div className="flex -space-x-2">
-                    <div className="w-8 h-8 rounded-full bg-detroit-gold/20 flex items-center justify-center text-xs font-bold text-detroit-green">5★</div>
-                  </div>
-                  <div className="text-sm">
-                    <span className="font-bold">201 five-star reviews</span>
-                    <span className="text-gray-500 block text-xs">on Google</span>
-                  </div>
-                </div>
               </div>
             </div>
             
