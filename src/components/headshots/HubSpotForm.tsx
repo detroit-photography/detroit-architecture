@@ -10,6 +10,7 @@ interface HubSpotFormProps {
   emailOnly?: boolean
   redirectUrl?: string
   hideTitle?: boolean
+  minimal?: boolean
 }
 
 export function HubSpotForm({
@@ -19,6 +20,7 @@ export function HubSpotForm({
   emailOnly = false,
   redirectUrl,
   hideTitle = false,
+  minimal = false,
 }: HubSpotFormProps) {
   const router = useRouter()
   const [email, setEmail] = useState('')
@@ -94,7 +96,7 @@ export function HubSpotForm({
   }
 
   return (
-    <div className={`bg-detroit-cream p-8 ${className}`}>
+    <div className={`${minimal ? '' : 'bg-detroit-cream p-8'} ${className}`}>
       {!hideTitle && (
         <>
           <h3 className="font-display text-2xl text-center text-gray-900 mb-2">
@@ -117,7 +119,7 @@ export function HubSpotForm({
                 placeholder="First Name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-detroit-gold text-gray-900"
+                className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-detroit-gold text-gray-900 rounded"
                 required
               />
             </div>
@@ -129,7 +131,7 @@ export function HubSpotForm({
                 placeholder="Last Name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-detroit-gold text-gray-900"
+                className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-detroit-gold text-gray-900 rounded"
                 required
               />
             </div>
@@ -143,7 +145,7 @@ export function HubSpotForm({
             placeholder="Email Address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-detroit-gold text-gray-900"
+            className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-detroit-gold text-gray-900 rounded"
             required
           />
         </div>
@@ -155,14 +157,17 @@ export function HubSpotForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-detroit-green text-white px-8 py-4 text-sm uppercase tracking-wider font-medium hover:bg-detroit-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-detroit-green text-white px-8 py-4 text-sm uppercase tracking-wider font-medium hover:bg-detroit-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded"
         >
           {isSubmitting ? 'Submitting...' : 'See Pricing'}
         </button>
       </form>
       
       <p className="text-center text-gray-600 text-xs mt-4">
-        We have same-day bookings and a live calendar with up-front pricing.
+        {minimal 
+          ? 'Enter your email to see our full menu of services with up-front pricing.'
+          : 'We have same-day bookings and a live calendar with up-front pricing.'
+        }
       </p>
     </div>
   )

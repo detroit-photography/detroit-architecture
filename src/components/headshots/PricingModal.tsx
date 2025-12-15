@@ -105,10 +105,7 @@ function PricingModalContent({ onClose }: { onClose: () => void }) {
 
         {/* Form */}
         <div className="p-6">
-          <p className="text-center text-gray-600 mb-4 text-sm">
-            Enter your email to see our full menu of services with up-front pricing.
-          </p>
-          <HubSpotForm emailOnly redirectUrl="/book" className="shadow-none" hideTitle />
+          <HubSpotForm emailOnly redirectUrl="/book" hideTitle minimal />
         </div>
       </div>
     </div>
