@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Check, Star, Clock, Camera, Sparkles, Eye, Heart } from 'lucide-react'
+import { Check, Star, Clock, Camera, Sparkles } from 'lucide-react'
 
 // Lazy load components not needed for initial render
 const HeadshotsGallery = dynamic(
@@ -20,6 +20,10 @@ const HubSpotForm = dynamic(
 const ScrollableCards = dynamic(
   () => import('@/components/headshots/ScrollableCards').then(mod => ({ default: mod.ScrollableCards })),
   { ssr: true }
+)
+const DynamicReviewCount = dynamic(
+  () => import('@/components/headshots/DynamicReviewCount').then(mod => ({ default: mod.DynamicReviewCount })),
+  { ssr: false, loading: () => <p className="text-center text-gray-500 mb-12">201 five-star Google reviews</p> }
 )
 
 export const metadata: Metadata = {
@@ -240,27 +244,6 @@ const testimonials = [
   },
 ]
 
-const clientNotices = [
-  {
-    icon: Sparkles,
-    title: '"The Lighting"',
-    count: '12',
-    description: 'Professional studio lighting that makes you look your absolute best—not flat, not harsh, just right.',
-  },
-  {
-    icon: Heart,
-    title: '"So Patient"',
-    count: '7',
-    description: 'No rushing. We take the time to help you relax and capture your authentic, confident self.',
-  },
-  {
-    icon: Eye,
-    title: '"Great Vision"',
-    count: '5',
-    description: 'Andrew knows exactly what angles, expressions, and compositions will make your headshot stand out.',
-  },
-]
-
 const features = [
   { title: 'Live image review', desc: 'See photos on a large monitor during your session' },
   { title: 'Magazine-quality retouching', desc: 'Expert visual artists perfect every image' },
@@ -393,6 +376,10 @@ export default function HeadshotPhotographyPage() {
       {/* Portfolio Gallery - Horizontal Scroll on Mobile */}
       <section className="py-12 md:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
+          <p className="text-center text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-10 font-light tracking-wide">
+            Hundreds of Detroit&apos;s top business leaders, doctors, attorneys, artists, and authors trust Detroit Photography for their professional portraits.
+          </p>
+          
           {/* Mobile: Horizontal Scroll Cards - optimized images */}
           <div className="md:hidden -mx-4 px-4">
             <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -418,94 +405,13 @@ export default function HeadshotPhotographyPage() {
         </div>
       </section>
 
-      {/* What Clients Notice - Horizontal Scroll on Mobile */}
-      <section className="py-16 md:py-20 bg-detroit-cream">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="font-display text-3xl md:text-4xl text-center text-gray-900 mb-4">
-            What Our Clients Notice Most
-          </h2>
-          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-            Based on 201 Google reviews, these are the words clients use most often:
-          </p>
-          
-          {/* Mobile: Horizontal Scroll Cards */}
-          <div className="md:hidden -mx-4 px-4">
-            <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-              {clientNotices.map((item, i) => {
-                const Icon = item.icon
-                return (
-                  <div key={i} className="flex-none w-72 bg-white p-6 rounded-lg shadow-lg snap-start">
-                    <div className="w-12 h-12 bg-detroit-green/10 rounded-full flex items-center justify-center mb-4">
-                      <Icon className="w-6 h-6 text-detroit-gold" />
-                    </div>
-                    <h3 className="font-display text-lg mb-1">
-                      {item.title}
-                      <span className="text-sm text-gray-500 font-normal ml-2">(mentioned {item.count}x)</span>
-                    </h3>
-                    <p className="text-gray-600 text-sm">{item.description}</p>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-          
-          {/* Desktop: Grid */}
-          <div className="hidden md:grid md:grid-cols-3 gap-8">
-            {clientNotices.map((item, i) => {
-              const Icon = item.icon
-              return (
-                <div key={i} className="bg-white p-8 text-center">
-                  <div className="w-14 h-14 bg-detroit-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Icon className="w-7 h-7 text-detroit-gold" />
-                  </div>
-                  <h3 className="font-display text-xl mb-2">
-                    {item.title}
-                    <span className="text-sm text-gray-500 font-normal ml-2">(mentioned {item.count}x)</span>
-                  </h3>
-                  <p className="text-gray-600">{item.description}</p>
-                </div>
-              )
-            })}
-          </div>
-          
-          {/* Additional mentions */}
-          <div className="mt-8 text-center">
-            <p className="text-gray-500 text-sm">
-              Also mentioned: <span className="text-gray-700">coached (3x)</span> · <span className="text-gray-700">facial expressions (3x)</span> · <span className="text-gray-700">career (2x)</span> · <span className="text-gray-700">LinkedIn (2x)</span>
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Philosophy Section - Why Settle for Ordinary */}
-      <section className="py-16 md:py-24 bg-detroit-green text-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <Sparkles className="w-10 h-10 text-detroit-gold mx-auto mb-8" />
-          <h2 className="font-display text-3xl md:text-4xl mb-8">
-            Why settle for ordinary?
-          </h2>
-          <p className="text-xl text-detroit-cream/90 leading-relaxed mb-8">
-            Your headshot is often the first impression you make. It appears on LinkedIn, 
-            your company website, conference programs, and everywhere you're represented professionally. 
-            It should be <em className="text-detroit-gold">exceptional</em>.
-          </p>
-          <p className="text-lg text-detroit-cream/80 leading-relaxed">
-            We don't rush. We don't cut corners. We work until we capture something 
-            that makes you stop and think: <em>"That's exactly who I want to be."</em>
-          </p>
-        </div>
-      </section>
-
-      {/* Location Section */}
-      <LocationSection />
-
-      {/* Testimonials - Horizontal Scroll Cards with Buttons */}
-      <section className="py-16 md:py-24 bg-white overflow-hidden">
+      {/* Testimonials - Rave Reviews Section */}
+      <section className="py-16 md:py-24 bg-detroit-cream overflow-hidden">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="font-display text-3xl md:text-4xl text-center text-gray-900 mb-4">
             We get <span className="underline decoration-detroit-gold decoration-2 underline-offset-4">rave reviews</span>.
           </h2>
-          <p className="text-center text-gray-500 mb-12">201 five-star Google reviews</p>
+          <DynamicReviewCount />
           
           {/* Horizontal Scroll Cards with Arrow Buttons */}
           <div className="-mx-4 px-4 md:-mx-8 md:px-8">
@@ -542,6 +448,28 @@ export default function HeadshotPhotographyPage() {
           </div>
         </div>
       </section>
+
+      {/* Philosophy Section - Why Settle for Ordinary */}
+      <section className="py-16 md:py-24 bg-detroit-green text-white">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <Sparkles className="w-10 h-10 text-detroit-gold mx-auto mb-8" />
+          <h2 className="font-display text-3xl md:text-4xl mb-8">
+            Why settle for ordinary?
+          </h2>
+          <p className="text-xl text-detroit-cream/90 leading-relaxed mb-8">
+            Your headshot is often the first impression you make. It appears on LinkedIn, 
+            your company website, conference programs, and everywhere you're represented professionally. 
+            It should be <em className="text-detroit-gold">exceptional</em>.
+          </p>
+          <p className="text-lg text-detroit-cream/80 leading-relaxed">
+            We don't rush. We don't cut corners. We work until we capture something 
+            that makes you stop and think: <em>"That's exactly who I want to be."</em>
+          </p>
+        </div>
+      </section>
+
+      {/* Location Section */}
+      <LocationSection />
 
       {/* The Choice for Savvy Clients - Comparison Table */}
       <section className="py-16 md:py-20 bg-detroit-cream">
