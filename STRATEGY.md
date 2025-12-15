@@ -7,9 +7,28 @@
 
 ## Executive Summary
 
-Detroit Photography is a portrait photography business with a strategic content play: building the definitive online resource for Detroit's historic architecture. This architecture content serves as an SEO engine and authority builder that drives traffic and credibility, ultimately converting visitors into portrait photography clients.
+Detroit Photography is a portrait photography business with a strategic content play: building **the definitive online database of Detroit's historic architecture**. This is not a content farm or AI-generated SEO play—it is a serious effort to surface authentic historic documents that have never been accessible online.
 
 **The money is in portraiture. The moat is in architecture content.**
+
+### The Core Mission
+We are building a resource that:
+- **Every Detroiter** can use to look up the history of buildings in their city
+- **Researchers and journalists** can cite as a primary source
+- **History enthusiasts** will bookmark and return to
+- **Google** will recognize as the authoritative answer for hundreds of local queries
+
+### What This Is NOT
+- ❌ AI-generated content or "SEO slop"
+- ❌ Thin pages designed to game search engines
+- ❌ Rewritten Wikipedia articles
+- ❌ Generic architectural descriptions
+
+### What This IS
+- ✅ Primary source documents (NRHP nominations) digitized and structured
+- ✅ Authentic historic photographs from government archives
+- ✅ Original professional photography we own the copyright to
+- ✅ A citable, referenceable database of real historic information
 
 ---
 
@@ -48,14 +67,47 @@ The National Register of Historic Places (NRHP) is the official list of historic
 
 **Critical insight:** This content is public domain and can be used for any purpose, but it's buried in government PDFs that Google cannot index. We are digitizing and structuring this content.
 
+### Authentic Sources, Not AI Slop
+
+**This is the most important principle of the architecture database.**
+
+We are unearthing and presenting **authentic historic documents**—not generating content. Every piece of text on a building page should be:
+
+1. **Directly quoted** from the NRHP nomination (with citation)
+2. **Factual information** extracted from official records
+3. **Our own original writing** based on primary source research
+4. **Never AI-generated filler** or rewritten Wikipedia content
+
+#### Why This Matters
+- **Credibility:** Researchers, journalists, and historians can cite us
+- **Uniqueness:** This content literally doesn't exist online in accessible form
+- **Trust:** Users learn they can rely on our information
+- **Longevity:** Authentic content doesn't get penalized by algorithm updates
+
+#### Citation Format
+Every building page should cite its sources:
+```
+Source: National Register of Historic Places Nomination Form, 
+[Building Name], [Date Listed]. National Park Service, 
+U.S. Department of the Interior.
+```
+
 ### The Content Moat
 By extracting, structuring, and presenting NRHP data in an SEO-friendly format, we create:
 
-1. **Unique text content** - Historic significance statements not available anywhere else online
-2. **Unique historic images** - Scanned photographs from nomination documents
+1. **Primary source documents** - The actual text from NRHP nominations, citable and authoritative
+2. **Unique historic images** - Scanned photographs from nomination documents (public domain)
 3. **Original photography** - Our own copyrighted modern photos of these buildings
-4. **Structured data** - Architect, style, year, neighborhood relationships
+4. **Structured data** - Architect, style, year, neighborhood relationships that enable discovery
 5. **Local authority** - Detroit-specific focus with professional local presence
+
+### The Definitive Database Goal
+
+We want this database to be **the place Detroiters go** to learn about their city's architecture. Not just for SEO—for genuine utility.
+
+When someone wonders "What's the history of that building on Woodward?", they should find us. When a journalist needs to fact-check an architect's name, they should cite us. When a student writes a paper on Detroit's Art Deco heritage, they should reference us.
+
+**If we build something genuinely useful, the SEO follows.**
 
 ### Competitive Advantage
 | Factor | Wikipedia | HistoricDetroit.org | DetroitUrbex | **Us** |
@@ -95,13 +147,76 @@ Each historic building gets a dedicated page with:
 - "Best locations for portrait photography"
 - Walking tour guides
 
-### SEO Keyword Targets
-- "[Building Name] Detroit" (e.g., "Fisher Building Detroit")
-- "[Building Name] history"
-- "[Architect] Detroit buildings"
-- "Historic buildings in [Neighborhood]"
-- "Art Deco buildings Detroit"
-- "Best photo locations Detroit"
+---
+
+## SEO Strategy: Informational Intent at Scale
+
+### The Goal: Hundreds to Thousands of Ranking Keywords
+
+Every single building entry should rank for informational intent queries. We are not competing for "Detroit photographer" (commercial intent)—we are building authority through **informational dominance**.
+
+### Keyword Math
+
+Consider the scale:
+- **~300 NRHP-listed properties** in Wayne County
+- Each property generates **5-10 keyword variations**
+- Plus **aggregate pages** (neighborhoods, architects, styles, eras)
+- Plus **long-tail queries** we'll discover through Search Console
+
+**Conservative estimate: 1,500-3,000 rankable keywords**, all locally grouped around Detroit architecture.
+
+### Keyword Categories
+
+#### Building-Specific (Primary Targets)
+| Pattern | Example | Intent |
+|---------|---------|--------|
+| `[Building Name]` | "Fisher Building" | Informational |
+| `[Building Name] Detroit` | "Fisher Building Detroit" | Informational |
+| `[Building Name] history` | "Fisher Building history" | Informational |
+| `[Building Name] architect` | "Fisher Building architect" | Informational |
+| `[Building Name] interior` | "Fisher Building interior" | Informational |
+| `[Building Name] photos` | "Fisher Building photos" | Informational |
+| `who built [Building Name]` | "who built the Fisher Building" | Informational |
+| `when was [Building Name] built` | "when was the Fisher Building built" | Informational |
+
+#### Architect-Specific
+| Pattern | Example |
+|---------|---------|
+| `[Architect Name] buildings` | "Albert Kahn buildings" |
+| `[Architect Name] Detroit` | "Albert Kahn Detroit" |
+| `[Architect Name] architecture` | "Albert Kahn architecture" |
+| `buildings designed by [Architect]` | "buildings designed by Albert Kahn" |
+
+#### Location/Aggregate
+| Pattern | Example |
+|---------|---------|
+| `historic buildings in [Neighborhood]` | "historic buildings in Corktown" |
+| `[Style] buildings Detroit` | "Art Deco buildings Detroit" |
+| `[Era] architecture Detroit` | "1920s architecture Detroit" |
+| `oldest buildings in Detroit` | — |
+| `most beautiful buildings in Detroit` | — |
+
+#### Research/Reference
+| Pattern | Example |
+|---------|---------|
+| `Detroit architecture history` | — |
+| `National Register Detroit` | — |
+| `historic preservation Detroit` | — |
+
+### Why Every Entry Must Rank
+
+Each building page is an **entry point** to the site. A researcher looking up "Guardian Building history" finds our page, sees it's comprehensive and well-sourced, then:
+1. Explores other buildings (engagement)
+2. Notices we're a photography studio (brand awareness)
+3. Maybe needs a headshot someday (conversion)
+
+Even if only 0.1% convert, **volume × quality = results**.
+
+### The Local Grouping Advantage
+
+All of these keywords share one thing: **Detroit specificity**. Google understands topical authority. A site that comprehensively covers Detroit architecture will rank higher for Detroit architecture queries than a site with scattered national content.
+
+We're not competing with ArchDaily or Architectural Digest. We're competing with—and beating—local sites that have incomplete data or poor presentation.
 
 ---
 
@@ -114,6 +229,54 @@ Each historic building gets a dedicated page with:
 - **Hosting:** Vercel
 - **Image Optimization:** Next.js Image with AVIF/WebP
 - **Maps:** Leaflet
+
+### URL Structure (Critical for SEO)
+
+**URLs must be semantic and include place names.** Never use numeric IDs in user-facing URLs.
+
+#### Building Pages
+```
+✅ /architecture/fisher-building
+✅ /architecture/guardian-building
+✅ /architecture/michigan-central-station
+
+❌ /architecture/building/123
+❌ /architecture/building?id=fisher
+```
+
+#### Architect Pages
+```
+✅ /architecture/architects/albert-kahn
+✅ /architecture/architects/minoru-yamasaki
+
+❌ /architecture/architect/45
+```
+
+#### Neighborhood Pages
+```
+✅ /architecture/neighborhoods/corktown
+✅ /architecture/neighborhoods/midtown
+✅ /architecture/neighborhoods/new-center
+```
+
+#### Style Pages
+```
+✅ /architecture/styles/art-deco
+✅ /architecture/styles/romanesque-revival
+✅ /architecture/styles/beaux-arts
+```
+
+#### Why This Matters
+1. **SEO:** Keywords in URLs are a ranking signal
+2. **Shareability:** `/architecture/fisher-building` is self-explanatory when shared
+3. **Trust:** Users can see where they're going before clicking
+4. **Memorability:** People can type URLs directly
+
+#### Slug Generation Rules
+- Lowercase, hyphenated: `fisher-building` not `Fisher_Building`
+- Include "detroit" only when disambiguation is needed
+- Remove articles: `guardian-building` not `the-guardian-building`
+- Be specific: `michigan-central-station` not `mcs`
 
 ### Database Schema (Target State)
 ```sql
@@ -318,19 +481,31 @@ Fast page loads, optimized images, proper caching. Mobile-first design. Our audi
 
 When working on this codebase, remember:
 
-1. **Dual purpose:** This site serves both portrait photography clients AND architecture enthusiasts. Don't break either experience.
+### Content Philosophy (CRITICAL)
 
-2. **NRHP is the secret weapon:** The `/data/nrhp/` folder contains public domain gold. Treat this content extraction as a core priority.
+1. **NO AI-GENERATED CONTENT for architecture pages.** All building descriptions must come from authentic sources (NRHP nominations, historical records). Do not write creative descriptions of buildings. Extract and present real documents.
 
-3. **SEO matters:** Every architecture page is a potential search entry point. Proper meta tags, schema markup, and semantic HTML are essential.
+2. **Cite sources.** Every fact should be traceable to a primary source. Include citations on building pages.
 
-4. **The studio is Bagley Mansion:** References to "our studio" or "the mansion" refer to the John N. Bagley House, a National Historic Landmark at 2921 E Jefferson Ave.
+3. **Semantic URLs always.** Never use numeric IDs in URLs. Use slugs like `/architecture/fisher-building`.
 
-5. **Deployment pattern:** Always deploy to Vercel first (`npx vercel --prod`), then commit and push to GitHub. This is faster than waiting for GitHub webhooks.
+4. **Every page should rank.** Architecture pages target informational intent. Include proper H1s, meta descriptions, and schema markup.
 
-6. **Large files:** PDFs in `/data/nrhp/pdfs/` are git-ignored due to size. Don't try to commit them.
+### Technical Context
 
-7. **The owner is Andrew Petrov:** Professional photographer, architecture enthusiast, and the creative vision behind this project.
+5. **Dual purpose:** This site serves both portrait photography clients AND architecture enthusiasts. Don't break either experience.
+
+6. **NRHP is the secret weapon:** The `/data/nrhp/` folder contains public domain gold. Treat this content extraction as a core priority.
+
+7. **SEO matters:** Every architecture page is a potential search entry point. Proper meta tags, schema markup, and semantic HTML are essential.
+
+8. **The studio is Bagley Mansion:** References to "our studio" or "the mansion" refer to the John N. Bagley House, a National Historic Landmark at 2921 E Jefferson Ave.
+
+9. **Deployment pattern:** Always deploy to Vercel first (`npx vercel --prod`), then commit and push to GitHub. This is faster than waiting for GitHub webhooks.
+
+10. **Large files:** PDFs in `/data/nrhp/pdfs/` are git-ignored due to size. Don't try to commit them.
+
+11. **The owner is Andrew Petrov:** Professional photographer, architecture enthusiast, and the creative vision behind this project.
 
 ---
 
