@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react'
 import { X, Star } from 'lucide-react'
 import { HubSpotForm } from './HubSpotForm'
 import { GoogleIcon } from './GoogleIcon'
@@ -47,6 +47,31 @@ export function PricingModalProvider({ children }: { children: ReactNode }) {
   const closeModal = useCallback(() => {
     setIsOpen(false)
     document.body.style.overflow = ''
+  }, [])
+
+  // Clean up overflow on unmount or page navigation (fixes iOS scroll lock after redirect)
+  useEffect(() => {
+    const resetOverflow = () => {
+      document.body.style.overflow = ''
+    }
+
+    // Reset on page visibility change (covers iOS navigation)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        resetOverflow()
+      }
+    }
+
+    // Reset on pagehide (more reliable for iOS)
+    window.addEventListener('pagehide', resetOverflow)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    // Cleanup on unmount
+    return () => {
+      resetOverflow()
+      window.removeEventListener('pagehide', resetOverflow)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
   }, [])
 
   return (
