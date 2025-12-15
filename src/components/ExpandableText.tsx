@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 
 interface ExpandableTextProps {
@@ -14,13 +14,29 @@ export function ExpandableText({ html, maxLines = 20, className = '' }: Expandab
   const [needsTruncation, setNeedsTruncation] = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
 
+  // Convert plain text with \n\n to HTML paragraphs if no <p> tags exist
+  const processedHtml = useMemo(() => {
+    if (!html) return ''
+    // If already has paragraph tags, return as-is
+    if (html.includes('<p>') || html.includes('<p ')) {
+      return html
+    }
+    // Convert double newlines to paragraph breaks
+    const paragraphs = html.split(/\n\n+/)
+    return paragraphs
+      .map(p => p.trim())
+      .filter(p => p.length > 0)
+      .map(p => `<p>${p.replace(/\n/g, ' ')}</p>`)
+      .join('')
+  }, [html])
+
   useEffect(() => {
     if (contentRef.current) {
       const lineHeight = parseInt(window.getComputedStyle(contentRef.current).lineHeight) || 24
       const maxHeight = lineHeight * maxLines
       setNeedsTruncation(contentRef.current.scrollHeight > maxHeight + 20)
     }
-  }, [html, maxLines])
+  }, [processedHtml, maxLines])
 
   const lineClampStyle = !isExpanded && needsTruncation ? {
     display: '-webkit-box',
@@ -35,7 +51,7 @@ export function ExpandableText({ html, maxLines = 20, className = '' }: Expandab
         ref={contentRef}
         className={`prose prose-sm max-w-none ${className}`}
         style={lineClampStyle}
-        dangerouslySetInnerHTML={{ __html: html }}
+        dangerouslySetInnerHTML={{ __html: processedHtml }}
       />
       {needsTruncation && (
         <button

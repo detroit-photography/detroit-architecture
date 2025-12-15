@@ -188,4 +188,7 @@ export type BuildingInsert = Database['public']['Tables']['buildings']['Insert']
 export type PhotoInsert = Database['public']['Tables']['photos']['Insert']
 export type ShootInsert = Database['public']['Tables']['shoots']['Insert']
 
+// BuildingListItem excludes wikipedia_entry for performance (it can be 8MB+)
+export type BuildingListItem = Omit<Building, 'wikipedia_entry'> & { wikipedia_entry?: string | null }
+
 

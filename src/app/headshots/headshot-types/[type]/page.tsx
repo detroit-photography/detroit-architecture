@@ -291,7 +291,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: typeData.title,
       description: typeData.metaDescription,
       url: `https://www.detroitphotography.com/headshot-types/${params.type}`,
-      images: ['/images/headshots/hero-headshot.jpg'],
+      images: [
+        {
+          url: 'https://www.detroitphotography.com/images/headshots/hero-headshot.jpg',
+          width: 1200,
+          height: 630,
+          alt: typeData.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: typeData.title,
+      description: typeData.metaDescription,
+      images: ['https://www.detroitphotography.com/images/headshots/hero-headshot.jpg'],
     },
     alternates: {
       canonical: `https://www.detroitphotography.com/headshot-types/${params.type}`,

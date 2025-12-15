@@ -48,7 +48,20 @@ export const metadata: Metadata = {
     title: 'Professional Headshots in Detroit | #1 Rated Studio',
     description: '5-star rated headshot studio in Detroit. Same-day turnaround & live image review. Starting at $149.',
     url: 'https://www.detroitphotography.com',
-    images: ['/images/headshots/hero-headshot.jpg'],
+    images: [
+      {
+        url: 'https://www.detroitphotography.com/images/headshots/hero-headshot.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Professional Headshots in Detroit',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Professional Headshots in Detroit | #1 Rated Studio',
+    description: '5-star rated headshot studio in Detroit. Same-day turnaround & live image review.',
+    images: ['https://www.detroitphotography.com/images/headshots/hero-headshot.jpg'],
   },
   alternates: {
     canonical: 'https://www.detroitphotography.com',

@@ -1,8 +1,24 @@
 import type { Metadata } from 'next'
+import { Cormorant_Garamond, Montserrat } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/components/Providers'
 import dynamic from 'next/dynamic'
 import Script from 'next/script'
+
+// Optimized font loading - prevents render blocking
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-display',
+})
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-body',
+})
 
 // Static navigation - keep as regular import for LCP
 import { HeadshotsNavigation } from '@/components/headshots/HeadshotsNavigation'
@@ -56,11 +72,20 @@ export const metadata: Metadata = {
     siteName: 'Detroit Photography',
     locale: 'en_US',
     type: 'website',
+    images: [
+      {
+        url: 'https://www.detroitphotography.com/images/headshots/hero-headshot.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Professional Headshots by Detroit Photography',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Professional Headshots | Detroit Photography',
     description: 'Professional headshots by Detroit\'s #1-rated photo studio.',
+    images: ['https://www.detroitphotography.com/images/headshots/hero-headshot.jpg'],
   },
   robots: {
     index: true,
@@ -118,17 +143,24 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${cormorant.variable} ${montserrat.variable}`}>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#0d2e1f" />
+        {/* Preload hero image for faster LCP */}
+        <link
+          rel="preload"
+          as="image"
+          href="/images/headshots/hero-headshot.jpg"
+          type="image/jpeg"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-screen flex flex-col">
+      <body className={`min-h-screen flex flex-col ${montserrat.className}`}>
         <Providers>
           {/* HubSpot Tracking Code - lazy load for performance */}
           <Script

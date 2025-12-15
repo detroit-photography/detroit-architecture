@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { shoots } from '@/lib/shoots-data'
 
 export const metadata: Metadata = {
-  title: 'Portfolio | Detroit Photography',
+  title: 'Portfolio',
   description: 'Browse our portfolio of professional photography work. Headshots, corporate photography, events, and more in Detroit.',
 }
 

@@ -4,8 +4,32 @@ import { getAllPosts, getPostPath } from '@/lib/blog-data'
 import { ArrowRight } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Blog | Detroit Photography',
+  title: 'Photography Blog',
   description: 'Tips, guides, and insights about professional photography, headshots, and personal branding from Detroit Photography.',
+  alternates: {
+    canonical: 'https://www.detroitphotography.com/blog',
+  },
+  openGraph: {
+    title: 'Photography Blog | Detroit Photography',
+    description: 'Expert tips, behind-the-scenes stories, and professional advice from Detroit\'s premier photography studio.',
+    url: 'https://www.detroitphotography.com/blog',
+    siteName: 'Detroit Photography',
+    locale: 'en_US',
+    type: 'website',
+    images: [
+      {
+        url: 'https://www.detroitphotography.com/images/headshots/hero-headshot.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Detroit Photography Blog',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Photography Blog | Detroit Photography',
+    description: 'Expert tips, behind-the-scenes stories, and professional advice from Detroit\'s premier photography studio.',
+  },
 }
 
 export default function BlogPage() {

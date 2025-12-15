@@ -25,13 +25,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   }
 
+  // Ensure OG image is an absolute URL
+  const ogImage = shoot.coverImage?.startsWith('http') 
+    ? shoot.coverImage 
+    : `https://www.detroitphotography.com${shoot.coverImage}`
+
   return {
     title: shoot.title,
     description: shoot.description,
     openGraph: {
       title: shoot.title,
       description: shoot.description,
-      images: [shoot.coverImage],
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: shoot.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: shoot.title,
+      description: shoot.description,
+      images: [ogImage],
     },
   }
 }

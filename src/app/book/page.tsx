@@ -4,12 +4,26 @@ import { Phone, MapPin, Clock, Camera, Shirt, Palette, Sparkles, Eye, HelpCircle
 import { GoogleReviewsSection } from '@/components/headshots/GoogleReviewsSection'
 
 export const metadata: Metadata = {
-  title: 'Book Your Headshot Session | Detroit Photography',
+  title: 'Book Your Headshot Session',
   description: 'Book your professional headshot session at Detroit Photography. In-studio and on-location options available. Starting at $149. Same-day delivery available.',
   openGraph: {
     title: 'Book Your Headshot Session | Detroit Photography',
     description: 'Professional headshots starting at $149. Unlimited time, wardrobe changes & backdrops. Same-day delivery available.',
     url: 'https://www.detroitphotography.com/book',
+    images: [
+      {
+        url: 'https://www.detroitphotography.com/images/headshots/hero-headshot.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Book Your Headshot Session',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Book Your Headshot Session | Detroit Photography',
+    description: 'Professional headshots starting at $149. Same-day delivery available.',
+    images: ['https://www.detroitphotography.com/images/headshots/hero-headshot.jpg'],
   },
   alternates: {
     canonical: 'https://www.detroitphotography.com/book',

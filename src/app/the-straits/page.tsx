@@ -5,7 +5,7 @@ import { HubSpotForm } from '@/components/headshots/HubSpotForm'
 import { Star, MapPin, Camera, Clock } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'The Straits | Detroit Photography',
+  title: 'The Straits',
   description: 'Photography at The Straits of Mackinac. Professional destination photography in Northern Michigan. Book your session today!',
 }
 

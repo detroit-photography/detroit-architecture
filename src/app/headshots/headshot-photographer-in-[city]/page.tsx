@@ -146,6 +146,20 @@ export async function generateMetadata({ params }: { params: { city: string } })
       title: `Headshot Photographer in ${city.name} | Detroit Photography`,
       description: `Professional headshots for ${city.name} professionals. ${city.driveTime} drive to our 5-star studio.`,
       url: `https://www.detroitphotography.com/headshot-photographer-in-${params.city}`,
+      images: [
+        {
+          url: 'https://www.detroitphotography.com/images/headshots/hero-headshot.jpg',
+          width: 1200,
+          height: 630,
+          alt: `Headshot Photographer in ${city.name}`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `Headshot Photographer in ${city.name} | Detroit Photography`,
+      description: `Professional headshots for ${city.name} professionals.`,
+      images: ['https://www.detroitphotography.com/images/headshots/hero-headshot.jpg'],
     },
     alternates: {
       canonical: `https://www.detroitphotography.com/headshot-photographer-in-${params.city}`,

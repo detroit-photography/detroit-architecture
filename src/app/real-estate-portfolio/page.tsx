@@ -4,7 +4,7 @@ import { HubSpotForm } from '@/components/headshots/HubSpotForm'
 import { Star, Check, Home, Camera, Plane } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Real Estate Photography Portfolio | Detroit Photography',
+  title: 'Real Estate Photography Portfolio',
   description: 'Professional real estate photography in Detroit. HDR photos, drone shots, virtual tours & virtual staging. Fast turnaround. View our portfolio.',
 }
 

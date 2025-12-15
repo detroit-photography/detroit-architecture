@@ -15,8 +15,8 @@ const config: Config = {
         'detroit-dark': '#0a1f14',
       },
       fontFamily: {
-        'display': ['Cormorant Garamond', 'serif'],
-        'body': ['Montserrat', 'sans-serif'],
+        'display': ['var(--font-display)', 'Cormorant Garamond', 'serif'],
+        'body': ['var(--font-body)', 'Montserrat', 'sans-serif'],
       },
     },
   },

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
-  title: 'Book Now | Detroit Photography',
+  title: 'Book Now',
   description: 'Book your professional photography session at Detroit Photography.',
 }
 

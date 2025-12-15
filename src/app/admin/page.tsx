@@ -2,9 +2,24 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Search, Upload, Save, X, Camera, Edit2, Trash2, Plus, Check, LogOut, GripVertical, Star, ChevronUp, ChevronDown, Building2, Tag, Sparkles, ExternalLink, Loader2, User, MapPin, Video, Image as ImageIcon, Calendar, Link as LinkIcon } from 'lucide-react'
+import { Search, Upload, Save, X, Camera, Edit2, Trash2, Plus, Check, LogOut, GripVertical, Star, ChevronUp, ChevronDown, Building2, Tag, Sparkles, ExternalLink, Loader2, User, MapPin, Video, Image as ImageIcon, Calendar, Link as LinkIcon, Landmark } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
-import { Building, Photo, Shoot } from '@/lib/database.types'
+import { Building, BuildingListItem, Photo, Shoot } from '@/lib/database.types'
+
+// NRHP Entry type
+type NRHPEntry = {
+  id?: string
+  building_id: string
+  ref_number: string
+  date_listed: string | null
+  level_of_significance: string | null
+  areas_of_significance: string[] | null
+  period_of_significance: string | null
+  description: string | null
+  statement_of_significance: string | null
+  architect_builder: string | null
+  pdf_url: string | null
+}
 
 // Main section tabs
 type MainTab = 'architecture' | 'shoots'
@@ -114,7 +129,7 @@ function BuildingSelector({
 }: {
   value: string | null
   onChange: (buildingId: string | null, buildingName: string | null) => void
-  buildings: Building[]
+  buildings: BuildingListItem[]
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [search, setSearch] = useState('')
@@ -275,8 +290,8 @@ export default function AdminPage() {
   const [mainTab, setMainTab] = useState<MainTab>('architecture')
   
   // Buildings state
-  const [buildings, setBuildings] = useState<Building[]>([])
-  const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null)
+  const [buildings, setBuildings] = useState<BuildingListItem[]>([])
+  const [selectedBuilding, setSelectedBuilding] = useState<BuildingListItem | null>(null)
   const [pendingBuildingId, setPendingBuildingId] = useState<string | null>(null)
   const [photos, setPhotos] = useState<Photo[]>([])
   const [buildingSearchQuery, setBuildingSearchQuery] = useState('')
@@ -297,9 +312,13 @@ export default function AdminPage() {
   
   // Building editor state
   const [showBuildingModal, setShowBuildingModal] = useState(false)
-  const [editingBuilding, setEditingBuilding] = useState<Building | null>(null)
+  const [editingBuilding, setEditingBuilding] = useState<BuildingListItem | null>(null)
   const [buildingForm, setBuildingForm] = useState<BuildingForm>(emptyBuildingForm)
-  const [activeTab, setActiveTab] = useState<'photos' | 'details' | 'text'>('photos')
+  const [activeTab, setActiveTab] = useState<'photos' | 'details' | 'text' | 'nrhp'>('photos')
+  
+  // NRHP state
+  const [nrhpEntry, setNrhpEntry] = useState<NRHPEntry | null>(null)
+  const [nrhpSaving, setNrhpSaving] = useState(false)
   
   // Photo drag state
   const [draggedPhotoIndex, setDraggedPhotoIndex] = useState<number | null>(null)
@@ -393,14 +412,37 @@ export default function AdminPage() {
     }
   }, [pendingBuildingId, buildings])
 
+  // Helper to select building and update URL
+  const selectBuilding = useCallback((building: BuildingListItem | null) => {
+    setSelectedBuilding(building)
+    if (building) {
+      // Update URL without navigation
+      const url = new URL(window.location.href)
+      url.searchParams.set('building', building.id)
+      window.history.replaceState({}, '', url.toString())
+    } else {
+      // Remove building param from URL
+      const url = new URL(window.location.href)
+      url.searchParams.delete('building')
+      window.history.replaceState({}, '', url.toString())
+    }
+  }, [])
+
   const fetchBuildings = async () => {
-    const { data } = await supabase
+    // Exclude wikipedia_entry column as it can be very large and cause timeouts
+    const { data, error } = await supabase
       .from('buildings')
-      .select('*')
+      .select('id, created_at, updated_at, name, alternate_names, address, city, lat, lng, architect, year_built, year_demolished, architectural_style, building_type, aia_number, aia_text, ferry_number, ferry_text, photographer_notes, status, featured')
       .order('name')
     
+    if (error) {
+      console.error('Error fetching buildings:', error)
+      setToast({ message: `Error loading buildings: ${error.message}`, type: 'error' })
+      return
+    }
+    
     if (data) {
-      setBuildings(data)
+      setBuildings(data as BuildingListItem[])
       
       // Extract unique tags for autocomplete
       const styleCount: Record<string, number> = {}
@@ -426,12 +468,18 @@ export default function AdminPage() {
   }
 
   const fetchShoots = async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('shoots')
       .select('*')
       .order('created_at', { ascending: false })
     
+    if (error) {
+      console.error('Error fetching shoots:', error)
+      return
+    }
+    
     if (data) {
+      console.log(`Fetched ${data.length} shoots`)
       setShoots(data)
       
       // Extract unique tags
@@ -462,6 +510,41 @@ export default function AdminPage() {
       if (data) setPhotos(data)
     }
     fetchPhotos()
+  }, [selectedBuilding])
+
+  // Fetch NRHP entry when building is selected
+  useEffect(() => {
+    if (!selectedBuilding) {
+      setNrhpEntry(null)
+      return
+    }
+
+    async function fetchNRHP() {
+      const { data } = await supabase
+        .from('nrhp_entries')
+        .select('*')
+        .eq('building_id', selectedBuilding!.id)
+        .single()
+      
+      if (data) {
+        setNrhpEntry(data)
+      } else {
+        // No NRHP entry exists - create empty form
+        setNrhpEntry({
+          building_id: selectedBuilding!.id,
+          ref_number: '',
+          date_listed: null,
+          level_of_significance: null,
+          areas_of_significance: null,
+          period_of_significance: null,
+          description: null,
+          statement_of_significance: null,
+          architect_builder: null,
+          pdf_url: null,
+        })
+      }
+    }
+    fetchNRHP()
   }, [selectedBuilding])
 
   const filteredBuildings = buildings.filter(b =>
@@ -761,7 +844,7 @@ export default function AdminPage() {
 
   // ==================== BUILDING MANAGEMENT ====================
 
-  const openBuildingModal = (building?: Building) => {
+  const openBuildingModal = (building?: BuildingListItem) => {
     if (building) {
       setEditingBuilding(building)
       setBuildingForm({
@@ -1013,7 +1096,7 @@ export default function AdminPage() {
                 {filteredBuildings.map(building => (
                   <button
                     key={building.id}
-                    onClick={() => setSelectedBuilding(building)}
+                    onClick={() => selectBuilding(building)}
                     className={`w-full text-left p-4 border-b hover:bg-gray-50 transition-colors ${
                       selectedBuilding?.id === building.id ? 'bg-detroit-gold/10 border-l-4 border-l-detroit-gold' : ''
                     }`}
@@ -1081,6 +1164,18 @@ export default function AdminPage() {
                           Edit
                         </button>
                         <button
+                          onClick={() => {
+                            const url = `${window.location.origin}/admin?building=${selectedBuilding.id}`
+                            navigator.clipboard.writeText(url)
+                            showToast('Link copied to clipboard!', 'success')
+                          }}
+                          className="flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200"
+                          title="Copy direct link to this building"
+                        >
+                          <LinkIcon className="w-4 h-4" />
+                          Copy Link
+                        </button>
+                        <button
                           onClick={enrichFromWikipedia}
                           disabled={enriching}
                           className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 disabled:opacity-50"
@@ -1113,8 +1208,15 @@ export default function AdminPage() {
                         onClick={() => setActiveTab('text')}
                         className={`flex-1 px-4 py-3 text-sm font-medium ${activeTab === 'text' ? 'bg-detroit-gold/10 text-detroit-green border-b-2 border-detroit-gold' : 'text-gray-500 hover:bg-gray-50'}`}
                       >
-                        <Edit2 className="w-4 h-4 inline mr-2" />
-                        Text Content
+                        <Tag className="w-4 h-4 inline mr-2" />
+                        Source Text
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('nrhp')}
+                        className={`flex-1 px-4 py-3 text-sm font-medium ${activeTab === 'nrhp' ? 'bg-detroit-gold/10 text-detroit-green border-b-2 border-detroit-gold' : 'text-gray-500 hover:bg-gray-50'} ${nrhpEntry?.id ? 'text-amber-600' : ''}`}
+                      >
+                        <Landmark className="w-4 h-4 inline mr-2" />
+                        NRHP {nrhpEntry?.id ? '✓' : ''}
                       </button>
                     </div>
 
@@ -1276,6 +1378,246 @@ export default function AdminPage() {
                           >
                             Edit Text Content
                           </button>
+                        </div>
+                      )}
+
+                      {/* NRHP Tab */}
+                      {activeTab === 'nrhp' && nrhpEntry && (
+                        <div className="space-y-6">
+                          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+                            <div className="flex items-center gap-2 text-amber-800 mb-2">
+                              <Landmark className="w-5 h-5" />
+                              <span className="font-semibold">National Register of Historic Places</span>
+                            </div>
+                            <p className="text-sm text-amber-700">
+                              Enter the full text from the NRHP nomination form. This will be displayed word-for-word on the building page.
+                            </p>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Reference Number</label>
+                              <input
+                                type="text"
+                                value={nrhpEntry.ref_number || ''}
+                                onChange={(e) => setNrhpEntry({ ...nrhpEntry, ref_number: e.target.value })}
+                                placeholder="e.g., 95000531"
+                                className="w-full p-2 border rounded focus:ring-2 focus:ring-detroit-gold focus:border-detroit-gold"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Date Listed</label>
+                              <input
+                                type="date"
+                                value={nrhpEntry.date_listed || ''}
+                                onChange={(e) => setNrhpEntry({ ...nrhpEntry, date_listed: e.target.value || null })}
+                                className="w-full p-2 border rounded focus:ring-2 focus:ring-detroit-gold focus:border-detroit-gold"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Level of Significance</label>
+                              <select
+                                value={nrhpEntry.level_of_significance || ''}
+                                onChange={(e) => setNrhpEntry({ ...nrhpEntry, level_of_significance: e.target.value || null })}
+                                className="w-full p-2 border rounded focus:ring-2 focus:ring-detroit-gold focus:border-detroit-gold"
+                              >
+                                <option value="">Select...</option>
+                                <option value="local">Local</option>
+                                <option value="state">State</option>
+                                <option value="national">National</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Period of Significance</label>
+                              <input
+                                type="text"
+                                value={nrhpEntry.period_of_significance || ''}
+                                onChange={(e) => setNrhpEntry({ ...nrhpEntry, period_of_significance: e.target.value || null })}
+                                placeholder="e.g., 1924-1940"
+                                className="w-full p-2 border rounded focus:ring-2 focus:ring-detroit-gold focus:border-detroit-gold"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Areas of Significance (comma-separated)</label>
+                            <input
+                              type="text"
+                              value={nrhpEntry.areas_of_significance?.join(', ') || ''}
+                              onChange={(e) => setNrhpEntry({ 
+                                ...nrhpEntry, 
+                                areas_of_significance: e.target.value ? e.target.value.split(',').map(s => s.trim()) : null 
+                              })}
+                              placeholder="e.g., Architecture, Commerce"
+                              className="w-full p-2 border rounded focus:ring-2 focus:ring-detroit-gold focus:border-detroit-gold"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Architect/Builder</label>
+                            <input
+                              type="text"
+                              value={nrhpEntry.architect_builder || ''}
+                              onChange={(e) => setNrhpEntry({ ...nrhpEntry, architect_builder: e.target.value || null })}
+                              placeholder="e.g., Richard H. Marr, Marcus R. Burrowes"
+                              className="w-full p-2 border rounded focus:ring-2 focus:ring-detroit-gold focus:border-detroit-gold"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              NRHP PDF URL <span className="text-gray-400 font-normal">(Link to original nomination form)</span>
+                            </label>
+                            <input
+                              type="url"
+                              value={nrhpEntry.pdf_url || ''}
+                              onChange={(e) => setNrhpEntry({ ...nrhpEntry, pdf_url: e.target.value || null })}
+                              placeholder="https://npgallery.nps.gov/NRHP/GetAsset/..."
+                              className="w-full p-2 border rounded focus:ring-2 focus:ring-detroit-gold focus:border-detroit-gold"
+                            />
+                            {nrhpEntry.pdf_url && (
+                              <a 
+                                href={nrhpEntry.pdf_url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-sm text-amber-600 hover:text-amber-700 mt-1"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                                View PDF
+                              </a>
+                            )}
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Description <span className="text-gray-400 font-normal">(Full text from Section 7)</span>
+                            </label>
+                            <textarea
+                              value={nrhpEntry.description || ''}
+                              onChange={(e) => setNrhpEntry({ ...nrhpEntry, description: e.target.value || null })}
+                              rows={8}
+                              placeholder="Paste the full description from the NRHP nomination form..."
+                              className="w-full p-3 border rounded focus:ring-2 focus:ring-detroit-gold focus:border-detroit-gold font-mono text-sm"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Statement of Significance <span className="text-gray-400 font-normal">(Full text from Section 8)</span>
+                            </label>
+                            <textarea
+                              value={nrhpEntry.statement_of_significance || ''}
+                              onChange={(e) => setNrhpEntry({ ...nrhpEntry, statement_of_significance: e.target.value || null })}
+                              rows={8}
+                              placeholder="Paste the full statement of significance from the NRHP nomination form..."
+                              className="w-full p-3 border rounded focus:ring-2 focus:ring-detroit-gold focus:border-detroit-gold font-mono text-sm"
+                            />
+                          </div>
+
+                          <div className="flex gap-3">
+                            <button
+                              onClick={async () => {
+                                if (!nrhpEntry.ref_number) {
+                                  showToast('Reference number is required', 'error')
+                                  return
+                                }
+                                setNrhpSaving(true)
+                                
+                                if (nrhpEntry.id) {
+                                  // Update existing
+                                  const { error } = await supabase
+                                    .from('nrhp_entries')
+                                    .update({
+                                      ref_number: nrhpEntry.ref_number,
+                                      date_listed: nrhpEntry.date_listed,
+                                      level_of_significance: nrhpEntry.level_of_significance,
+                                      areas_of_significance: nrhpEntry.areas_of_significance,
+                                      period_of_significance: nrhpEntry.period_of_significance,
+                                      description: nrhpEntry.description,
+                                      statement_of_significance: nrhpEntry.statement_of_significance,
+                                      architect_builder: nrhpEntry.architect_builder,
+                                      pdf_url: nrhpEntry.pdf_url,
+                                    })
+                                    .eq('id', nrhpEntry.id)
+                                  
+                                  if (error) {
+                                    showToast(`Error: ${error.message}`, 'error')
+                                  } else {
+                                    showToast('NRHP entry updated!', 'success')
+                                  }
+                                } else {
+                                  // Create new
+                                  const { data, error } = await supabase
+                                    .from('nrhp_entries')
+                                    .insert({
+                                      building_id: nrhpEntry.building_id,
+                                      ref_number: nrhpEntry.ref_number,
+                                      date_listed: nrhpEntry.date_listed,
+                                      level_of_significance: nrhpEntry.level_of_significance,
+                                      areas_of_significance: nrhpEntry.areas_of_significance,
+                                      period_of_significance: nrhpEntry.period_of_significance,
+                                      description: nrhpEntry.description,
+                                      statement_of_significance: nrhpEntry.statement_of_significance,
+                                      architect_builder: nrhpEntry.architect_builder,
+                                      pdf_url: nrhpEntry.pdf_url,
+                                    })
+                                    .select()
+                                    .single()
+                                  
+                                  if (error) {
+                                    showToast(`Error: ${error.message}`, 'error')
+                                  } else if (data) {
+                                    setNrhpEntry(data)
+                                    showToast('NRHP entry created!', 'success')
+                                  }
+                                }
+                                setNrhpSaving(false)
+                              }}
+                              disabled={nrhpSaving}
+                              className="flex items-center gap-2 bg-amber-600 text-white px-6 py-2 rounded-lg hover:bg-amber-700 disabled:opacity-50"
+                            >
+                              {nrhpSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                              {nrhpEntry.id ? 'Update NRHP Entry' : 'Create NRHP Entry'}
+                            </button>
+                            
+                            {nrhpEntry.id && (
+                              <button
+                                onClick={async () => {
+                                  if (confirm('Delete this NRHP entry?')) {
+                                    const { error } = await supabase
+                                      .from('nrhp_entries')
+                                      .delete()
+                                      .eq('id', nrhpEntry.id)
+                                    
+                                    if (error) {
+                                      showToast(`Error: ${error.message}`, 'error')
+                                    } else {
+                                      setNrhpEntry({
+                                        building_id: selectedBuilding!.id,
+                                        ref_number: '',
+                                        date_listed: null,
+                                        level_of_significance: null,
+                                        areas_of_significance: null,
+                                        period_of_significance: null,
+                                        description: null,
+                                        statement_of_significance: null,
+                                        architect_builder: null,
+                                        pdf_url: null,
+                                      })
+                                      showToast('NRHP entry deleted', 'success')
+                                    }
+                                  }
+                                }}
+                                className="flex items-center gap-2 text-red-600 px-4 py-2 rounded-lg hover:bg-red-50"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                                Delete
+                              </button>
+                            )}
+                          </div>
                         </div>
                       )}
                     </div>

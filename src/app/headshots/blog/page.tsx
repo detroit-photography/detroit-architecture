@@ -4,7 +4,7 @@ import { getAllPosts, getPostPath } from '@/lib/blog-data'
 import { ArrowRight } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Blog | Detroit Photography',
+  title: 'Photography Blog',
   description: 'Tips, guides, and insights about professional photography, headshots, and personal branding from Detroit Photography.',
 }
 

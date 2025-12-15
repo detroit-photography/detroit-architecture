@@ -20,6 +20,20 @@ export const metadata: Metadata = {
     title: 'Detroit Architecture Photographer | Detroit Photography',
     description: 'Professional architectural photography in Detroit. Historic buildings, commercial spaces, and real estate.',
     url: 'https://www.detroitphotography.com/detroit-architecture-photographer',
+    images: [
+      {
+        url: 'https://qjxuiljsgrmymeayoqzi.supabase.co/storage/v1/object/public/photos/buildings/guardian-building.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Detroit Architecture Photographer',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Detroit Architecture Photographer | Detroit Photography',
+    description: 'Professional architectural photography in Detroit.',
+    images: ['https://qjxuiljsgrmymeayoqzi.supabase.co/storage/v1/object/public/photos/buildings/guardian-building.jpg'],
   },
   alternates: {
     canonical: 'https://www.detroitphotography.com/detroit-architecture-photographer',

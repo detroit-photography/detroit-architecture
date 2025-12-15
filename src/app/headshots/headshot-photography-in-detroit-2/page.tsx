@@ -18,6 +18,20 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Detroit\'s #1 Headshot Photographer',
     description: 'The headshot that changes everything. 201 five-star reviews.',
+    images: [
+      {
+        url: 'https://www.detroitphotography.com/images/headshots/hero-headshot.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Detroit\'s #1 Headshot Photographer',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Detroit\'s #1 Headshot Photographer',
+    description: 'The headshot that changes everything. 201 five-star reviews.',
+    images: ['https://www.detroitphotography.com/images/headshots/hero-headshot.jpg'],
   },
 }
 

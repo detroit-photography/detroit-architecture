@@ -1,15 +1,16 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
+import 'leaflet/dist/leaflet.css'
 
 // Note: Metadata must be in a separate file for client components
 // See map/layout.tsx for SEO metadata
 import Link from 'next/link'
 import { Search, Filter, X, MapPin, ChevronRight, Camera, ChevronUp, List } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
-import { Building } from '@/lib/database.types'
+import { BuildingListItem } from '@/lib/database.types'
 
-type BuildingWithPhotos = Building & { photo_count?: number; primary_photo_url?: string }
+type BuildingWithPhotos = BuildingListItem & { photo_count?: number; primary_photo_url?: string }
 
 // Generate SEO-friendly slug from building name
 function generateSlug(name: string): string {

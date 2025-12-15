@@ -29,16 +29,42 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: 'Page Not Found' }
   }
 
+  // Ensure OG image is an absolute URL
+  const ogImage = post.image?.startsWith('http') 
+    ? post.image 
+    : `https://www.detroitphotography.com${post.image}`
+
+  // Canonical URL should point to the main blog (not /headshots/blog)
+  const postDate = new Date(post.date)
+  const canonicalUrl = `https://www.detroitphotography.com/blog/${postDate.getFullYear()}/${postDate.getMonth() + 1}/${postDate.getDate()}/${post.slug}`
+
   return {
-    title: `${post.title} | Detroit Photography Blog`,
+    title: `${post.title} | Blog`,
     description: post.excerpt,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: post.title,
       description: post.excerpt,
       type: 'article',
+      url: canonicalUrl,
       publishedTime: post.date,
       authors: [post.author],
-      images: post.image ? [post.image] : undefined,
+      images: post.image ? [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: post.image ? [ogImage] : undefined,
     },
   }
 }

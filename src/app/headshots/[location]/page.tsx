@@ -99,6 +99,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `Headshot Photographer in ${location.name}, Michigan`,
       description: `Professional headshots serving ${location.city}. Starting at $149.`,
+      images: [
+        {
+          url: 'https://www.detroitphotography.com/images/headshots/hero-headshot.jpg',
+          width: 1200,
+          height: 630,
+          alt: `Headshot Photographer in ${location.name}`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `Headshot Photographer in ${location.name}, Michigan`,
+      description: `Professional headshots serving ${location.city}. Starting at $149.`,
+      images: ['https://www.detroitphotography.com/images/headshots/hero-headshot.jpg'],
     },
   }
 }

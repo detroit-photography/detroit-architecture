@@ -357,7 +357,11 @@ export default async function BuildingPage({ params }: Props) {
                 {nrhpEntry.description && (
                   <div className="mb-4">
                     <h3 className="font-semibold text-gray-900 mb-2">Description</h3>
-                    <p className="text-gray-700 leading-relaxed">{nrhpEntry.description}</p>
+                    <div className="text-gray-700 leading-relaxed space-y-4">
+                      {nrhpEntry.description.split('\n\n').map((paragraph, i) => (
+                        <p key={i}>{paragraph}</p>
+                      ))}
+                    </div>
                   </div>
                 )}
 
@@ -365,7 +369,11 @@ export default async function BuildingPage({ params }: Props) {
                 {nrhpEntry.statement_of_significance && (
                   <div className="mb-4">
                     <h3 className="font-semibold text-gray-900 mb-2">Statement of Significance</h3>
-                    <p className="text-gray-700 leading-relaxed">{nrhpEntry.statement_of_significance}</p>
+                    <div className="text-gray-700 leading-relaxed space-y-4">
+                      {nrhpEntry.statement_of_significance.split('\n\n').map((paragraph, i) => (
+                        <p key={i}>{paragraph}</p>
+                      ))}
+                    </div>
                   </div>
                 )}
 
@@ -377,9 +385,20 @@ export default async function BuildingPage({ params }: Props) {
                   </div>
                 )}
 
-                <p className="text-xs text-gray-400 mt-4">
-                  NRHP Ref# {nrhpEntry.ref_number} • Data from National Park Service
-                </p>
+                <div className="flex items-center justify-between text-xs text-gray-400 mt-4">
+                  <span>NRHP Ref# {nrhpEntry.ref_number} • Data from National Park Service</span>
+                  {nrhpEntry.pdf_url && (
+                    <a 
+                      href={nrhpEntry.pdf_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-amber-600 hover:text-amber-700 font-medium"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      View Original PDF
+                    </a>
+                  )}
+                </div>
               </div>
             )}
 

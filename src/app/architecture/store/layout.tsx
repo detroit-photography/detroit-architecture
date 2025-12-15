@@ -7,6 +7,20 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Detroit Architecture Print Store',
     description: 'Museum-quality prints of Detroit\'s historic architecture, professionally framed and signed.',
+    images: [
+      {
+        url: 'https://qjxuiljsgrmymeayoqzi.supabase.co/storage/v1/object/public/photos/buildings/guardian-building.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Detroit Architecture Print Store - Guardian Building',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Detroit Architecture Print Store',
+    description: 'Museum-quality prints of Detroit\'s historic architecture.',
+    images: ['https://qjxuiljsgrmymeayoqzi.supabase.co/storage/v1/object/public/photos/buildings/guardian-building.jpg'],
   },
 }
 
