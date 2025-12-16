@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-// Strip any embedded newlines from env vars
-const supabase = createClient(
-  (process.env.NEXT_PUBLIC_SUPABASE_URL || '').replace(/[\n\r]/g, ''),
-  (process.env.SUPABASE_SERVICE_ROLE_KEY || '').replace(/[\n\r]/g, '')
-)
+// Use service role key for all operations (bypasses RLS)
+const SUPABASE_URL = 'https://qjxuiljsgrmymeayoqzi.supabase.co'
+const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeHVpbGpzZ3JteW1lYXlvcXppIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NDk2Njk2NCwiZXhwIjoyMDgwNTQyOTY0fQ.HUDqDqvEKADQXQTndpQcG-iS_RJok2J8lA1-ZNPts0c'
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
 // NRHP Image type
 export type NRHPImage = {

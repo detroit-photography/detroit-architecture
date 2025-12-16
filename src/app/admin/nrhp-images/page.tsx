@@ -62,7 +62,7 @@ export default function NRHPImagesAdmin() {
   const [selectedImage, setSelectedImage] = useState<NRHPImage | null>(null)
   const [editedImage, setEditedImage] = useState<Partial<NRHPImage>>({})
   const [saving, setSaving] = useState(false)
-  const [filter, setFilter] = useState<'all' | 'needs_review'>('needs_review')
+  const [filter, setFilter] = useState<'all' | 'needs_review'>('all')
   const [currentIndex, setCurrentIndex] = useState(0)
 
   // Fetch images
@@ -155,9 +155,9 @@ export default function NRHPImagesAdmin() {
   }
 
   const getImageUrl = (image: NRHPImage) => {
-    // Images are served via API from /data/nrhp/images/{ref_number}/{filename}
+    // Images are served from /public/images/nrhp/{ref_number}/{filename}
     const refNumber = image.source_pdf.replace('.pdf', '').split('_')[0]
-    return `/api/nrhp-images/file/${refNumber}/${image.filename}`
+    return `/images/nrhp/${refNumber}/${image.filename}`
   }
 
   if (loading) {
