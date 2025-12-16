@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, MapPin, Calendar, User, Building2, BookOpen, Camera, ExternalLink, Edit, Users, Landmark, Award, Clock } from 'lucide-react'
+import { ArrowLeft, MapPin, Calendar, User, Building2, BookOpen, Camera, ExternalLink, Edit, Users, Landmark, Award } from 'lucide-react'
+import { HistoricPhotosSection } from '@/components/HistoricPhotosSection'
 import { supabase } from '@/lib/supabase'
 import { PhotoGallery } from '@/components/PhotoGallery'
 import { BuildingMap } from '@/components/BuildingMap'
@@ -349,46 +350,7 @@ export default async function BuildingPage({ params }: Props) {
               </div>
             )}
 
-            {/* Historic Photographs Section - Independent of NRHP */}
-            {nrhpImages && nrhpImages.length > 0 && (
-              <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-amber-500">
-                <div className="flex items-center gap-2 mb-4">
-                  <Clock className="w-5 h-5 text-amber-600" />
-                  <h2 className="font-display text-xl text-gray-900">Historical Photos</h2>
-                  <span className="text-sm text-gray-500">({nrhpImages.length})</span>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {nrhpImages.map((image) => (
-                    <figure key={image.id} className="bg-gray-50 rounded-lg overflow-hidden">
-                      <div className="relative aspect-[4/3]">
-                        <img 
-                          src={nrhpEntry ? `/images/nrhp/${nrhpEntry.ref_number}/${image.filename}` : `/images/historic/${image.filename}`}
-                          alt={image.title || `Historic photo of ${building.name}`}
-                          className="w-full h-full object-cover"
-                          style={image.rotation ? { transform: `rotate(${image.rotation}deg)` } : undefined}
-                        />
-                      </div>
-                      <figcaption className="p-4 text-sm">
-                        {image.title && (
-                          <p className="font-medium text-gray-900 mb-1">{image.title}</p>
-                        )}
-                        {image.original_caption && (
-                          <p className="text-gray-600 mb-2">{image.original_caption}</p>
-                        )}
-                        <p className="text-xs text-gray-500">
-                          {image.photographer && <span>Photo: {image.photographer}</span>}
-                          {image.photo_date && <span> • {image.photo_date}</span>}
-                          {image.source_archive && <span> • Source: {image.source_archive}</span>}
-                        </p>
-                      </figcaption>
-                    </figure>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* National Register of Historic Places Entry - v2 */}
+            {/* National Register of Historic Places Entry */}
             {nrhpEntry && (
               <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-amber-600">
                 <div className="flex items-center justify-between mb-4">
@@ -467,6 +429,15 @@ export default async function BuildingPage({ params }: Props) {
                   )}
                 </div>
               </div>
+            )}
+
+            {/* Historic Photographs Section - with Lightbox */}
+            {nrhpImages && nrhpImages.length > 0 && (
+              <HistoricPhotosSection 
+                images={nrhpImages}
+                buildingName={building.name}
+                nrhpRefNumber={nrhpEntry?.ref_number}
+              />
             )}
 
             {/* Wikipedia Entry */}
