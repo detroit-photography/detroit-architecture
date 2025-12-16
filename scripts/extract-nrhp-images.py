@@ -120,25 +120,36 @@ def analyze_image_with_ai(image_bytes: bytes) -> dict:
                             "type": "text",
                             "text": """Analyze this image from a National Register of Historic Places PDF filing.
 
-Answer these questions:
-1. Is this a PHOTOGRAPH of a building/structure? (Not a map, form, drawing, floor plan, or text document)
-2. If it's a photograph, is it correctly oriented? (Sky should be at top, ground at bottom, building upright)
-3. If rotation is needed, how many degrees clockwise should it be rotated? (90, 180, or 270)
+IMPORTANT: PDFs from scanners often have images rotated 90 degrees. Buildings should appear UPRIGHT.
 
-Respond in JSON format only:
-{"is_photo": true/false, "rotation_needed": 0/90/180/270, "reason": "brief explanation"}"""
+Questions:
+1. Is this a PHOTOGRAPH of a building? (Not a map, form, drawing, floor plan, or document)
+2. Look at the building in the photo - is it standing UPRIGHT (vertical walls, horizontal roof/ground)?
+3. If the building appears sideways or upside down, it needs rotation.
+
+Signs of incorrect rotation:
+- Building walls are horizontal instead of vertical
+- Windows/doors are sideways
+- Ground/street is on the left or right side instead of bottom
+- Sky is on left/right/bottom instead of top
+
+Respond ONLY with JSON:
+{"is_photo": true/false, "rotation_needed": 0/90/180/270, "reason": "brief explanation of what you see"}
+
+If rotation_needed is 90: rotate clockwise 90 degrees
+If rotation_needed is 270: rotate counter-clockwise 90 degrees"""
                         },
                         {
                             "type": "image_url",
                             "image_url": {
                                 "url": f"data:image/jpeg;base64,{base64_image}",
-                                "detail": "low"
+                                "detail": "high"
                             }
                         }
                     ]
                 }
             ],
-            max_tokens=150
+            max_tokens=200
         )
         
         # Parse JSON response
@@ -550,6 +561,19 @@ def extract_images(pdf_path: str):
                     rotated.save(output, format='JPEG', quality=95)
                     corrected_bytes = output.getvalue()
                     print(f"   ✅ Rotated {rotation_needed}°")
+                
+                # SANITY CHECK: Building photos should be landscape, not portrait
+                # If AI said no rotation but image is very portrait, force rotate 90°
+                check_img = Image.open(io.BytesIO(corrected_bytes))
+                w, h = check_img.size
+                aspect = w / h
+                if aspect < 0.75:  # Very portrait
+                    print(f"   ⚠️  Sanity check: Image is portrait ({aspect:.2f}), forcing 90° rotation")
+                    rotated = check_img.rotate(-90, expand=True)  # 90° clockwise
+                    output = io.BytesIO()
+                    rotated.save(output, format='JPEG', quality=95)
+                    corrected_bytes = output.getvalue()
+                    print(f"   ✅ Forced rotation to landscape")
                 
                 # Generate filename (always save as JPEG for consistency)
                 filename = f"{ref_number}_page{page_num + 1:03d}_img{img_idx + 1:02d}.jpeg"

@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, MapPin, Calendar, User, Building2, BookOpen, Camera, ExternalLink, Edit, Users, Landmark, Award } from 'lucide-react'
 import { HistoricPhotosSection } from '@/components/HistoricPhotosSection'
@@ -76,11 +76,11 @@ async function getBuildingByIdOrSlug(idOrSlug: string) {
 }
 
 interface Props {
-  params: { id: string }
+  params: { slug: string }
 }
 
 export async function generateMetadata({ params }: Props) {
-  const building = await getBuildingByIdOrSlug(params.id)
+  const building = await getBuildingByIdOrSlug(params.slug)
 
   if (!building) {
     return { title: 'Building Not Found | Detroit Architecture Repository' }
@@ -161,17 +161,23 @@ export async function generateMetadata({ params }: Props) {
       images: ogImage ? [ogImage] : undefined,
     },
     alternates: {
-      canonical: `/architecture/building/${params.id}`,
+      canonical: `/architecture/building/${params.slug}`,
     },
   }
 }
 
 export default async function BuildingPage({ params }: Props) {
   const supabase = createServerClient()
-  const building = await getBuildingByIdOrSlug(params.id)
+  const building = await getBuildingByIdOrSlug(params.slug)
 
   if (!building) {
     notFound()
+  }
+
+  // If accessed via UUID, redirect to slug-based URL for SEO
+  const buildingSlug = generateSlug(building.name)
+  if (isUUID(params.slug) && buildingSlug) {
+    redirect(`/architecture/building/${buildingSlug}`)
   }
 
   // Fetch photos for this building
@@ -343,7 +349,7 @@ export default async function BuildingPage({ params }: Props) {
             )}
 
             {/* Photography Shoots at this Location */}
-            <ShootsAtLocation locationSlug={params.id} locationName={building.name} />
+            <ShootsAtLocation locationSlug={params.slug} locationName={building.name} />
 
             {/* AIA Guide Text - TEMPORARILY HIDDEN pending written permission */}
             {/* TODO: Restore once permission is obtained from publisher */}
