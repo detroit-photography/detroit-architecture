@@ -8,7 +8,6 @@ interface HistoricImage {
   filename: string
   original_caption: string | null
   copyright_status: string | null
-  rotation: number | null
 }
 
 interface HistoricPhotosSectionProps {
@@ -81,7 +80,6 @@ export function HistoricPhotosSection({ images, buildingName, nrhpRefNumber }: H
                   src={getImageSrc(image)}
                   alt={image.original_caption || `Historic photo of ${buildingName}`}
                   className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                  style={image.rotation ? { transform: `rotate(${image.rotation}deg)` } : undefined}
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                   <span className="opacity-0 group-hover:opacity-100 text-white text-sm font-medium bg-black/50 px-3 py-1 rounded-full transition-opacity">
@@ -129,7 +127,6 @@ export function HistoricPhotosSection({ images, buildingName, nrhpRefNumber }: H
               src={getImageSrc(currentImage)}
               alt={currentImage.original_caption || `Historic photo of ${buildingName}`}
               className="max-h-[75vh] max-w-full object-contain"
-              style={currentImage.rotation ? { transform: `rotate(${currentImage.rotation}deg)` } : undefined}
             />
             
             {/* Caption below image */}

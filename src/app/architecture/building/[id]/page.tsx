@@ -29,7 +29,6 @@ interface NRHPImage {
   filename: string
   original_caption: string | null
   copyright_status: string | null
-  rotation: number | null
 }
 
 // Always fetch fresh data (no caching)
@@ -203,9 +202,10 @@ export default async function BuildingPage({ params }: Props) {
   // Fetch NRHP historic images for this building
   const { data: nrhpImages } = await supabase
     .from('nrhp_images')
-    .select('id, filename, original_caption, copyright_status, rotation')
+    .select('id, filename, original_caption, copyright_status')
     .eq('building_id', building.id)
     .eq('is_published', true)
+    .is('deleted_at', null)
     .order('display_order') as { data: NRHPImage[] | null }
 
   return (

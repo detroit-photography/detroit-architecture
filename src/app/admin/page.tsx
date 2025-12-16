@@ -35,7 +35,6 @@ type NRHPImage = {
   is_primary: boolean
   is_published: boolean
   needs_review: boolean
-  rotation: number | null
 }
 
 // Main section tabs
@@ -1316,7 +1315,6 @@ export default function AdminPage() {
                                           src={`/images/nrhp/${nrhpEntry?.ref_number || image.source_pdf.split('_')[0]}/${image.filename}`}
                                           alt="Historic photo"
                                           className="w-28 h-28 object-cover rounded-lg border"
-                                          style={image.rotation ? { transform: `rotate(${image.rotation}deg)` } : undefined}
                                         />
                                         <div className="text-xs text-amber-700 mt-1 text-center">NRHP</div>
                                       </div>
