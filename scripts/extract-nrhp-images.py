@@ -16,8 +16,8 @@ import numpy as np
 
 def detect_and_fix_rotation(image_bytes: bytes) -> tuple[bytes, int]:
     """
-    Detect if image needs rotation based on EXIF data or aspect ratio analysis.
-    Building photos are typically landscape (wider than tall).
+    Detect if image needs rotation based on EXIF data and image content analysis.
+    For building photos: sky should be at top (brighter), ground at bottom (darker).
     Returns (corrected_bytes, rotation_applied)
     """
     try:
@@ -41,22 +41,70 @@ def detect_and_fix_rotation(image_bytes: bytes) -> tuple[bytes, int]:
                             rotation = 270
                         break
         
-        # Check if image appears sideways based on aspect ratio
-        # Building exterior photos are almost always landscape (wider than tall)
-        # If image is very portrait (tall and narrow), it's likely rotated 90°
+        # If EXIF already rotated, we're done
+        if rotation != 0:
+            output = io.BytesIO()
+            img.save(output, format='JPEG', quality=95)
+            return output.getvalue(), rotation
+        
+        # Analyze image content to determine correct orientation
+        # For building photos: sky (bright) should be at top, ground (dark) at bottom
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+        
+        arr = np.array(img)
+        height, width = arr.shape[:2]
+        
+        # Calculate average brightness of each edge region (10% of image)
+        edge_size_h = height // 10
+        edge_size_w = width // 10
+        
+        top_brightness = np.mean(arr[:edge_size_h, :, :])
+        bottom_brightness = np.mean(arr[-edge_size_h:, :, :])
+        left_brightness = np.mean(arr[:, :edge_size_w, :])
+        right_brightness = np.mean(arr[:, -edge_size_w:, :])
+        
+        # Determine which edge is likely the sky (brightest)
+        edges = {
+            'top': top_brightness,
+            'bottom': bottom_brightness,
+            'left': left_brightness,
+            'right': right_brightness
+        }
+        
+        brightest_edge = max(edges, key=edges.get)
+        brightness_diff = max(edges.values()) - min(edges.values())
+        
+        # Only rotate if there's a significant brightness difference (> 20)
+        # This indicates a clear sky vs ground distinction
+        if brightness_diff > 20:
+            if brightest_edge == 'bottom':
+                # Image is upside down
+                img = img.rotate(180, expand=True)
+                rotation = 180
+                print(f"      🔄 Auto-rotating 180°: sky detected at bottom")
+            elif brightest_edge == 'left':
+                # Image is rotated 90° counterclockwise
+                img = img.rotate(-90, expand=True)
+                rotation = 90
+                print(f"      🔄 Auto-rotating 90° CW: sky detected on left")
+            elif brightest_edge == 'right':
+                # Image is rotated 90° clockwise
+                img = img.rotate(90, expand=True)
+                rotation = 270
+                print(f"      🔄 Auto-rotating 90° CCW: sky detected on right")
+            # If brightest is top, image is correctly oriented
+        
+        # Fallback: if still very portrait and no rotation applied, likely needs 90° rotation
         width, height = img.size
         aspect = width / height
-        
-        # If aspect ratio is very portrait (< 0.85), the photo is likely rotated
-        # Most building photos have aspect 1.0-1.5 (landscape or square-ish)
-        if aspect < 0.85 and rotation == 0:
-            # Rotate 90° clockwise to make it landscape
+        if aspect < 0.7 and rotation == 0:
+            # Very portrait image - likely scanned sideways
             img = img.rotate(-90, expand=True)
             rotation = 90
-            print(f"      🔄 Auto-rotating: aspect {aspect:.2f} → landscape")
+            print(f"      🔄 Auto-rotating: very portrait aspect {aspect:.2f}")
         
         if rotation != 0:
-            # Save rotated image
             output = io.BytesIO()
             img.save(output, format='JPEG', quality=95)
             return output.getvalue(), rotation
