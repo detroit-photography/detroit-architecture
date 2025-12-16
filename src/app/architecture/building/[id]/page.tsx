@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, MapPin, Calendar, User, Building2, BookOpen, Camera, ExternalLink, Edit, Users, Landmark, Award } from 'lucide-react'
 import { HistoricPhotosSection } from '@/components/HistoricPhotosSection'
-import { supabase } from '@/lib/supabase'
+import { createServerClient } from '@/lib/supabase'
 import { PhotoGallery } from '@/components/PhotoGallery'
 import { BuildingMap } from '@/components/BuildingMap'
 import { StreetViewCard } from '@/components/StreetViewCard'
@@ -54,6 +54,8 @@ function isUUID(str: string): boolean {
 
 // Fetch building by ID or slug
 async function getBuildingByIdOrSlug(idOrSlug: string) {
+  const supabase = createServerClient()
+  
   // If it's a UUID, lookup by ID
   if (isUUID(idOrSlug)) {
     const { data } = await supabase
@@ -121,6 +123,7 @@ export async function generateMetadata({ params }: Props) {
   const description = `${introDesc} ${bodyText}`.trim().substring(0, 320)
 
   // Get primary photo for OG image
+  const supabase = createServerClient()
   const { data: photos } = await supabase
     .from('photos')
     .select('url')
@@ -165,6 +168,7 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function BuildingPage({ params }: Props) {
+  const supabase = createServerClient()
   const building = await getBuildingByIdOrSlug(params.id)
 
   if (!building) {
