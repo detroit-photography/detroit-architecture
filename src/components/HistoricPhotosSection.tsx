@@ -6,11 +6,8 @@ import { Clock, X, ChevronLeft, ChevronRight } from 'lucide-react'
 interface HistoricImage {
   id: string
   filename: string
-  title: string | null
   original_caption: string | null
-  photographer: string | null
-  photo_date: string | null
-  source_archive: string | null
+  copyright_status: string | null
   rotation: number | null
 }
 
@@ -18,6 +15,21 @@ interface HistoricPhotosSectionProps {
   images: HistoricImage[]
   buildingName: string
   nrhpRefNumber?: string
+}
+
+// Format copyright status for display
+function formatCopyright(status: string | null): string | null {
+  if (!status) return null
+  switch (status) {
+    case 'public_domain':
+      return 'Public Domain'
+    case 'public_domain_nrhp':
+      return 'Public Domain (Michigan filing for National Register of Historic Places)'
+    case 'fair_use':
+      return 'Fair Use'
+    default:
+      return status
+  }
 }
 
 export function HistoricPhotosSection({ images, buildingName, nrhpRefNumber }: HistoricPhotosSectionProps) {
@@ -67,7 +79,7 @@ export function HistoricPhotosSection({ images, buildingName, nrhpRefNumber }: H
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img 
                   src={getImageSrc(image)}
-                  alt={image.title || `Historic photo of ${buildingName}`}
+                  alt={image.original_caption || `Historic photo of ${buildingName}`}
                   className="w-full h-full object-cover transition-transform group-hover:scale-105"
                   style={image.rotation ? { transform: `rotate(${image.rotation}deg)` } : undefined}
                 />
@@ -77,19 +89,11 @@ export function HistoricPhotosSection({ images, buildingName, nrhpRefNumber }: H
                   </span>
                 </div>
               </div>
-              <figcaption className="p-4 text-sm">
-                {image.title && (
-                  <p className="font-medium text-gray-900 mb-1">{image.title}</p>
-                )}
-                {image.original_caption && (
-                  <p className="text-gray-600 mb-2 line-clamp-3">{image.original_caption}</p>
-                )}
-                <p className="text-xs text-gray-500">
-                  {image.photographer && <span>Photo: {image.photographer}</span>}
-                  {image.photo_date && <span> • {image.photo_date}</span>}
-                  {image.source_archive && <span> • Source: {image.source_archive}</span>}
-                </p>
-              </figcaption>
+              {image.original_caption && (
+                <figcaption className="p-3 text-sm text-gray-600">
+                  {image.original_caption}
+                </figcaption>
+              )}
             </figure>
           ))}
         </div>
@@ -123,24 +127,21 @@ export function HistoricPhotosSection({ images, buildingName, nrhpRefNumber }: H
           >
             <img
               src={getImageSrc(currentImage)}
-              alt={currentImage.title || `Historic photo of ${buildingName}`}
+              alt={currentImage.original_caption || `Historic photo of ${buildingName}`}
               className="max-h-[75vh] max-w-full object-contain"
               style={currentImage.rotation ? { transform: `rotate(${currentImage.rotation}deg)` } : undefined}
             />
             
             {/* Caption below image */}
             <div className="mt-4 text-center text-white max-w-2xl px-4">
-              {currentImage.title && (
-                <p className="font-medium text-lg mb-2">{currentImage.title}</p>
-              )}
               {currentImage.original_caption && (
-                <p className="text-gray-300 text-sm mb-2">{currentImage.original_caption}</p>
+                <p className="text-gray-200 text-sm mb-2">{currentImage.original_caption}</p>
               )}
-              <p className="text-xs text-gray-400">
-                {currentImage.photographer && <span>Photo: {currentImage.photographer}</span>}
-                {currentImage.photo_date && <span> • {currentImage.photo_date}</span>}
-                {currentImage.source_archive && <span> • {currentImage.source_archive}</span>}
-              </p>
+              {currentImage.copyright_status && (
+                <p className="text-xs text-gray-400">
+                  {formatCopyright(currentImage.copyright_status)}
+                </p>
+              )}
               {images.length > 1 && (
                 <p className="text-gray-500 text-xs mt-2">
                   {lightboxIndex + 1} of {images.length}
@@ -162,4 +163,3 @@ export function HistoricPhotosSection({ images, buildingName, nrhpRefNumber }: H
     </>
   )
 }
-

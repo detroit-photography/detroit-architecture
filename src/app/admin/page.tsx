@@ -31,19 +31,11 @@ type NRHPImage = {
   source_pdf: string
   source_page: number
   original_caption: string | null
-  cleaned_caption: string | null
-  title: string | null
-  description: string | null
-  photographer: string | null
-  photo_date: string | null
-  photo_year: number | null
-  view_type: string | null
-  view_direction: string | null
-  source_archive: string | null
+  copyright_status: string | null
   is_primary: boolean
   is_published: boolean
   needs_review: boolean
-  quality_score: number | null
+  rotation: number | null
 }
 
 // Main section tabs
@@ -1322,69 +1314,15 @@ export default function AdminPage() {
                                       <div className="flex-shrink-0">
                                         <img 
                                           src={`/images/nrhp/${nrhpEntry?.ref_number || image.source_pdf.split('_')[0]}/${image.filename}`}
-                                          alt={image.title || 'Historic photo'}
+                                          alt="Historic photo"
                                           className="w-28 h-28 object-cover rounded-lg border"
+                                          style={image.rotation ? { transform: `rotate(${image.rotation}deg)` } : undefined}
                                         />
                                         <div className="text-xs text-amber-700 mt-1 text-center">NRHP</div>
                                       </div>
                                       
                                       {/* Editable fields */}
-                                      <div className="flex-1 space-y-2">
-                                        <div className="grid grid-cols-2 gap-2">
-                                          <div>
-                                            <label className="block text-xs font-medium text-gray-500 mb-1">Title</label>
-                                            <input
-                                              type="text"
-                                              value={image.title || ''}
-                                              onChange={(e) => {
-                                                setNrhpImages(nrhpImages.map(img => 
-                                                  img.id === image.id ? { ...img, title: e.target.value } : img
-                                                ))
-                                              }}
-                                              placeholder="e.g., South facade, 1920"
-                                              className="w-full px-2 py-1 text-sm border rounded focus:ring-1 focus:ring-amber-500"
-                                            />
-                                          </div>
-                                          <div className="grid grid-cols-2 gap-2">
-                                            <div>
-                                              <label className="block text-xs font-medium text-gray-500 mb-1">Date</label>
-                                              <input
-                                                type="text"
-                                                value={image.photo_date || ''}
-                                                onChange={(e) => {
-                                                  setNrhpImages(nrhpImages.map(img => 
-                                                    img.id === image.id ? { ...img, photo_date: e.target.value } : img
-                                                  ))
-                                                }}
-                                                placeholder="Dec 1983"
-                                                className="w-full px-2 py-1 text-sm border rounded"
-                                              />
-                                            </div>
-                                            <div>
-                                              <label className="block text-xs font-medium text-gray-500 mb-1">View</label>
-                                              <select
-                                                value={image.view_direction || ''}
-                                                onChange={(e) => {
-                                                  setNrhpImages(nrhpImages.map(img => 
-                                                    img.id === image.id ? { ...img, view_direction: e.target.value } : img
-                                                  ))
-                                                }}
-                                                className="w-full px-2 py-1 text-sm border rounded"
-                                              >
-                                                <option value="">—</option>
-                                                <option value="north">N</option>
-                                                <option value="south">S</option>
-                                                <option value="east">E</option>
-                                                <option value="west">W</option>
-                                                <option value="northeast">NE</option>
-                                                <option value="northwest">NW</option>
-                                                <option value="southeast">SE</option>
-                                                <option value="southwest">SW</option>
-                                              </select>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        
+                                      <div className="flex-1 space-y-3">
                                         <div>
                                           <label className="block text-xs font-medium text-gray-500 mb-1">Caption</label>
                                           <textarea
@@ -1394,27 +1332,31 @@ export default function AdminPage() {
                                                 img.id === image.id ? { ...img, original_caption: e.target.value } : img
                                               ))
                                             }}
-                                            rows={2}
-                                            placeholder="Caption from source..."
+                                            rows={3}
+                                            placeholder="Enter caption..."
                                             className="w-full px-2 py-1 text-sm border rounded focus:ring-1 focus:ring-amber-500"
                                           />
                                         </div>
 
                                         <div className="flex items-center gap-4">
                                           <div className="flex-1">
-                                            <label className="block text-xs font-medium text-gray-500 mb-1">Photographer / Source</label>
-                                            <input
-                                              type="text"
-                                              value={image.photographer || ''}
+                                            <label className="block text-xs font-medium text-gray-500 mb-1">Copyright</label>
+                                            <select
+                                              value={image.copyright_status || ''}
                                               onChange={(e) => {
                                                 setNrhpImages(nrhpImages.map(img => 
-                                                  img.id === image.id ? { ...img, photographer: e.target.value } : img
+                                                  img.id === image.id ? { ...img, copyright_status: e.target.value } : img
                                                 ))
                                               }}
                                               className="w-full px-2 py-1 text-sm border rounded"
-                                            />
+                                            >
+                                              <option value="">Select...</option>
+                                              <option value="public_domain">Public Domain</option>
+                                              <option value="public_domain_nrhp">Public Domain (Michigan filing for National Register of Historic Places)</option>
+                                              <option value="fair_use">Fair Use</option>
+                                            </select>
                                           </div>
-                                          <label className="flex items-center gap-1 text-xs whitespace-nowrap">
+                                          <label className="flex items-center gap-1 text-xs whitespace-nowrap pt-4">
                                             <input
                                               type="checkbox"
                                               checked={image.is_published}
@@ -1433,11 +1375,8 @@ export default function AdminPage() {
                                               const { error } = await supabase
                                                 .from('nrhp_images')
                                                 .update({
-                                                  title: image.title,
                                                   original_caption: image.original_caption,
-                                                  photographer: image.photographer,
-                                                  photo_date: image.photo_date,
-                                                  view_direction: image.view_direction,
+                                                  copyright_status: image.copyright_status,
                                                   is_published: image.is_published,
                                                   needs_review: false,
                                                 })
@@ -1451,7 +1390,7 @@ export default function AdminPage() {
                                               setNrhpSaving(false)
                                             }}
                                             disabled={nrhpSaving}
-                                            className="flex items-center gap-1 bg-amber-600 text-white px-3 py-1 rounded text-xs hover:bg-amber-700 disabled:opacity-50"
+                                            className="flex items-center gap-1 bg-amber-600 text-white px-3 py-1 rounded text-xs hover:bg-amber-700 disabled:opacity-50 mt-4"
                                           >
                                             {nrhpSaving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
                                             Save

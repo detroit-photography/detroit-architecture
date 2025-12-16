@@ -27,19 +27,8 @@ interface NRHPEntry {
 interface NRHPImage {
   id: string
   filename: string
-  file_path: string
-  title: string | null
-  cleaned_caption: string | null
-  description: string | null
-  photographer: string | null
-  photo_date: string | null
-  photo_year: number | null
-  view_type: string | null
-  view_direction: string | null
-  credit_line: string | null
-  source_archive: string | null
-  is_primary: boolean
-  is_published: boolean
+  original_caption: string | null
+  copyright_status: string | null
   rotation: number | null
 }
 
@@ -210,7 +199,7 @@ export default async function BuildingPage({ params }: Props) {
   // Fetch NRHP historic images for this building
   const { data: nrhpImages } = await supabase
     .from('nrhp_images')
-    .select('*')
+    .select('id, filename, original_caption, copyright_status, rotation')
     .eq('building_id', building.id)
     .eq('is_published', true)
     .order('display_order') as { data: NRHPImage[] | null }
@@ -441,7 +430,7 @@ export default async function BuildingPage({ params }: Props) {
             )}
 
             {/* Wikipedia Entry */}
-            {building.wikipedia_entry && (
+            {building.wikipedia_entry && building.wikipedia_entry !== 'NOT_FOUND' && (
               <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-gray-400">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
