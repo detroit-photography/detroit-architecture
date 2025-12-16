@@ -1,5 +1,29 @@
 {
   "source_pdf": "95000531_architects_building.pdf",
   "ref_number": "95000531",
-  "images_extracted": 20
+  "photos_extracted": 3,
+  "forms_skipped": 17,
+  "images": [
+    {
+      "filename": "95000531_page014_img01.jpeg",
+      "page": 14,
+      "width": 5089,
+      "height": 6101,
+      "caption": "Front facade and east elevation, facing  southwest (Photo by Deborah M. Goldstein, February 15, 1995)"
+    },
+    {
+      "filename": "95000531_page015_img01.jpeg",
+      "page": 15,
+      "width": 5089,
+      "height": 6101,
+      "caption": "Front facade and west elevation, facing  southeast (Photo by Deborah M. Goldstein, February 15, 1995)"
+    },
+    {
+      "filename": "95000531_page016_img01.jpeg",
+      "page": 16,
+      "width": 5089,
+      "height": 6101,
+      "caption": "Rear (south) elevation, facing north. (Photo by Deborah M. Goldstein, February 15, 1995)"
+    }
+  ]
 }

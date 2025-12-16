@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import XLSX from 'xlsx'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -15,6 +16,141 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 const dataDir = path.join(__dirname, '..', 'data', 'nrhp')
+const spreadsheetPath = path.join(__dirname, '..', '..', 'national-registry-historic-places.xlsx')
+
+// Get NARA catalog URL from spreadsheet for a given ref number
+function getNaraCatalogUrl(refNumber) {
+  try {
+    const workbook = XLSX.readFile(spreadsheetPath)
+    const sheet = workbook.Sheets[workbook.SheetNames[0]]
+    const data = XLSX.utils.sheet_to_json(sheet)
+    
+    // Find matching row by ref number
+    for (const row of data) {
+      const rowRef = String(row['Ref#'] || '').trim()
+      if (rowRef === refNumber) {
+        return row['External Link'] || null
+      }
+    }
+    return null
+  } catch (e) {
+    console.log(`   ⚠️  Could not read spreadsheet: ${e.message}`)
+    return null
+  }
+}
+
+// Construct PDF URL from NARA catalog URL
+// URL pattern: https://s3.amazonaws.com/NARAprodstorage/opastorage/live/XX/XXXX/XXXXXXXX/content/electronic-records/rg-079/NPS_MI/REFNUM.pdf
+// Where XX = last 2 digits (pos 6-7), XXXX = middle digits (pos 2-5), XXXXXXXX = full catalog ID
+// Example: 25340880 -> live/80/3408/25340880
+function getPdfUrlFromNara(catalogUrl, refNumber) {
+  if (!catalogUrl) return null
+  
+  try {
+    // Extract catalog ID from URL like https://catalog.archives.gov/id/25340880
+    const idMatch = catalogUrl.match(/\/id\/(\d+)/)
+    if (!idMatch) return null
+    
+    const naraId = idMatch[1]
+    
+    // Construct the S3 path from the catalog ID
+    // Example: 25340880 -> 80/3408/25340880
+    // Pattern: last 2 digits, then middle 4 digits (positions 2-5), then full ID
+    const last2 = naraId.slice(-2)  // 80
+    const middle4 = naraId.slice(2, 6)  // 3408 (from 25[3408]80)
+    
+    const pdfUrl = `https://s3.amazonaws.com/NARAprodstorage/opastorage/live/${last2}/${middle4}/${naraId}/content/electronic-records/rg-079/NPS_MI/${refNumber}.pdf`
+    
+    console.log(`   ✅ Constructed PDF URL: ${pdfUrl}`)
+    return pdfUrl
+  } catch (e) {
+    console.log(`   ⚠️  Could not construct PDF URL: ${e.message}`)
+    return null
+  }
+}
+
+// Common typos and their corrections
+const TYPO_CORRECTIONS = {
+  // Common OCR errors
+  'teh': 'the',
+  'hte': 'the',
+  'adn': 'and',
+  'nad': 'and',
+  'taht': 'that',
+  'thta': 'that',
+  'wiht': 'with',
+  'wtih': 'with',
+  'buiding': 'building',
+  'biulding': 'building',
+  'buidling': 'building',
+  'architcet': 'architect',
+  'architec': 'architect',
+  'archiect': 'architect',
+  'desgin': 'design',
+  'desgined': 'designed',
+  'consturction': 'construction',
+  'construciton': 'construction',
+  'signficance': 'significance',
+  'signifcance': 'significance',
+  'significane': 'significance',
+  'histoic': 'historic',
+  'historc': 'historic',
+  'hisotric': 'historic',
+  'Detriot': 'Detroit',
+  'Detoit': 'Detroit',
+  'Dertoit': 'Detroit',
+  'Michgian': 'Michigan',
+  'Michgan': 'Michigan',
+  'Michiagn': 'Michigan',
+  'cenury': 'century',
+  'cnetury': 'century',
+  'centuy': 'century',
+  'residental': 'residential',
+  'residetial': 'residential',
+  'commerical': 'commercial',
+  'comercial': 'commercial',
+  'orignal': 'original',
+  'orignial': 'original',
+  'origianl': 'original',
+  // Spaced letters from bad OCR
+  'i n': 'in',
+  'o f': 'of',
+  't h e': 'the',
+  'a n d': 'and',
+  'w a s': 'was',
+  'f o r': 'for',
+  't o': 'to',
+  'i s': 'is',
+  'i t': 'it',
+  'b y': 'by',
+  'o n': 'on',
+  'a t': 'at',
+  'a s': 'as',
+}
+
+// Fix typos in text
+function fixTypos(text) {
+  if (!text) return text
+  
+  let fixed = text
+  let typosFixed = 0
+  
+  for (const [typo, correction] of Object.entries(TYPO_CORRECTIONS)) {
+    // Use word boundaries for whole-word replacements
+    const regex = new RegExp(`\\b${typo}\\b`, 'gi')
+    const matches = fixed.match(regex)
+    if (matches) {
+      typosFixed += matches.length
+      fixed = fixed.replace(regex, correction)
+    }
+  }
+  
+  if (typosFixed > 0) {
+    console.log(`   📝 Fixed ${typosFixed} typos`)
+  }
+  
+  return fixed
+}
 
 // Clean up NRHP text - remove artifacts and fix formatting
 function cleanNrhpText(text) {
@@ -57,6 +193,9 @@ function cleanNrhpText(text) {
     .replace(/\s+\./g, '.')  // Space before period
     .replace(/\s+,/g, ',')  // Space before comma
     .trim()
+  
+  // Fix typos
+  cleaned = fixTypos(cleaned)
   
   return cleaned
 }
@@ -172,6 +311,18 @@ async function importNrhp(refNumber, buildingName) {
   const cleanedDescription = cleanNrhpText(extractedData.description)
   const cleanedStatement = cleanNrhpText(extractedData.statement_of_significance)
   
+  // Get PDF URL from NARA via spreadsheet
+  console.log(`\n📄 Looking up PDF URL...`)
+  const naraCatalogUrl = getNaraCatalogUrl(refNumber)
+  let pdfUrl = null
+  if (naraCatalogUrl) {
+    pdfUrl = getPdfUrlFromNara(naraCatalogUrl, refNumber)
+  }
+  if (!pdfUrl) {
+    console.log(`   ⚠️  Could not find PDF URL, using local path`)
+    pdfUrl = `/data/nrhp/pdfs/${extractedData.source_file}`
+  }
+  
   if (existingEntry) {
     console.log(`⚠️  NRHP entry ${refNumber} already exists. Updating...`)
     const { error: updateError } = await supabase
@@ -183,7 +334,7 @@ async function importNrhp(refNumber, buildingName) {
         period_of_significance: extractedData.period_of_significance,
         description: cleanedDescription,
         statement_of_significance: cleanedStatement,
-        pdf_url: `/data/nrhp/pdfs/${extractedData.source_file}`
+        pdf_url: pdfUrl
       })
       .eq('id', existingEntry.id)
     
@@ -204,7 +355,7 @@ async function importNrhp(refNumber, buildingName) {
         period_of_significance: extractedData.period_of_significance,
         description: cleanedDescription,
         statement_of_significance: cleanedStatement,
-        pdf_url: `/data/nrhp/pdfs/${extractedData.source_file}`
+        pdf_url: pdfUrl
       })
       .select()
       .single()
@@ -246,23 +397,39 @@ async function importNrhp(refNumber, buildingName) {
       .single()
     
     let imported = 0
+    let updated = 0
     for (const imageFile of imageFiles) {
-      // Check if already exists
-      const { data: existing } = await supabase
-        .from('nrhp_images')
-        .select('id')
-        .eq('filename', imageFile)
-        .single()
-      
-      if (existing) {
-        console.log(`   ⏭️  ${imageFile} already exists`)
-        continue
-      }
-      
       // Get caption from metadata if available
       const imgMeta = imageMetadata[imageFile] || {}
       const caption = imgMeta.caption || null
       const sourcePage = imgMeta.page || 1
+      
+      // Check if already exists
+      const { data: existing } = await supabase
+        .from('nrhp_images')
+        .select('id, original_caption')
+        .eq('filename', imageFile)
+        .single()
+      
+      if (existing) {
+        // Update caption if it changed
+        if (caption && caption !== existing.original_caption) {
+          const { error: updateError } = await supabase
+            .from('nrhp_images')
+            .update({ original_caption: caption })
+            .eq('id', existing.id)
+          
+          if (updateError) {
+            console.log(`   ❌ Failed to update ${imageFile}: ${updateError.message}`)
+          } else {
+            console.log(`   🔄 Updated caption for ${imageFile}`)
+            updated++
+          }
+        } else {
+          console.log(`   ⏭️  ${imageFile} already exists (caption unchanged)`)
+        }
+        continue
+      }
       
       const { error: imageError } = await supabase
         .from('nrhp_images')
@@ -286,7 +453,7 @@ async function importNrhp(refNumber, buildingName) {
         imported++
       }
     }
-    console.log(`\n📊 Imported ${imported} new images`)
+    console.log(`\n📊 Imported ${imported} new images, updated ${updated} existing`)
   } else {
     console.log(`\n⚠️  No images folder found at ${imagesDir}`)
     console.log('   You may need to extract images from the PDF first.')

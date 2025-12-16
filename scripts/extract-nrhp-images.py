@@ -10,13 +10,66 @@ import json
 import re
 import fitz  # PyMuPDF
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ExifTags
 import io
 import numpy as np
 
+def detect_and_fix_rotation(image_bytes: bytes) -> tuple[bytes, int]:
+    """
+    Detect if image needs rotation based on EXIF data or aspect ratio analysis.
+    Building photos are typically landscape (wider than tall).
+    Returns (corrected_bytes, rotation_applied)
+    """
+    try:
+        img = Image.open(io.BytesIO(image_bytes))
+        rotation = 0
+        
+        # Check EXIF orientation tag first
+        if hasattr(img, '_getexif') and img._getexif():
+            exif = img._getexif()
+            if exif:
+                for tag, value in exif.items():
+                    if ExifTags.TAGS.get(tag) == 'Orientation':
+                        if value == 3:
+                            img = img.rotate(180, expand=True)
+                            rotation = 180
+                        elif value == 6:
+                            img = img.rotate(270, expand=True)
+                            rotation = 90
+                        elif value == 8:
+                            img = img.rotate(90, expand=True)
+                            rotation = 270
+                        break
+        
+        # Check if image appears sideways based on aspect ratio
+        # Building exterior photos are almost always landscape (wider than tall)
+        # If image is very portrait (tall and narrow), it's likely rotated 90°
+        width, height = img.size
+        aspect = width / height
+        
+        # If aspect ratio is very portrait (< 0.85), the photo is likely rotated
+        # Most building photos have aspect 1.0-1.5 (landscape or square-ish)
+        if aspect < 0.85 and rotation == 0:
+            # Rotate 90° clockwise to make it landscape
+            img = img.rotate(-90, expand=True)
+            rotation = 90
+            print(f"      🔄 Auto-rotating: aspect {aspect:.2f} → landscape")
+        
+        if rotation != 0:
+            # Save rotated image
+            output = io.BytesIO()
+            img.save(output, format='JPEG', quality=95)
+            return output.getvalue(), rotation
+        
+        return image_bytes, 0
+        
+    except Exception as e:
+        print(f"      Warning: Could not check rotation: {e}")
+        return image_bytes, 0
+
 def is_photograph(image_bytes: bytes, width: int, height: int) -> tuple[bool, str]:
     """
-    Determine if an image is a photograph vs a form/document page.
+    Determine if an image is a photograph vs a form/document/map/drawing.
     Returns (is_photo, reason)
     """
     try:
@@ -44,11 +97,39 @@ def is_photograph(image_bytes: bytes, width: int, height: int) -> tuple[bool, st
         color_std = np.std(arr, axis=(0,1))  # std per channel
         avg_color_std = np.mean(color_std)
         
-        # Forms typically have:
-        # - High white ratio (>60%)
-        # - Low color variation
-        # - Standard document aspect ratios
+        # ========== DETECT MAPS ==========
+        # Maps have distinctive cartographic colors: bright blue (water), red/pink (buildings), green (parks)
+        r, g, b = arr[:,:,0], arr[:,:,1], arr[:,:,2]
         
+        # Check for map-like colors (bright blue water, red/pink areas)
+        bright_blue = np.sum((b > 150) & (r < 150) & (g < 200)) / total_pixels
+        bright_red_pink = np.sum((r > 180) & (b < 180) & (g < 180)) / total_pixels
+        
+        if bright_blue > 0.03 and bright_red_pink > 0.05:
+            return False, f"Appears to be a map (blue: {bright_blue:.1%}, red/pink: {bright_red_pink:.1%})"
+        
+        # Maps often have very saturated, distinct color regions
+        # Check for high color saturation in discrete regions
+        hsv_like = np.max(arr, axis=2) - np.min(arr, axis=2)  # Approximate saturation
+        high_saturation = np.sum(hsv_like > 100) / total_pixels
+        if high_saturation > 0.15 and bright_blue > 0.02:
+            return False, f"Appears to be a colored map (saturation: {high_saturation:.1%})"
+        
+        # ========== DETECT ARCHITECTURAL DRAWINGS ==========
+        # Floor plans/drawings are mostly white with thin black lines
+        black_threshold = 50
+        black_pixels = np.sum(np.all(arr < black_threshold, axis=2))
+        black_ratio = black_pixels / total_pixels
+        
+        # Drawings: high white + some black lines, low mid-tones
+        if white_ratio > 0.5 and black_ratio > 0.02 and black_ratio < 0.15:
+            # Check for line-like structures (low mid-tone content)
+            mid_pixels = np.sum((arr > 80) & (arr < 200))
+            mid_ratio = mid_pixels / (total_pixels * 3)  # 3 channels
+            if mid_ratio < 0.2:
+                return False, f"Appears to be an architectural drawing (white: {white_ratio:.1%}, black lines: {black_ratio:.1%})"
+        
+        # ========== STANDARD FORM DETECTION ==========
         if white_ratio > 0.6:
             return False, f"Too white ({white_ratio:.1%} white pixels - likely a form)"
         
@@ -131,6 +212,67 @@ def clean_statement_text(text: str) -> str:
     return text.strip()
 
 
+def find_photo_captions(doc) -> dict:
+    """
+    Search the entire document for a caption page that lists photo descriptions.
+    Returns a dict mapping photo number to caption text.
+    """
+    best_captions = {}
+    best_page = -1
+    
+    for page_num in range(len(doc)):
+        page = doc[page_num]
+        text = page.get_text()
+        
+        captions = {}
+        
+        # Look for dedicated photo/view caption pages
+        # These pages typically have "Photographs" header AND numbered views
+        is_caption_page = (
+            ('views:' in text.lower() and '#' in text) or
+            ('photograph' in text.lower() and 'continuation sheet' in text.lower()) or
+            (re.search(r'Photo\s+\d+\s+of\s+\d+', text, re.IGNORECASE))
+        )
+        
+        if is_caption_page:
+            # Pattern 1: #1: Description; #2: Description; (separated by semicolon or newline)
+            pattern1 = r'#(\d+)[:\s]+([^#]+?)(?=;?\s*#\d|$)'
+            matches1 = re.findall(pattern1, text, re.DOTALL)
+            for num, desc in matches1:
+                desc_clean = desc.strip().replace('\n', ' ').rstrip(';').strip()
+                if len(desc_clean) > 5:  # Must be meaningful
+                    captions[int(num)] = desc_clean
+            
+            # Pattern 2: Photo 1: Description / Photo 2: Description
+            pattern2 = r'Photo\s*(\d+)[:\s]+([^P]+?)(?=Photo\s*\d|$)'
+            matches2 = re.findall(pattern2, text, re.IGNORECASE | re.DOTALL)
+            for num, desc in matches2:
+                desc_clean = desc.strip().replace('\n', ' ')
+                if len(desc_clean) > 5:
+                    captions[int(num)] = desc_clean
+        
+        # Keep the page with the most photo captions found
+        if len(captions) > len(best_captions):
+            best_captions = captions
+            best_page = page_num
+            
+            # Also capture photographer/date info from this page
+            photographer_match = re.search(r'Photographer[:\s]+([^\n]+)', text, re.IGNORECASE)
+            date_match = re.search(r'Date\s+taken[:\s]+([^\n]+)', text, re.IGNORECASE)
+            if not date_match:
+                date_match = re.search(r'Date[:\s]+([^\n]+)', text, re.IGNORECASE)
+            
+            if photographer_match:
+                best_captions['_photographer'] = photographer_match.group(1).strip()
+            if date_match:
+                best_captions['_date'] = date_match.group(1).strip()
+    
+    if best_captions:
+        print(f"📝 Found {len([k for k in best_captions if not str(k).startswith('_')])} photo captions on page {best_page + 1}")
+    
+    return best_captions
+
+
 def extract_images(pdf_path: str):
     """Extract photographs from a PDF file, filtering out form pages."""
     pdf_path = Path(pdf_path)
@@ -152,6 +294,13 @@ def extract_images(pdf_path: str):
     # Open PDF
     doc = fitz.open(pdf_path)
     print(f"📑 Pages: {len(doc)}")
+    
+    # First, find the caption page with numbered photo descriptions
+    photo_captions = find_photo_captions(doc)
+    if photo_captions:
+        for num, caption in photo_captions.items():
+            if not str(num).startswith('_'):
+                print(f"   #{num}: {caption[:60]}{'...' if len(caption) > 60 else ''}")
     
     photo_count = 0
     skipped_count = 0
@@ -187,39 +336,94 @@ def extract_images(pdf_path: str):
                     skipped_count += 1
                     continue
                 
-                # Generate filename
-                filename = f"{ref_number}_page{page_num + 1:03d}_img{img_idx + 1:02d}.{image_ext}"
+                # Check and fix rotation
+                corrected_bytes, rotation_applied = detect_and_fix_rotation(image_bytes)
+                if rotation_applied:
+                    print(f"   🔄 Auto-rotated {rotation_applied}°")
+                
+                # Generate filename (always save as JPEG for consistency)
+                filename = f"{ref_number}_page{page_num + 1:03d}_img{img_idx + 1:02d}.jpeg"
                 output_path = output_dir / filename
                 
-                # Save image
+                # Save image (use corrected bytes if rotation was applied)
                 with open(output_path, "wb") as f:
-                    f.write(image_bytes)
+                    f.write(corrected_bytes)
                 
                 print(f"   ✅ {filename} ({width}x{height}) - {reason}")
                 
-                # Try to extract caption from page text
+                # Try to extract caption - check current page, previous page, and next page
                 caption = None
+                pages_to_check = []
+                
+                # Current page
                 if page_text:
-                    # Look for photo captions (often after "Photo" or at end of text)
-                    caption_patterns = [
-                        r'Photo \d+ of \d+.*',
-                        r'View (?:from|of|looking).*',
-                        r'(?:North|South|East|West).*(?:elevation|facade|view).*',
-                    ]
+                    pages_to_check.append(("current", page_text))
+                
+                # Previous page (captions often precede photos)
+                if page_num > 0:
+                    prev_page = doc[page_num - 1]
+                    prev_text = extract_page_text(prev_page)
+                    if prev_text:
+                        pages_to_check.append(("previous", prev_text))
+                
+                # Next page (captions sometimes follow photos)
+                if page_num < len(doc) - 1:
+                    next_page = doc[page_num + 1]
+                    next_text = extract_page_text(next_page)
+                    if next_text:
+                        pages_to_check.append(("next", next_text))
+                
+                # Look for caption patterns in each page
+                caption_patterns = [
+                    r'Photo \d+ of \d+.*',
+                    r'View (?:from|of|looking).*',
+                    r'(?:North|South|East|West).*(?:elevation|facade|view).*',
+                    r'(?:Exterior|Interior|Front|Rear|Side).*(?:view|elevation).*',
+                    r'(?:First|Second|Third|Ground).*(?:floor|story).*',
+                    r'(?:Detail|Close-up|Showing).*',
+                ]
+                
+                for page_location, text in pages_to_check:
+                    # First check for specific caption patterns
                     for pattern in caption_patterns:
-                        match = re.search(pattern, page_text, re.IGNORECASE)
+                        match = re.search(pattern, text, re.IGNORECASE)
                         if match:
-                            caption = page_text  # Use full page text as caption
+                            caption = text.strip()
+                            print(f"      📝 Caption found on {page_location} page")
                             break
-                    if not caption and len(page_text) < 500:
-                        caption = page_text  # Short text is likely a caption
+                    if caption:
+                        break
+                    
+                    # If short text (likely a caption page), use it
+                    if len(text) < 800 and len(text) > 20:
+                        # Check if it looks like a caption (has building name, photo info, etc.)
+                        if any(kw in text.lower() for kw in ['photo', 'view', 'building', 'elevation', 'facade', 'exterior', 'interior']):
+                            caption = text.strip()
+                            print(f"      📝 Caption found on {page_location} page (short text)")
+                            break
+                
+                # If no caption from adjacent pages, try the pre-found numbered captions
+                if not caption and (photo_count + 1) in photo_captions:
+                    caption = photo_captions[photo_count + 1]
+                    print(f"      📝 Using caption #{photo_count + 1} from caption page")
+                
+                if not caption:
+                    print(f"      ⚠️  No caption found")
+                
+                # Build full caption with photographer/date if available
+                full_caption = caption
+                if caption and '_photographer' in photo_captions:
+                    full_caption = f"{caption} (Photo by {photo_captions['_photographer']}"
+                    if '_date' in photo_captions:
+                        full_caption += f", {photo_captions['_date']}"
+                    full_caption += ")"
                 
                 extracted_images.append({
                     "filename": filename,
                     "page": page_num + 1,
                     "width": width,
                     "height": height,
-                    "caption": caption
+                    "caption": full_caption
                 })
                 
                 photo_count += 1
