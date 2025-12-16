@@ -16,6 +16,51 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 const dataDir = path.join(__dirname, '..', 'data', 'nrhp')
 
+// Clean up NRHP text - remove artifacts and fix formatting
+function cleanNrhpText(text) {
+  if (!text) return text
+  
+  // Common NRHP form artifacts to remove
+  const artifacts = [
+    /NPS Form \d+-\d+.*/gi,
+    /OMB No\. \d+-\d+/gi,
+    /United States Department of the Interior/gi,
+    /National Park Service/gi,
+    /National Register of Historic Places/gi,
+    /Registration Form/gi,
+    /Continuation Sheet/gi,
+    /See continuation sheet/gi,
+    /Section \d+\s+Page \d+/gi,
+    /Section number.*Page.*/gi,
+    /\(Expires \d+\/\d+\/\d+\)/gi,
+    /For NPS use only/gi,
+    /received\s+date entered/gi,
+    /CONTINUATION SHEET.*?\n/gi,
+    /Statement of Significance\s*\n/gi,
+    /Narrative Description\s*\n/gi,
+    /8\.\s+Statement of Significance\s*\n/gi,
+    /7\.\s+Description\s*\n/gi,
+    /\[NR\]/gi,
+    /\(NR\)/gi,
+  ]
+  
+  let cleaned = text
+  for (const pattern of artifacts) {
+    cleaned = cleaned.replace(pattern, '')
+  }
+  
+  // Fix common spacing issues from PDF extraction
+  cleaned = cleaned
+    .replace(/([a-z])\s+([A-Z])/g, '$1. $2')  // Missing periods
+    .replace(/\s{3,}/g, ' ')  // Multiple spaces
+    .replace(/\n{3,}/g, '\n\n')  // Multiple newlines
+    .replace(/\s+\./g, '.')  // Space before period
+    .replace(/\s+,/g, ',')  // Space before comma
+    .trim()
+  
+  return cleaned
+}
+
 async function listAvailable() {
   const pdfDir = path.join(dataDir, 'pdfs')
   const extractedDir = path.join(dataDir, 'extracted')
@@ -123,6 +168,10 @@ async function importNrhp(refNumber, buildingName) {
     .eq('ref_number', refNumber)
     .single()
   
+  // Clean up the text fields
+  const cleanedDescription = cleanNrhpText(extractedData.description)
+  const cleanedStatement = cleanNrhpText(extractedData.statement_of_significance)
+  
   if (existingEntry) {
     console.log(`⚠️  NRHP entry ${refNumber} already exists. Updating...`)
     const { error: updateError } = await supabase
@@ -132,8 +181,8 @@ async function importNrhp(refNumber, buildingName) {
         level_of_significance: extractedData.level_of_significance,
         areas_of_significance: extractedData.areas_of_significance || [],
         period_of_significance: extractedData.period_of_significance,
-        description: extractedData.description,
-        statement_of_significance: extractedData.statement_of_significance,
+        description: cleanedDescription,
+        statement_of_significance: cleanedStatement,
         pdf_url: `/data/nrhp/pdfs/${extractedData.source_file}`
       })
       .eq('id', existingEntry.id)
@@ -153,8 +202,8 @@ async function importNrhp(refNumber, buildingName) {
         level_of_significance: extractedData.level_of_significance,
         areas_of_significance: extractedData.areas_of_significance || [],
         period_of_significance: extractedData.period_of_significance,
-        description: extractedData.description,
-        statement_of_significance: extractedData.statement_of_significance,
+        description: cleanedDescription,
+        statement_of_significance: cleanedStatement,
         pdf_url: `/data/nrhp/pdfs/${extractedData.source_file}`
       })
       .select()
@@ -175,7 +224,19 @@ async function importNrhp(refNumber, buildingName) {
       f.endsWith('.jpeg') || f.endsWith('.jpg') || f.endsWith('.png')
     )
     
-    console.log(`\n📷 Found ${imageFiles.length} images to import`)
+    // Read metadata.json for captions if available
+    const metadataPath = path.join(imagesDir, 'metadata.json')
+    let imageMetadata = {}
+    if (fs.existsSync(metadataPath)) {
+      const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'))
+      if (metadata.images) {
+        metadata.images.forEach(img => {
+          imageMetadata[img.filename] = img
+        })
+      }
+    }
+    
+    console.log(`\n📷 Found ${imageFiles.length} images to import (auto-publishing all)`)
     
     // Get or create entry ID
     const { data: entry } = await supabase
@@ -198,6 +259,11 @@ async function importNrhp(refNumber, buildingName) {
         continue
       }
       
+      // Get caption from metadata if available
+      const imgMeta = imageMetadata[imageFile] || {}
+      const caption = imgMeta.caption || null
+      const sourcePage = imgMeta.page || 1
+      
       const { error: imageError } = await supabase
         .from('nrhp_images')
         .insert({
@@ -206,10 +272,11 @@ async function importNrhp(refNumber, buildingName) {
           filename: imageFile,
           file_path: `/data/nrhp/images/${refNumber}/${imageFile}`,
           source_pdf: extractedData.source_file,
-          source_page: 1,
+          source_page: sourcePage,
+          original_caption: caption,
           copyright_status: 'public_domain_nrhp',
-          is_published: false,
-          needs_review: true
+          is_published: true,  // Auto-publish all images
+          needs_review: false  // No review needed
         })
       
       if (imageError) {

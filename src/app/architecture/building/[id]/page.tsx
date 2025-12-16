@@ -273,6 +273,24 @@ export default async function BuildingPage({ params }: Props) {
             {/* Photo Gallery - Architecture Photos */}
             {photos && photos.length > 0 ? (
               <PhotoGallery photos={photos} buildingName={building.name} buildingId={building.id} />
+            ) : nrhpImages && nrhpImages.length > 0 ? (
+              /* Show Historic Image as hero when no original photos */
+              <div className="relative rounded-xl overflow-hidden shadow-lg bg-amber-50">
+                <img 
+                  src={`/images/nrhp/${nrhpEntry?.ref_number}/${nrhpImages[0].filename}`}
+                  alt={nrhpImages[0].original_caption || `Historic photo of ${building.name}`}
+                  className="w-full h-64 md:h-96 object-contain bg-amber-50"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                  <p className="text-white text-sm flex items-center gap-2">
+                    <Landmark className="w-4 h-4" />
+                    Historic Photo from NRHP Filing
+                  </p>
+                  {nrhpImages[0].original_caption && (
+                    <p className="text-white/80 text-xs mt-1 line-clamp-2">{nrhpImages[0].original_caption}</p>
+                  )}
+                </div>
+              </div>
             ) : streetViewPhoto ? (
               /* Show Street View as main image if no original photos */
               <div className="relative rounded-xl overflow-hidden shadow-lg">
@@ -343,17 +361,26 @@ export default async function BuildingPage({ params }: Props) {
               </div>
             )}
 
-            {/* National Register of Historic Places Entry */}
+            {/* National Register of Historic Places Filing */}
             {nrhpEntry && (
               <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-amber-600">
+                {/* Header with PDF link at top */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <Landmark className="w-5 h-5 text-amber-600" />
-                    <h2 className="font-display text-xl text-amber-700">National Register of Historic Places</h2>
+                    <h2 className="font-display text-xl text-amber-700">National Register of Historic Places Filing</h2>
                   </div>
-                  <span className="text-sm text-gray-500">
-                    Listed {nrhpEntry.date_listed ? new Date(nrhpEntry.date_listed).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
-                  </span>
+                  {nrhpEntry.pdf_url && (
+                    <a 
+                      href={nrhpEntry.pdf_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-amber-600 hover:text-amber-700 font-medium text-sm"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      View Original PDF
+                    </a>
+                  )}
                 </div>
                 
                 {/* Significance badges */}
@@ -375,52 +402,40 @@ export default async function BuildingPage({ params }: Props) {
                   )}
                 </div>
 
-                {/* Description */}
-                {nrhpEntry.description && (
+                {/* Statement of Significance FIRST (with expandable text) */}
+                {nrhpEntry.statement_of_significance && (
                   <div className="mb-4">
-                    <h3 className="font-semibold text-gray-900 mb-2">Description</h3>
-                    <div className="text-gray-700 leading-relaxed space-y-4">
-                      {nrhpEntry.description.split('\n\n').map((paragraph, i) => (
-                        <p key={i}>{paragraph}</p>
-                      ))}
-                    </div>
+                    <ExpandableText 
+                      html={nrhpEntry.statement_of_significance}
+                      maxLines={12}
+                      className="text-gray-700 leading-relaxed"
+                    />
                   </div>
                 )}
 
-                {/* Statement of Significance */}
-                {nrhpEntry.statement_of_significance && (
+                {/* Description SECOND (with expandable text) */}
+                {nrhpEntry.description && (
                   <div className="mb-4">
-                    <h3 className="font-semibold text-gray-900 mb-2">Statement of Significance</h3>
-                    <div className="text-gray-700 leading-relaxed space-y-4">
-                      {nrhpEntry.statement_of_significance.split('\n\n').map((paragraph, i) => (
-                        <p key={i}>{paragraph}</p>
-                      ))}
-                    </div>
+                    <h3 className="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Physical Description</h3>
+                    <ExpandableText 
+                      html={nrhpEntry.description}
+                      maxLines={8}
+                      className="text-gray-700 leading-relaxed"
+                    />
                   </div>
                 )}
 
                 {/* Architect/Builder from NRHP */}
                 {nrhpEntry.architect_builder && (
                   <div className="mb-4">
-                    <h3 className="font-semibold text-gray-900 mb-2">Architect/Builder</h3>
+                    <h3 className="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Architect/Builder</h3>
                     <p className="text-gray-700">{nrhpEntry.architect_builder}</p>
                   </div>
                 )}
 
-                <div className="flex items-center justify-between text-xs text-gray-400 mt-4">
-                  <span>NRHP Ref# {nrhpEntry.ref_number} • Data from National Park Service</span>
-                  {nrhpEntry.pdf_url && (
-                    <a 
-                      href={nrhpEntry.pdf_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-amber-600 hover:text-amber-700 font-medium"
-                    >
-                      <ExternalLink className="w-3 h-3" />
-                      View Original PDF
-                    </a>
-                  )}
-                </div>
+                <p className="text-xs text-gray-400 mt-4">
+                  NRHP Ref# {nrhpEntry.ref_number} • Data from National Park Service • Content available under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" className="hover:underline">CC BY-SA 4.0</a>
+                </p>
               </div>
             )}
 
