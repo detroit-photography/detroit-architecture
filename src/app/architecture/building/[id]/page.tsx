@@ -22,6 +22,26 @@ interface NRHPEntry {
   architect_builder: string
 }
 
+// NRHP Image type
+interface NRHPImage {
+  id: string
+  filename: string
+  file_path: string
+  title: string | null
+  cleaned_caption: string | null
+  description: string | null
+  photographer: string | null
+  photo_date: string | null
+  photo_year: number | null
+  view_type: string | null
+  view_direction: string | null
+  credit_line: string | null
+  source_archive: string | null
+  is_primary: boolean
+  is_published: boolean
+  rotation: number | null
+}
+
 // Always fetch fresh data (no caching)
 export const revalidate = 0
 export const dynamic = 'force-dynamic'
@@ -186,6 +206,14 @@ export default async function BuildingPage({ params }: Props) {
     .eq('building_id', building.id)
     .single() as { data: NRHPEntry | null }
 
+  // Fetch NRHP historic images for this building
+  const { data: nrhpImages } = await supabase
+    .from('nrhp_images')
+    .select('*')
+    .eq('building_id', building.id)
+    .eq('is_published', true)
+    .order('display_order') as { data: NRHPImage[] | null }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -321,7 +349,7 @@ export default async function BuildingPage({ params }: Props) {
               </div>
             )}
 
-            {/* National Register of Historic Places Entry */}
+            {/* National Register of Historic Places Entry - v2 */}
             {nrhpEntry && (
               <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-amber-600">
                 <div className="flex items-center justify-between mb-4">
@@ -352,6 +380,40 @@ export default async function BuildingPage({ params }: Props) {
                     </span>
                   )}
                 </div>
+
+                {/* Historic Images from NRHP */}
+                {nrhpImages && nrhpImages.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="font-semibold text-gray-900 mb-3">Historic Photographs</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {nrhpImages.map((image) => (
+                        <figure key={image.id} className="bg-amber-50 rounded-lg overflow-hidden">
+                          <div className="relative aspect-[4/3]">
+                            <img 
+                              src={`/images/nrhp/${nrhpEntry.ref_number}/${image.filename}`}
+                              alt={image.title || `Historic photo of ${building.name}`}
+                              className="w-full h-full object-cover"
+                              style={image.rotation ? { transform: `rotate(${image.rotation}deg)` } : undefined}
+                            />
+                          </div>
+                          <figcaption className="p-3 text-sm">
+                            {image.title && (
+                              <p className="font-medium text-gray-900 mb-1">{image.title}</p>
+                            )}
+                            {image.cleaned_caption && (
+                              <p className="text-gray-600 mb-2">{image.cleaned_caption}</p>
+                            )}
+                            <p className="text-xs text-gray-500">
+                              {image.photographer && <span>Photo: {image.photographer}</span>}
+                              {image.photo_date && <span> • {image.photo_date}</span>}
+                              {image.source_archive && <span> • {image.source_archive}</span>}
+                            </p>
+                          </figcaption>
+                        </figure>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Description */}
                 {nrhpEntry.description && (
