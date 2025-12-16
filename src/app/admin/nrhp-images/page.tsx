@@ -6,7 +6,8 @@ import Link from 'next/link'
 import { 
   Save, X, Check, ChevronLeft, ChevronRight, 
   Loader2, Eye, EyeOff, Star, AlertCircle,
-  Camera, Calendar, MapPin, Building2, FileText
+  Camera, Calendar, MapPin, Building2, FileText,
+  RotateCw, RotateCcw
 } from 'lucide-react'
 
 type NRHPImage = {
@@ -45,6 +46,7 @@ type NRHPImage = {
   needs_review: boolean
   quality_score: number | null
   processing_notes: string | null
+  rotation: number | null  // 0, 90, 180, 270
   building?: { id: string; name: string }
   nrhp_entry?: { id: string; ref_number: string }
 }
@@ -218,6 +220,7 @@ export default function NRHPImagesAdmin() {
                     alt={selectedImage.title || selectedImage.filename}
                     fill
                     className="object-contain"
+                    style={{ transform: `rotate(${editedImage.rotation || 0}deg)` }}
                     unoptimized
                   />
                 )}
@@ -237,6 +240,24 @@ export default function NRHPImagesAdmin() {
                 >
                   <ChevronRight className="w-6 h-6 text-white" />
                 </button>
+                
+                {/* Rotation controls */}
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
+                  <button
+                    onClick={() => updateField('rotation', ((editedImage.rotation || 0) - 90 + 360) % 360)}
+                    className="bg-black/50 hover:bg-black/70 p-2 rounded-full"
+                    title="Rotate left"
+                  >
+                    <RotateCcw className="w-5 h-5 text-white" />
+                  </button>
+                  <button
+                    onClick={() => updateField('rotation', ((editedImage.rotation || 0) + 90) % 360)}
+                    className="bg-black/50 hover:bg-black/70 p-2 rounded-full"
+                    title="Rotate right"
+                  >
+                    <RotateCw className="w-5 h-5 text-white" />
+                  </button>
+                </div>
               </div>
               
               {/* Image info bar */}
