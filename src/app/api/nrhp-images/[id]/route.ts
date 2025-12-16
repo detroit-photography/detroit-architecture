@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
+// Strip any embedded newlines from env vars
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  (process.env.NEXT_PUBLIC_SUPABASE_URL || '').replace(/[\n\r]/g, ''),
+  (process.env.SUPABASE_SERVICE_ROLE_KEY || '').replace(/[\n\r]/g, '')
 )
 
 // GET - Get single NRHP image
@@ -44,11 +45,15 @@ export async function PATCH(
     const { id } = params
     
     // Get current image for edit history
-    const { data: current } = await supabase
+    const { data: current, error: fetchError } = await supabase
       .from('nrhp_images')
       .select('*')
       .eq('id', id)
       .single()
+    
+    if (fetchError) {
+      console.error('Error fetching current image:', fetchError)
+    }
     
     // Build edit history entry
     const editEntry = {
@@ -78,10 +83,16 @@ export async function PATCH(
     if (error) throw error
     
     return NextResponse.json(data)
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating NRHP image:', error)
     return NextResponse.json(
-      { error: 'Failed to update image' },
+      { 
+        error: 'Failed to update image',
+        message: error?.message,
+        code: error?.code,
+        details: error?.details,
+        hint: error?.hint
+      },
       { status: 500 }
     )
   }

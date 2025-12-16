@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
+// Strip any embedded newlines from env vars
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  (process.env.NEXT_PUBLIC_SUPABASE_URL || '').replace(/[\n\r]/g, ''),
+  (process.env.SUPABASE_SERVICE_ROLE_KEY || '').replace(/[\n\r]/g, '')
 )
 
 // NRHP Image type
