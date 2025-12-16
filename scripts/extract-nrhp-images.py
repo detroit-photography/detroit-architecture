@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Extract PHOTOGRAPHS from NRHP PDF files, filtering out form pages.
+Uses GPT-4 Vision to determine if images are photos and if they need rotation.
 Usage: python scripts/extract-nrhp-images.py <pdf_file>
 """
 
@@ -8,11 +9,154 @@ import sys
 import os
 import json
 import re
+import base64
 import fitz  # PyMuPDF
 from pathlib import Path
 from PIL import Image, ExifTags
 import io
 import numpy as np
+from openai import OpenAI
+from dotenv import load_dotenv
+
+# Load environment variables from .env.local
+script_dir = Path(__file__).parent
+env_path = script_dir.parent / '.env.local'
+load_dotenv(env_path)
+
+# Also try parent directory .env
+parent_env = script_dir.parent.parent / '.env'
+if parent_env.exists():
+    load_dotenv(parent_env)
+
+# Initialize OpenAI client
+api_key = os.environ.get('OPENAI_API_KEY')
+if not api_key:
+    # Try to read from common locations
+    for env_file in ['.env', '.env.local', '../.env', '~/.openai_api_key']:
+        try:
+            path = Path(env_file).expanduser()
+            if path.exists():
+                with open(path) as f:
+                    for line in f:
+                        if 'OPENAI_API_KEY' in line:
+                            api_key = line.split('=', 1)[1].strip().strip('"').strip("'")
+                            break
+        except:
+            pass
+        if api_key:
+            break
+
+client = OpenAI(api_key=api_key) if api_key else None
+
+def analyze_rotation_by_brightness(image_bytes: bytes) -> int:
+    """
+    Analyze image brightness to determine rotation.
+    Sky should be at top (brightest), ground at bottom.
+    Returns rotation needed in degrees clockwise (0, 90, 180, 270).
+    """
+    try:
+        img = Image.open(io.BytesIO(image_bytes))
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+        
+        arr = np.array(img)
+        height, width = arr.shape[:2]
+        
+        # Calculate average brightness of each edge region (10% of image)
+        edge_size_h = height // 10
+        edge_size_w = width // 10
+        
+        top_brightness = np.mean(arr[:edge_size_h, :, :])
+        bottom_brightness = np.mean(arr[-edge_size_h:, :, :])
+        left_brightness = np.mean(arr[:, :edge_size_w, :])
+        right_brightness = np.mean(arr[:, -edge_size_w:, :])
+        
+        edges = {
+            'top': top_brightness,
+            'bottom': bottom_brightness,
+            'left': left_brightness,
+            'right': right_brightness
+        }
+        
+        brightest_edge = max(edges, key=edges.get)
+        brightness_diff = max(edges.values()) - min(edges.values())
+        
+        # Only rotate if there's a significant brightness difference (> 25)
+        if brightness_diff > 25:
+            if brightest_edge == 'bottom':
+                return 180
+            elif brightest_edge == 'left':
+                return 90
+            elif brightest_edge == 'right':
+                return 270
+        
+        return 0
+    except:
+        return 0
+
+
+def analyze_image_with_ai(image_bytes: bytes) -> dict:
+    """
+    Use GPT-4 Vision to analyze if image is a photo and if it needs rotation.
+    Falls back to brightness analysis if no API key.
+    Returns: {'is_photo': bool, 'rotation_needed': int (0, 90, 180, 270), 'reason': str}
+    """
+    if not client:
+        print("      ⚠️  No OpenAI API key - using brightness analysis")
+        rotation = analyze_rotation_by_brightness(image_bytes)
+        return {'is_photo': True, 'rotation_needed': rotation, 'reason': 'Brightness analysis (no API key)'}
+    
+    try:
+        # Convert to base64
+        base64_image = base64.b64encode(image_bytes).decode('utf-8')
+        
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": """Analyze this image from a National Register of Historic Places PDF filing.
+
+Answer these questions:
+1. Is this a PHOTOGRAPH of a building/structure? (Not a map, form, drawing, floor plan, or text document)
+2. If it's a photograph, is it correctly oriented? (Sky should be at top, ground at bottom, building upright)
+3. If rotation is needed, how many degrees clockwise should it be rotated? (90, 180, or 270)
+
+Respond in JSON format only:
+{"is_photo": true/false, "rotation_needed": 0/90/180/270, "reason": "brief explanation"}"""
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{base64_image}",
+                                "detail": "low"
+                            }
+                        }
+                    ]
+                }
+            ],
+            max_tokens=150
+        )
+        
+        # Parse JSON response
+        content = response.choices[0].message.content.strip()
+        # Extract JSON from response (handle markdown code blocks)
+        if '```' in content:
+            content = content.split('```')[1]
+            if content.startswith('json'):
+                content = content[4:]
+        
+        result = json.loads(content)
+        return result
+        
+    except Exception as e:
+        print(f"      ⚠️  AI analysis failed: {e}")
+        # Fallback to brightness analysis
+        rotation = analyze_rotation_by_brightness(image_bytes)
+        return {'is_photo': True, 'rotation_needed': rotation, 'reason': 'Fallback to brightness analysis'}
 
 def detect_and_fix_rotation(image_bytes: bytes) -> tuple[bytes, int]:
     """
@@ -376,28 +520,46 @@ def extract_images(pdf_path: str):
                 if width < 100 or height < 100:
                     continue
                 
-                # Check if it's a photograph
-                is_photo, reason = is_photograph(image_bytes, width, height)
+                # First do quick filter with basic analysis
+                is_photo_basic, reason = is_photograph(image_bytes, width, height)
                 
-                if not is_photo:
+                if not is_photo_basic:
                     print(f"   ⏭️  Skipped: {reason}")
                     skipped_count += 1
                     continue
                 
-                # Check and fix rotation
-                corrected_bytes, rotation_applied = detect_and_fix_rotation(image_bytes)
-                if rotation_applied:
-                    print(f"   🔄 Auto-rotated {rotation_applied}°")
+                # Use AI to verify it's a photo and check rotation
+                print(f"   🤖 Analyzing with AI...")
+                ai_result = analyze_image_with_ai(image_bytes)
+                
+                if not ai_result.get('is_photo', True):
+                    print(f"   ⏭️  Skipped (AI): {ai_result.get('reason', 'Not a photo')}")
+                    skipped_count += 1
+                    continue
+                
+                # Apply rotation if AI detected it's needed
+                rotation_needed = ai_result.get('rotation_needed', 0)
+                corrected_bytes = image_bytes
+                
+                if rotation_needed and rotation_needed != 0:
+                    print(f"   🔄 AI detected rotation needed: {rotation_needed}° clockwise")
+                    img = Image.open(io.BytesIO(image_bytes))
+                    # PIL rotate is counterclockwise, so we negate
+                    rotated = img.rotate(-rotation_needed, expand=True)
+                    output = io.BytesIO()
+                    rotated.save(output, format='JPEG', quality=95)
+                    corrected_bytes = output.getvalue()
+                    print(f"   ✅ Rotated {rotation_needed}°")
                 
                 # Generate filename (always save as JPEG for consistency)
                 filename = f"{ref_number}_page{page_num + 1:03d}_img{img_idx + 1:02d}.jpeg"
                 output_path = output_dir / filename
                 
-                # Save image (use corrected bytes if rotation was applied)
+                # Save image
                 with open(output_path, "wb") as f:
                     f.write(corrected_bytes)
                 
-                print(f"   ✅ {filename} ({width}x{height}) - {reason}")
+                print(f"   ✅ {filename} ({width}x{height}) - {ai_result.get('reason', 'Photo')}")
                 
                 # Try to extract caption - check current page, previous page, and next page
                 caption = None
